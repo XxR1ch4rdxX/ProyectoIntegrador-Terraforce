@@ -5,6 +5,8 @@
 #ESTE ES EL CORAZON DE LA PAGINA WEB (por asi decirlo)
 
 from flask import Flask,render_template
+import pyodbc
+
 from flask_sqlalchemy import SQLAlchemy
 app = Flask(__name__)
 
@@ -23,6 +25,12 @@ def signup():  # put application's code here
 def about():  # put application's code here
     titulo = 'TerraForce'
     return render_template(template_name_or_list='about.html',titulo=titulo)
+
+
+#conexion con la db en SQLserver
+
+#try:
+#    connection = pyodbc.connect('DRIVER={SQL server}; SERVER=PCerda')
 
 
 if __name__ == '__main__':
