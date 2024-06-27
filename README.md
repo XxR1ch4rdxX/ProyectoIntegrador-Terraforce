@@ -7,12 +7,3 @@ esto con el objetivo de poner a prueba los aprendisajes obtenidos de varias mate
 
 
 
-           ／＞　　フ
-　　　 　　| 　_　 _ l
-　 　　 　／` ミ＿xノ
-　　 　 /　　　 　 |
-　　　 /　 ヽ　　 ﾉ
-　 　 │　　|　|　|
-　／￣|　　 |　|　|
-　| (￣ヽ＿_ヽ_)__)
-　＼二つ
