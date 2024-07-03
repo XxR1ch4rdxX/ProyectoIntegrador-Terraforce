@@ -2,10 +2,23 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-   <title>{{ titulo }}</title>]
+    <link rel="icon" href="../static/images/socios.ico">
+    <title>{{ titulo }}</title>
     <link  href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    {% macro render_imputs(placeholder) %}
+        <input type="text" placeholder="{{ placeholder }}">
+    {% endmacro %}
 </head>
 <body>
-
+    <div class="tablas">
+    <label for="tabla">Selecciona una tabla:</label>
+        <form action="/tablas/{{ tablaselect }}" method="GET">
+          <select id="tabla" name="tabla">
+                {% for tabla in tablas %}
+                    <option value="{{ tabla }}">{{ tabla }}</option>
+                {% endfor %}
+            </select>
+        </form>
+    </div>
 </body>
 </html>
