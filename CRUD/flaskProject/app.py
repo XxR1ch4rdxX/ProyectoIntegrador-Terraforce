@@ -6,8 +6,8 @@
 
 from colorama import init,Fore,Style
 import pyodbc
-from flask import Flask,render_template
-from flask_sqlalchemy import SQLAlchemy
+from flask import Flask,render_template,request
+
 
 
 init()
@@ -42,9 +42,13 @@ def index():  # put application's code here
 
     return render_template(template_name_or_list='index.html',titulo=titulo )
 
-@app.route('/crud')
-def signup():  # put application's code here
+
+
+@app.route('/crud',methods=['GET'])
+def consultartablas():  # put application's code here
     titulo = 'TerraForce'
+    tablaselect = request.args.get('tablaselect','')
+
     try:
         cursor.execute("""
                 SELECT TABLE_NAME
@@ -52,20 +56,41 @@ def signup():  # put application's code here
                 WHERE TABLE_TYPE = 'BASE TABLE' AND TABLE_CATALOG = ?
                 ORDER BY TABLE_NAME ASC;
             """, (database,))
-
         tablas = [row.TABLE_NAME for row in cursor.fetchall()]
-        return render_template('crud.html', titulo=titulo, tablas=tablas)
+
+        if tablaselect:
+            cursor.execute('SELECT * FROM ' + tablaselect)
+            rows = cursor.fetchall()
+            column_names = [column[0] for column in cursor.description]
+        else:
+            rows = []
+            column_names = []
+
+
+        return render_template('crud.html', titulo=titulo, tablas=tablas,tablaselect=tablaselect
+                               ,rows=rows,column_names=column_names),tablaselect
 
     except pyodbc.Error as e:
         error_message = f"Error al recuperar las tablas: {str(e)}"
         return render_template('error.html', error_message=error_message)
 
+@app.route('/remove', methods=['GET'])
+def remove():
+    registro_id = request.args.get('id')
+    tabla=request.args.get('tabla')
+    if registro_id:
+        try:
+            cursor.execute('DELETE FROM ' + tabla + ' WHERE TABLE_NAME = ?', (registro_id,))
+            connection.commit()
+        except:
+            return 'error'
+    return render_template('crud.html')
 
+@app.route('/edit', methods=['GET'])
+def edit():
 
-@app.route('/tablas/<nombretabla>')
-def ver_tablas(nombretabla):
-    return f'Seleccionaste la tabla {nombretabla}'
-
+    registro_id = request.args.get('id')
+    return registro_id
 
 @app.route('/about')
 def about():  # put application's code here

@@ -4,21 +4,57 @@
     <meta charset="UTF-8">
     <link rel="icon" href="../static/images/socios.ico">
     <title>{{ titulo }}</title>
+    <link rel="stylesheet" href="../static/CSS/index.css">
     <link  href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    {% macro render_imputs(placeholder) %}
-        <input type="text" placeholder="{{ placeholder }}">
-    {% endmacro %}
 </head>
 <body>
-    <div class="tablas">
-    <label for="tabla">Selecciona una tabla:</label>
-        <form action="/tablas/{{ tablaselect }}" method="GET">
-          <select id="tabla" name="tabla">
+    <div class="menuselection">
+        <form action="/crud" method="GET">
+            <label for="tabla">Selecciona una tabla:</label>
+            <select id="tabla" name="tablaselect">
                 {% for tabla in tablas %}
                     <option value="{{ tabla }}">{{ tabla }}</option>
                 {% endfor %}
             </select>
+            <button type="submit" class="btn btn-primary">OK</button>
         </form>
     </div>
+    <div class="tabla">
+    <h1 class="text-center" id="ht">Tabla actual: {{ tablaselect }}</h1>
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead class="thead-dark" >
+                <tr>
+                    {% for nombre in column_names %}
+                        <th>{{ nombre }}</th>
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for fila in rows %}
+                    <tr>
+                        {% for campo in fila %}
+                            <td>{{ campo }}
+                            </td>
+                        {% endfor %}
+                    <td>
+                    <td>
+                        <div class="row">
+                                <form action="/edit" method="GET" onsubmit="return obtenerID,(this);">
+                                    <input type="hidden" name="id" value="{{ fila.id }}">
+                                    <button type="submit" class="btn btn-primary" id="edit"></button>
+                                </form>
+                                <form action="/remove" method="GET" onsubmit="return obtenerID(this);">
+                                    <input type="hidden" name="id" value="{{ fila.id }}">
+                                    <button type="submit" class="btn btn-danger" id="remove"></button>
+                                </form>
+                        </div>
+                    </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
 </body>
 </html>
