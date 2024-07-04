@@ -6,6 +6,19 @@
     <title>{{ titulo }}</title>
     <link rel="stylesheet" href="../static/CSS/index.css">
     <link  href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+
+    <script>
+        function agg(){
+            document.getElementsByClassName("cajitaconmodales")[0].style.display='block'
+        }
+        function cerr(){
+            document.getElementsByClassName("cajitaconmodales")[0].style.display='none'
+        }
+        function vert(){
+            document.getElementById("t1").style.display='block'
+        }
+
+    </script>
 </head>
 <body>
     <div class="container" id="alert">
@@ -20,15 +33,15 @@
     <div class="menuselection">
         <form action="/crud"  method="GET">
             <label for="tabla">Selecciona una tabla:</label>
-            <select id="tabla" name="tablaselect">
+            <select id="tabla" name="tablaselect" class="selecccion">
                 {% for tabla in tablas %}
-                    <option value="{{ tabla }}">{{ tabla }}</option>
+                    <option value="{{ tabla }}" class="selecccion" >{{ tabla }}</option>
                 {% endfor %}
             </select>
-            <button type="submit" class="btn btn-primary">OK</button>
+            <button type="submit"  class="btn btn-primary">OK</button>
         </form>
     </div>
-    <div class="tabla">
+    <div class="tabla" id="t1">
     <h1 class="text-center" id="ht">Tabla actual: {{ tablaselect }}</h1>
     <div class="table-responsive">
         <table class="table table-striped">
@@ -66,14 +79,31 @@
             </tbody>
         </table>
     </div>
-
-    <div class="agg" >
-    <form action="/agg" method="GET" onsubmit="return obtenerID (this);">
-        <input type="hidden" name="tablaselect" value="{{ tablaselect }}">
-        <button type="submit" class="btn btn-primary" id="agg" style="background: #2cb539; width: max-content; border: none" >Agregar nuevo registro</button>
-    </form>
+        <button onclick="agg()" id="ag1" class="btn-primary" style=" background: #2cb539; width: max-content; border: none;">Agregar nuevo registro</button>
 </div>
 </div>
 <h1>{{ palabrita }}</h1>
+{#aqui vamos a crear el modal para el formulario de ingresar datos#}
+
+    <div class="cajitaconmodales" >
+    <div class="container-modal">
+    <div class="content-modal">
+        <p>Ingresa los datos para el nuevo registro de la tabla {{ tablaselect }}</p>
+        <form action="/aggreg" method="POST" onsubmit="return valores (this);">
+            <input type="hidden" name="tablaselect" value="{{ tablaselect }}">
+                {% for nombret in column_names[1:] %}
+                  <input type="text" name="{{ nombret }}" placeholder="{{ nombret }}">
+               {% endfor %}
+        <div class="agg" >
+            <br>
+        <button type="submit" class=" btn-primary" id="agg" style="background: #2cb539; width: max-content; border: none;" >Aceptar</button>
+    </form>
+
+        <div class="btn-cerrar">
+            <button class="btn-primary" onclick="cerr()" id="cer1">Cerrar</button>
+        </div>
+    </div>
+    </div>
+    </div>
 </body>
 </html>

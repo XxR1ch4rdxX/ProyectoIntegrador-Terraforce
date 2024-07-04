@@ -4,6 +4,8 @@
 
 #ESTE ES EL CORAZON DE LA PAGINA WEB (por asi decirlo)
 
+#Universal Crud :D
+
 from colorama import init,Fore,Style
 import pyodbc
 from flask import Flask, render_template, request, flash, redirect
@@ -28,6 +30,7 @@ elif database== 'TerraForce':
 
 else:
     icon= "../static/images/demon.ico"
+
 
 
 try:
@@ -73,6 +76,7 @@ def consultartablas():  # put application's code here
             """, (database,))
         tablas = [row.TABLE_NAME for row in cursor.fetchall()]
 
+
         if tablaselect:
             cursor.execute('SELECT * FROM ' + tablaselect)
             rows = cursor.fetchall()
@@ -94,6 +98,8 @@ def remove():
 
     registro_id = request.args.get('id')
     tablaname = request.args.get('tablaselect')
+
+
     if registro_id and tablaname:
         try:
          cursor.execute(f"DELETE FROM {tablaname} WHERE id = ?", (registro_id,))
@@ -105,31 +111,42 @@ def remove():
     return redirect('crud')
 
 
-
 @app.route('/edit', methods=['GET'])
 def edit():
-
+    tabla = request.form.get('tablaselect')
     registro_id = request.args.get('id')
-    tabla = request.args.get('tablaselect')
 
     cursor.execute('alter table'+tabla+'')
     return render_template('crud.html')
 
-@app.route('/agg', methods=['GET'])
-def agg():
-    tabla = request.args.get('tablaselect')
-    cursor.execute('select * from '+tabla)
-    redirect('formulario')
 
+@app.route('/aggreg', methods=['POST'])
+def aggreg():
+    tabla = request.form.get('tablaselect')
+    column_names = [column[0] for column in cursor.description]
+    valores = [request.form.get(nombre) for nombre in column_names]
 
-@app.route('/about')
-def about():  # put application's code here
-    titulo = 'TerraForce'
-    return render_template(template_name_or_list='about.html',titulo=titulo,icon=icon )
+    if not tabla:
+        flash('No hay tablas seleccionadas :(')
+    redirect('crud')
 
+    try:
 
+        insert_query = f"INSERT INTO {tabla} ({', '.join(column_names[1:])}) VALUES ({', '.join(['?'] * len(column_names[1:]))})"
+        cursor.execute(insert_query, valores)
+        connection.commit()
+        flash('Registro exitoso')
+        return redirect('crud')
 
+    except pyodbc.Error as e:
+        flash(f"Error al insertar registro :c {str(e)}")
+        return redirect('crud')
 
+# @app.route('/about')
+# def about():  # put application's code here
+#     titulo = 'TerraForce'
+#     return render_template(template_name_or_list='about.html',titulo=titulo,icon=icon )
+#
 
 
 
