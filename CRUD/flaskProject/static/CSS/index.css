@@ -74,3 +74,11 @@ p {
     background-image: url("../images/pluma-de-la-pluma.ico");
 }
 
+.agg{
+
+    text-align: center;
+}
+#alert{
+    padding-top: 30px;
+
+}

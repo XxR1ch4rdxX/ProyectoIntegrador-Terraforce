@@ -2,14 +2,23 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <link rel="icon" href="../static/images/socios.ico">
+    <link rel="icon" href="{{ icon }}">
     <title>{{ titulo }}</title>
     <link rel="stylesheet" href="../static/CSS/index.css">
     <link  href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
+    <div class="container" id="alert">
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <div class="alert alert-success" role="alert">
+                    {{ messages[0] }}
+                </div>
+            {% endif %}
+        {% endwith %}
+    </div>
     <div class="menuselection">
-        <form action="/crud" method="GET">
+        <form action="/crud"  method="GET">
             <label for="tabla">Selecciona una tabla:</label>
             <select id="tabla" name="tablaselect">
                 {% for tabla in tablas %}
@@ -40,11 +49,13 @@
                     <td>
                     <td>
                         <div class="row">
-                                <form action="/edit" method="GET" onsubmit="return obtenerID,(this);">
+                                <form action="/edit" method="GET" onsubmit="return obtenerID (this);">
+                                    <input type="hidden" name="tablaselect" value="{{ tablaselect }}">
                                     <input type="hidden" name="id" value="{{ fila.id }}">
                                     <button type="submit" class="btn btn-primary" id="edit"></button>
                                 </form>
                                 <form action="/remove" method="GET" onsubmit="return obtenerID(this);">
+                                     <input type="hidden" name="tablaselect" value="{{ tablaselect }}">
                                     <input type="hidden" name="id" value="{{ fila.id }}">
                                     <button type="submit" class="btn btn-danger" id="remove"></button>
                                 </form>
@@ -55,6 +66,14 @@
             </tbody>
         </table>
     </div>
+
+    <div class="agg" >
+    <form action="/agg" method="GET" onsubmit="return obtenerID (this);">
+        <input type="hidden" name="tablaselect" value="{{ tablaselect }}">
+        <button type="submit" class="btn btn-primary" id="agg" style="background: #2cb539; width: max-content; border: none" >Agregar nuevo registro</button>
+    </form>
 </div>
+</div>
+<h1>{{ palabrita }}</h1>
 </body>
 </html>

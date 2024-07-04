@@ -6,7 +6,8 @@
 
 from colorama import init,Fore,Style
 import pyodbc
-from flask import Flask,render_template,request
+from flask import Flask, render_template, request, flash, redirect
+import socket
 
 
 
@@ -14,8 +15,21 @@ init()
 
 
 app = Flask(__name__)
-server='PCerda'
-database='TerraForce'
+app.secret_key='123'
+server=socket.gethostname()
+database='TacoLovers'
+titulo = database
+
+if database== 'TacoLovers':
+    icon= "../static/images/taco.ico"
+
+elif database== 'TerraForce':
+    icon= "../static/images/socios.ico"
+
+else:
+    icon= "../static/images/demon.ico"
+
+
 try:
     print(Fore.CYAN+'Estableciendo la conexion con sql server ...'+Style.RESET_ALL)
     connection = pyodbc.connect('DRIVER={SQL Server}; SERVER='+server+'; DATABASE='+database+'; Trusted_Connection=yes;')
@@ -38,17 +52,18 @@ except pyodbc.Error as e:
 
 @app.route('/')
 def index():  # put application's code here
-    titulo = 'TerraForce'
 
-    return render_template(template_name_or_list='index.html',titulo=titulo )
+
+    return render_template(template_name_or_list='index.html',titulo=titulo,icon=icon )
 
 
 
 @app.route('/crud',methods=['GET'])
 def consultartablas():  # put application's code here
-    titulo = 'TerraForce'
-    tablaselect = request.args.get('tablaselect','')
+    palabrita = ""
 
+    tablaselect = request.args.get('tablaselect','')
+    flash("Aqui se mostraran las alertas :)")
     try:
         cursor.execute("""
                 SELECT TABLE_NAME
@@ -68,7 +83,7 @@ def consultartablas():  # put application's code here
 
 
         return render_template('crud.html', titulo=titulo, tablas=tablas,tablaselect=tablaselect
-                               ,rows=rows,column_names=column_names),tablaselect
+                               ,rows=rows,column_names=column_names,palabrita=palabrita,icon=icon )
 
     except pyodbc.Error as e:
         error_message = f"Error al recuperar las tablas: {str(e)}"
@@ -76,29 +91,44 @@ def consultartablas():  # put application's code here
 
 @app.route('/remove', methods=['GET'])
 def remove():
+
     registro_id = request.args.get('id')
-    tabla=request.args.get('tabla')
-    if registro_id:
+    tablaname = request.args.get('tablaselect')
+    if registro_id and tablaname:
         try:
-            cursor.execute('DELETE FROM ' + tabla + ' WHERE TABLE_NAME = ?', (registro_id,))
-            connection.commit()
-        except:
-            return 'error'
-    return render_template('crud.html')
+         cursor.execute(f"DELETE FROM {tablaname} WHERE id = ?", (registro_id,))
+         connection.commit()
+         flash(f'Se ha eliminado el registro con ID {registro_id} de la tabla {tablaname} correctamente. :D')
+        except pyodbc.Error as e:
+            error_message = f"Error al eliminar el registro: {str(e)}"
+            flash(error_message, 'error'+"   :c")
+    return redirect('crud')
+
+
 
 @app.route('/edit', methods=['GET'])
 def edit():
 
     registro_id = request.args.get('id')
-    return registro_id
+    tabla = request.args.get('tablaselect')
+
+    cursor.execute('alter table'+tabla+'')
+    return render_template('crud.html')
+
+@app.route('/agg', methods=['GET'])
+def agg():
+    tabla = request.args.get('tablaselect')
+    cursor.execute('select * from '+tabla)
+    redirect('formulario')
+
 
 @app.route('/about')
 def about():  # put application's code here
     titulo = 'TerraForce'
-    return render_template(template_name_or_list='about.html',titulo=titulo)
+    return render_template(template_name_or_list='about.html',titulo=titulo,icon=icon )
 
 
-#conexion con la db en SQLserver
+
 
 
 
