@@ -123,15 +123,25 @@ def edit():
 @app.route('/aggreg', methods=['POST'])
 def aggreg():
     tabla = request.form.get('tablaselect')
-    column_names = [column[0] for column in cursor.description]
-    valores = [request.form.get(nombre) for nombre in column_names]
-
     if not tabla:
         flash('No hay tablas seleccionadas :(')
-    redirect('crud')
+        return redirect('crud')
+
+    # Obtener nombres de columnas desde el esquema de la tabla seleccionada
+    cursor.execute(f"SELECT * FROM {tabla} WHERE 1=0")
+    column_names = [column[0] for column in cursor.description]
+
+    # Obtener valores del formulario para cada columna
+    valores = [request.form.get(nombre) for nombre in
+               column_names[1:]]  # Ignorando la primera columna si es una clave primaria autoincremental
+
+    # Validar que no falten valores
+    if len(column_names[1:]) != len(valores):
+        flash('Error: La cantidad de valores no coincide con la cantidad de columnas.')
+        return redirect('crud')
 
     try:
-
+        # Construir y ejecutar la consulta de inserción
         insert_query = f"INSERT INTO {tabla} ({', '.join(column_names[1:])}) VALUES ({', '.join(['?'] * len(column_names[1:]))})"
         cursor.execute(insert_query, valores)
         connection.commit()
@@ -141,6 +151,7 @@ def aggreg():
     except pyodbc.Error as e:
         flash(f"Error al insertar registro :c {str(e)}")
         return redirect('crud')
+
 
 # @app.route('/about')
 # def about():  # put application's code here
