@@ -14,9 +14,12 @@
         function cerr(){
             document.getElementsByClassName("cajitaconmodales")[0].style.display='none'
         }
-        function vert(){
-            document.getElementById("t1").style.display='block'
+
+        function  edit(){
+
+            document.getElementsByClassName("cajitaconmodales2")[0].style.display='block'
         }
+
 
     </script>
 </head>
@@ -62,10 +65,7 @@
                     <td>
                     <td>
                         <div class="row">
-                                <form action="/edit" method="GET" onsubmit="return obtenerID (this);">
-                                    <input type="hidden" name="tablaselect" value="{{ tablaselect }}">
-                                    <input type="hidden" name="id" value="{{ fila.id }}">
-                                    <button type="submit" class="btn btn-primary" id="edit"></button>
+                                    <button type="submit" onclick="edit()"  class="btn btn-primary" id="edit"></button>
                                 </form>
                                 <form action="/remove" method="GET" onsubmit="return obtenerID(this);">
                                      <input type="hidden" name="tablaselect" value="{{ tablaselect }}">
@@ -83,6 +83,16 @@
 </div>
 </div>
 <h1>{{ palabrita }}</h1>
+
+    {#    aqui vamos a crear otro modal para editar campos #}
+    <div class="cajitaconmodales2">
+    <div class="container-modal">
+        <div class="content-modal">
+            <!-- Contenido del segundo modal -->
+            <!-- Formulario de editar registro -->
+        </div>
+    </div>
+</div>
 {#aqui vamos a crear el modal para el formulario de ingresar datos#}
 
     <div class="cajitaconmodales" >
@@ -100,10 +110,11 @@
     </form>
 
         <div class="btn-cerrar">
-            <button class="btn-primary" onclick="cerr()" id="cer1">Cerrar</button>
+            <button class="btn-primary" onclick="cerr()" style="background: #c21a24" id="cer1">Cerrar</button>
         </div>
     </div>
     </div>
     </div>
+
 </body>
 </html>

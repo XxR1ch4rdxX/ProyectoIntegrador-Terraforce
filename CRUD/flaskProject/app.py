@@ -7,6 +7,7 @@
 #Universal Crud :D
 
 from colorama import init,Fore,Style
+from googletrans import Translator, LANGUAGES
 import pyodbc
 from flask import Flask, render_template, request, flash, redirect
 import socket
@@ -50,13 +51,16 @@ except pyodbc.Error as e:
     print(Fore.GREEN+'Error :c'+Style.RESET_ALL)
 
 
+def espanolizar(text):
+    translator = Translator()
+    idioma=translator.detect(text).lang
+    notengoenie=translator.translate(text,src=idioma, dest='es')
+    return notengoenie.text
 
 
 
 @app.route('/')
 def index():  # put application's code here
-
-
     return render_template(template_name_or_list='index.html',titulo=titulo,icon=icon )
 
 
@@ -90,7 +94,7 @@ def consultartablas():  # put application's code here
                                ,rows=rows,column_names=column_names,palabrita=palabrita,icon=icon )
 
     except pyodbc.Error as e:
-        error_message = f"Error al recuperar las tablas: {str(e)}"
+        error_message = f"Error al recuperar las tablas: {espanolizar(str(e) )}"
         return render_template('error.html', error_message=error_message)
 
 @app.route('/remove', methods=['GET'])
@@ -106,18 +110,11 @@ def remove():
          connection.commit()
          flash(f'Se ha eliminado el registro con ID {registro_id} de la tabla {tablaname} correctamente. :D')
         except pyodbc.Error as e:
-            error_message = f"Error al eliminar el registro: {str(e)}"
+            error_message = f"Error al eliminar el registro: {espanolizar(str(e) )}"
             flash(error_message, 'error'+"   :c")
     return redirect('crud')
 
 
-@app.route('/edit', methods=['GET'])
-def edit():
-    tabla = request.form.get('tablaselect')
-    registro_id = request.args.get('id')
-
-    cursor.execute('alter table'+tabla+'')
-    return render_template('crud.html')
 
 
 @app.route('/aggreg', methods=['POST'])
@@ -127,30 +124,37 @@ def aggreg():
         flash('No hay tablas seleccionadas :(')
         return redirect('crud')
 
-    # Obtener nombres de columnas desde el esquema de la tabla seleccionada
+
     cursor.execute(f"SELECT * FROM {tabla} WHERE 1=0")
     column_names = [column[0] for column in cursor.description]
 
-    # Obtener valores del formulario para cada columna
-    valores = [request.form.get(nombre) for nombre in
-               column_names[1:]]  # Ignorando la primera columna si es una clave primaria autoincremental
 
-    # Validar que no falten valores
+    valores = [request.form.get(nombre) for nombre in
+               column_names[1:]]
+
+
     if len(column_names[1:]) != len(valores):
         flash('Error: La cantidad de valores no coincide con la cantidad de columnas.')
         return redirect('crud')
 
-    try:
-        # Construir y ejecutar la consulta de inserción
-        insert_query = f"INSERT INTO {tabla} ({', '.join(column_names[1:])}) VALUES ({', '.join(['?'] * len(column_names[1:]))})"
-        cursor.execute(insert_query, valores)
-        connection.commit()
-        flash('Registro exitoso')
+    if any(valores):
+        try:
+            insert_query = f"INSERT INTO {tabla} ({', '.join(column_names[1:])}) VALUES ({', '.join(['?'] * len(column_names[1:]))})"
+            cursor.execute(insert_query, valores)
+            connection.commit()
+            flash('Registro exitoso')
+            return redirect('crud')
+
+        except pyodbc.Error as e:
+            flash(f"Error al insertar registro :c {espanolizar(str(e) )}")
+            return redirect('crud')
+    else:
+        flash("No has introducido algun valor para los registros :c")
         return redirect('crud')
 
-    except pyodbc.Error as e:
-        flash(f"Error al insertar registro :c {str(e)}")
-        return redirect('crud')
+@app.route('/edit', methods=['GET','POST'])
+def edit():
+    return render_template('crud.html')
 
 
 # @app.route('/about')
@@ -158,7 +162,6 @@ def aggreg():
 #     titulo = 'TerraForce'
 #     return render_template(template_name_or_list='about.html',titulo=titulo,icon=icon )
 #
-
 
 
 if __name__ == '__main__':

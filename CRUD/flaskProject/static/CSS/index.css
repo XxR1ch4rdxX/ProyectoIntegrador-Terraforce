@@ -81,6 +81,9 @@ p {
 .cajitaconmodales{
     display: none;
 }
+.cajitaconmodales2{
+    display: none;
+}
 
 .container-modal{
     width: 100%;
@@ -104,4 +107,5 @@ p {
     background: white;
     border-radius: 4px;
 }
+
 
