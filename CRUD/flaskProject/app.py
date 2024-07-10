@@ -18,7 +18,10 @@ init()
 app = Flask(__name__)
 app.secret_key = '123'
 server = socket.gethostname()
-database = 'TerraForce'
+#aqui cambiamos la base de datos , por la que tengamos en nuestro SQL SERVER
+#esto quiere decir que nos servira para mas de una base de datos , en este caso es la de el pi
+#por lo tanto podemos hacer altas bajas y cambios en cualquier tabla
+database = 'TerraForce'  #si queremos cambiar de db , debemos cambiar el 'TU_BASEDEDATOS' y listo.
 titulo = database
 conn = sqlite3.connect(database)
 cursor = conn.cursor()
