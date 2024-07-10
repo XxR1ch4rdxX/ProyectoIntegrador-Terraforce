@@ -9,7 +9,7 @@
 </head>
 <body>
 <div class="container">
-    <h1>Editar Registro</h1>
+    <h1>Editar {{ tablaselect }}</h1>
     <form action="/update" method="POST">
         <input type="hidden" name="tablaselect" value="{{ tablaselect }}">
         <input type="hidden" name="id" value="{{ campod['id'] }}">

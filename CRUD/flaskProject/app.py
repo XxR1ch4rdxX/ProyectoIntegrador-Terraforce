@@ -3,9 +3,13 @@
 #incluso la conexion con la base de datos
 
 #ESTE ES EL CORAZON DE LA PAGINA WEB (por asi decirlo)
-
+#Los documentos html adjuntos unicamente se utilizara el de crud, index y editar, los otros
+#son "plantillas" que estan colocadas para usarse en algun momento
 #Universal Crud :D
 
+
+#para las librerias usamos translate para traducir los mensajes de eror que mandaran los try y catch desde sql
+#colorama lo usamos para cambiar el color de las letritas de la consola
 from colorama import init, Fore, Style
 from googletrans import Translator
 import pyodbc
@@ -13,6 +17,9 @@ from flask import Flask, render_template, request, flash, redirect
 import socket
 import sqlite3
 
+
+
+#establece la conexion con sql server
 init()
 
 app = Flask(__name__)
@@ -147,8 +154,11 @@ def update():
         cursor.execute(update_query, valores[1:])
         connection.commit()
         flash('Registro actualizado correctamente')
+        flash(valores)
+        return redirect('crud')
     except pyodbc.Error as e:
         flash(f"Error al actualizar registro :c {espanolizar(str(e))}")
+    flash(valores)
     return redirect('crud')
 
 if __name__ == '__main__':
