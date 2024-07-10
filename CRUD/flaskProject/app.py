@@ -70,6 +70,7 @@ def consultartablas():
     tablaselect = request.args.get('tablaselect', '')
     flash("Aqui se mostraran las alertas :)")
     try:
+        #con esta consulta obtenemos el nombre de las tablas de la db
         cursor.execute("""
             SELECT TABLE_NAME
             FROM INFORMATION_SCHEMA.TABLES
@@ -77,6 +78,7 @@ def consultartablas():
             ORDER BY TABLE_NAME ASC;
         """, (database,))
         tablas = [row.TABLE_NAME for row in cursor.fetchall()]
+        #con esta consulta obtenemos valores de las tablas y los guardamos en variables para usarlas qui y en el html con jinja
         if tablaselect:
             cursor.execute('SELECT * FROM ' + tablaselect)
             rows = cursor.fetchall()
@@ -90,6 +92,7 @@ def consultartablas():
         return render_template('error.html', error_message=error_message)
 
 @app.route('/remove', methods=['GET'])
+#con este metodo borramos campos , obteniendo el id con el boton de el campo solicitado
 def remove():
     registro_id = request.args.get('id')
     tablaname = request.args.get('tablaselect')
@@ -104,6 +107,7 @@ def remove():
     return redirect('crud')
 
 @app.route('/aggreg', methods=['POST'])
+#lo mismo que el de borrar pero en ves de borrar , agrega campos, dependiendo la tabla donde se ubique
 def aggreg():
     tabla = request.form.get('tablaselect')
     if not tabla:
@@ -130,6 +134,7 @@ def aggreg():
         return redirect('crud')
 
 @app.route('/edit', methods=['GET'])
+
 def editar():
     id = request.args.get('id')
     tabla = request.args.get('tablaselect')
@@ -142,15 +147,25 @@ def editar():
     return render_template('editar.html', campod=campod, tablaselect=tabla)
 
 @app.route('/update', methods=['POST'])
+#este metodo fue el mas complicado , requiere obtener el id de el campo que estas solicitando mediante html
+#para despues buscar esa id y darnos los datos de ese registo y mostrarlos como datos "editables" o texto
+#en imputs de html , para que el usuario los edite segun el quiera
+#de hecho lo hice 2 veces , pero ya no lo quite porque podria fallar el programa
 def update():
     tabla = request.form.get('tablaselect')
     registro_id = request.form.get('id')
     cursor.execute(f"SELECT * FROM {tabla} WHERE id = ?", (registro_id,))
     column_names = [column[0] for column in cursor.description]
     valores = [request.form.get(nombre) for nombre in column_names]
+    #aqui uniremos o obtendremos los datos de tabla en un formato editable guardandolo en un arreglo me parece, 
+    #ya que si los obtenemos asi como salen, saldran  algo parecido a esto: ("id",1,"id_persona",1,"nombre",pablo) 
+    #y queremos que se vea asi: (1,1,pablo) obviamente en diferentes campos para que el usuariio sepa que columna esta editando.
     update_query = f"UPDATE {tabla} SET {', '.join([f'{column_names[i]} = ?' for i in range(1, len(column_names))])} WHERE id = ?"
     valores.append(registro_id)
     try:
+        #en esta parte le decimos que "omita" de alguina forma el 1 valor del arreglo ya que el valor 1 de todas las tablas es el id
+        # y si el usuario edita el id, en primera va arrojar error asi que lo mejor seria quitarlo (pero no supe xd) o inhabilitarlo
+        #como aqui.
         cursor.execute(update_query, valores[1:])
         connection.commit()
         flash('Registro actualizado correctamente')
