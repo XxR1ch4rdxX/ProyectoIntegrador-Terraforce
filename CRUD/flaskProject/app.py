@@ -36,7 +36,7 @@ cursor = conn.cursor()
 if database == 'TacoLovers':
     icon = "../static/images/taco.ico"
 elif database == 'TerraForce':
-    icon = "../static/images/socios.ico"
+    icon = "../static/images/logoterra1.ico"
 else:
     icon = "../static/images/demon.ico"
 
@@ -175,6 +175,22 @@ def update():
         flash(f"Error al actualizar registro :c {espanolizar(str(e))}")
     flash(valores)
     return redirect('crud')
+
+
+@app.route('/registro')
+def registro():
+    return render_template('registro.html', titulo=titulo, icon=icon)
+
+@app.route('/login')
+def iniciars():
+    return render_template('login.html', titulo=titulo, icon=icon)
+@app.route('/signup_enterprice')
+def signup_enterprice():
+    return render_template('signup_enterprice.html', titulo=titulo, icon=icon)
+
+@app.route('/about')
+def about():
+    return render_template('about.html', titulo=titulo, icon=icon)
 
 if __name__ == '__main__':
     app.run(debug=True)

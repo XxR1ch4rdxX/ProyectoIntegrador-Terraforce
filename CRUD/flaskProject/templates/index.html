@@ -8,11 +8,92 @@
     <link rel="stylesheet" href="../static/CSS/index.css">
 
 </head>
-<body class="bodyin">
-    <div class="container">
-    <a href="/crud" class="btn btn-primary">CRUD</a>
-    <a href="/about" class="btn btn-primary">Acerca de</a>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="#">TerraForce </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="/">Inicio</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/registro">Registro</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/login">Iniciar sesión</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/about">Contacto</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
 
+    <!-- Carrusel -->
+    <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
+        <ol class="carousel-indicators">
+            <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
+            <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
+            <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
+        </ol>
+        <div class="carousel-inner">
+            <div class="carousel-item active">
+                <img class="d-block w-100" src="../static/images/im1.jpeg" alt="Primer slide">
+                <div class="carousel-caption d-none d-md-block">
+                    <h5>Aprende</h5>
+                    <p>Adquiere conocimientos al intervenir en una empresa</p>
+                </div>
+            </div>
+            <div class="carousel-item">
+                <img class="d-block w-100" src="../static/images/im2.jpeg" alt="Segundo slide">
+                <div class="carousel-caption d-none d-md-block">
+                    <h5>Explora</h5>
+                    <p>Descubre cientos de oportunidades laborales para tu futuro</p>
+                </div>
+            </div>
+            <div class="carousel-item">
+                <img class="d-block w-100" src="../static/images/im3.jpeg" alt="Tercer slide">
+                <div class="carousel-caption d-none d-md-block">
+                    <h5>Ayuda</h5>
+                    <p>Interviene en campanas a favor del medio ambiente</p>
+                </div>
+            </div>
+        </div>
+        <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="sr-only">Anterior</span>
+        </a>
+        <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="sr-only">Siguiente</span>
+        </a>
+    </div>
+
+    <!-- Secciones adicionales -->
+    <div class="container my-5">
+        <div class="row">
+            <div class="col-md-4">
+                <h3>Sección 1</h3>
+                <p>Descripción de la sección 1.</p>
+            </div>
+            <div class="col-md-4">
+                <h3>Sección 2</h3>
+                <p>Descripción de la sección 2.</p>
+            </div>
+            <div class="col-md-4">
+                <h3>Sección 3</h3>
+                <p>Descripción de la sección 3.</p>
+            </div>
+        </div>
+    </div>
+
+    <footer class="bg-light text-center py-3">
+        <p>&copy; 2024 TerraForce. Todos los derechos reservados.</p>
+    </footer>
     </div>
 </body>
 </html>
