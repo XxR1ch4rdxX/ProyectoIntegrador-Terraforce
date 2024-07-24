@@ -197,12 +197,12 @@ def ingresar():
 
     cursor.execute(query, (correo, password))
 
-    result = cursor.fetchone()
+    ingresouser = cursor.fetchone()
+    tipouser=ingresouser[0]
 
 
-
-    if result:
-        return redirect('Home')
+    if ingresouser:
+        return render_template('home.html',tipouser=tipouser)
 
     else:
 
@@ -221,7 +221,8 @@ def about():
 
 @app.route('/Home')
 def Home():
-    return render_template('Home.html', titulo=titulo, icon=icon)
+
+    return render_template('Home.html', titulo=titulo, icon=icon,)
 
 if __name__ == '__main__':
     app.run(debug=True)
