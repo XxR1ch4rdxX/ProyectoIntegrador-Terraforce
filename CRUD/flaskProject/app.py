@@ -198,10 +198,11 @@ def ingresar():
     cursor.execute(query, (correo, password))
 
     ingresouser = cursor.fetchone()
-    tipouser=ingresouser[0]
+
 
 
     if ingresouser:
+        tipouser = ingresouser[0]
         return render_template('home.html',tipouser=tipouser)
 
     else:
