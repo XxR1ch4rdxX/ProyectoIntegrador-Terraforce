@@ -8,13 +8,14 @@
     <link rel="stylesheet" href="../static/CSS/index.css">
 </head>
 <body>
-    <div class="container d-flex align-items-center min-vh-100">
-        <div class="row w-100">
-            <div class="col-md-6 d-none d-md-flex align-items-center justify-content-center">
-                <img src="../static/images/Imagen Figma.jpg" alt="Imagen de fondo" class="img-fluid">
+    <div class="container-fluid min-vh-100 d-flex align-items-center">
+        <div class="row w-100 no-gutters">
+            <div class="col-md-6 left-column d-flex align-items-center justify-content-center">
+                <!-- La imagen de fondo ya está establecida en la clase left-column -->
             </div>
-            <div class="col-md-6 d-flex align-items-center justify-content-center">
-                <form class="w-75">
+            <div class="col-md-6 right-column d-flex align-items-center justify-content-center">
+
+                <form class="w-75" action="/ingresar" method="POST" >
                     <h1 class="mb-4">Iniciar sesión</h1>
                     <div class="form-group">
                         <label for="correo">Correo:</label>

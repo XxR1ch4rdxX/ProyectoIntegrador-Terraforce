@@ -181,9 +181,33 @@ def update():
 def registro():
     return render_template('registro.html', titulo=titulo, icon=icon)
 
-@app.route('/login')
-def iniciars():
+@app.route('/login',methods=['GET','POST'])
+def login():
     return render_template('login.html', titulo=titulo, icon=icon)
+@app.route('/ingresar',methods=['GET','POST'])
+def ingresar():
+    if request.method == 'POST':
+        correo = request.form.get('correo')
+        password = request.form.get('contrasena')
+
+    query='''
+        SELECT id from Usuarios
+        where correo=? and passwrd=?
+            '''
+
+    cursor.execute(query, (correo, password))
+
+    result = cursor.fetchone()
+
+    if result:
+        flash("Login exitoso")
+        return redirect('Home')
+    else:
+        print("Correo o contraseña incorrectos")
+        flash("Error")
+
+    return redirect('login')
+
 @app.route('/signup_enterprice')
 def signup_enterprice():
     return render_template('signup_enterprice.html', titulo=titulo, icon=icon)
@@ -191,6 +215,10 @@ def signup_enterprice():
 @app.route('/about')
 def about():
     return render_template('about.html', titulo=titulo, icon=icon)
+
+@app.route('/Home')
+def Home():
+    return render_template('Home.html', titulo=titulo, icon=icon)
 
 if __name__ == '__main__':
     app.run(debug=True)

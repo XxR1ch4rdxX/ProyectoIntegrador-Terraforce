@@ -3,6 +3,19 @@ body {
     background-color: #f0f0f0;
 }
 
+.left-column {
+    background-image: url('../images/Imagen Figma.jpg');
+    background-size: cover;
+    background-position: center;
+    height: 100vh;
+}
+.right-column {
+
+    background-image: url('../images/fondo.png');
+    background-size: cover;
+    background-position: center;
+    height: 100vh;
+}
 .container {
     background-color: white;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
