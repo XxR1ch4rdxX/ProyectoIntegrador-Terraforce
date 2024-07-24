@@ -9,13 +9,28 @@
 </head>
 <body>
     <div class="container-fluid min-vh-100 d-flex align-items-center">
+
+      {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    {% for message in messages %}
+                        alert('{{ message }}');
+                    {% endfor %}
+                });
+            </script>
+        {% endif %}
+    {% endwith %}
+
         <div class="row w-100 no-gutters">
             <div class="col-md-6 left-column d-flex align-items-center justify-content-center">
-                <!-- La imagen de fondo ya está establecida en la clase left-column -->
+
             </div>
             <div class="col-md-6 right-column d-flex align-items-center justify-content-center">
 
                 <form class="w-75" action="/ingresar" method="POST" >
+                    <a href="/" class="btn-default"> Regresar </a>
+
                     <h1 class="mb-4">Iniciar sesión</h1>
                     <div class="form-group">
                         <label for="correo">Correo:</label>

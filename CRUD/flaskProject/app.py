@@ -13,7 +13,7 @@
 from colorama import init, Fore, Style
 from googletrans import Translator
 import pyodbc
-from flask import Flask, render_template, request, flash, redirect
+from flask import Flask, render_template, request, flash, redirect,session
 import socket
 import sqlite3
 
@@ -191,7 +191,7 @@ def ingresar():
         password = request.form.get('contrasena')
 
     query='''
-        SELECT id from Usuarios
+        SELECT id_tipouser from Usuarios
         where correo=? and passwrd=?
             '''
 
@@ -199,12 +199,15 @@ def ingresar():
 
     result = cursor.fetchone()
 
+
+
     if result:
-        flash("Login exitoso")
         return redirect('Home')
+
     else:
-        print("Correo o contraseña incorrectos")
-        flash("Error")
+
+        flash ('Correo o contraseña incorrectos')
+
 
     return redirect('login')
 
