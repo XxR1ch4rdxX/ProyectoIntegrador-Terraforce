@@ -184,10 +184,11 @@ def update():
 def registro():
     return render_template('registro.html', titulo=titulo, icon=icon)
 
-#funcion d
+#template -login
 @app.route('/login',methods=['GET','POST'])
 def login():
     return render_template('login.html', titulo=titulo, icon=icon)
+#function login
 @app.route('/ingresar',methods=['GET','POST'])
 def ingresar():
     if request.method == 'POST':
@@ -216,14 +217,17 @@ def ingresar():
 
     return redirect('login')
 
+#template /singup_enterprice
 @app.route('/signup_enterprice')
 def signup_enterprice():
     return render_template('signup_enterprice.html', titulo=titulo, icon=icon)
 
+#template - about
 @app.route('/about')
 def about():
     return render_template('about.html', titulo=titulo, icon=icon)
 
+#template - Home
 @app.route('/Home')
 def Home():
 

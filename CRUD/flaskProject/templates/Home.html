@@ -1,10 +1,110 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Template de Convocatoria</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background-color: #32CD32; /* Color verde */
+            color: white;
+            padding: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        header .logo, header .nav-item {
+            display: flex;
+            align-items: center;
+        }
+        header img {
+            margin-right: 10px;
+            height: 24px; /* Ajusta el tamaño de los iconos según sea necesario */
+        }
+        .container {
+            padding: 20px;
+        }
+        .convocatoria {
+            background-color: #f0f0f0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            display: flex;
+            justify-content: space-between;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .convocatoria img {
+            max-width: 150px;
+            margin-right: 20px;
+        }
+        .convocatoria-details {
+            flex: 1;
+        }
+        .convocatoria-buttons {
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            align-self: flex-end;
+        }
+        .convocatoria-buttons button {
+            background-color: #32CD32; /* Color verde */
+            border: none;
+            color: white;
+            padding: 10px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            border-radius: 5px;
+            width: 100px; /* Ajusta el ancho de los botones según sea necesario */
+        }
+        .convocatoria-buttons button:last-child {
+            margin-bottom: 0;
+        }
+        .convocatoria-buttons button:hover {
+            opacity: 0.8;
+        }
+    </style>
 </head>
 <body>
-<h1>{{ tipouser }}</h1>
+    <header>
+        <div class="logo">
+            <img src="{{ url_for('static', filename='images/tlogo.png' )}}" alt="Logo" height="1000px">
+        </div>
+        <nav>
+            <div class="nav-item">
+                <img src="icono_inicio.png" alt="Inicio"> <!-- Reemplaza con la ruta de tu icono -->
+                <a href="#">Inicio</a>
+            </div>
+            <div class="nav-item">
+                <img src="icono_iniciar_sesion.png" alt="Iniciar sesión"> <!-- Reemplaza con la ruta de tu icono -->
+                <a href="#">Iniciar sesión</a>
+            </div>
+        </nav>
+    </header>
+
+
+
+
+
+    <div class="container">
+        <div class="convocatoria">
+            <img src="imagen.png" alt="Imagen de la convocatoria"> <!-- Reemplaza con la ruta de tu imagen -->
+            <div class="convocatoria-details">
+                <h2>Título de la convocatoria</h2>
+                <p>Creado por: Coca-cola</p>
+                <p>Temática: Mares</p>
+                <p>Lorem Ipsum es simplemente el texto de relleno de las imprentas y archivos de texto. Lorem Ipsum ha sido el texto de relleno estándar de las industrias desde el año 1500, cuando un impresor (N. del T. persona que se dedica a la imprenta) desconocido usó una galería de textos y los mezcló de tal manera que logró hacer un libro de textos especimen.</p>
+                <p><strong>25/30</strong> - Fecha de cierre: 25-05-2025</p>
+            </div>
+            <div class="convocatoria-buttons">
+                <button>Más detalles</button>
+                <button>Registrar</button>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
