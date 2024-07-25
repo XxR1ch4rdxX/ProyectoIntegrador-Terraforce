@@ -212,9 +212,9 @@ def ingresar():
 
     return redirect('login')
 
-@app.route('/signup_enterprice')
-def signup_enterprice():
-    return render_template('signup_enterprice.html', titulo=titulo, icon=icon)
+@app.route('/registro_enterprice')
+def registro_enterprice():
+    return render_template('registro_enterprice.html', titulo=titulo, icon=icon)
 
 @app.route('/about')
 def about():
@@ -222,8 +222,15 @@ def about():
 
 @app.route('/Home')
 def Home():
+    return render_template('Home.html', titulo=titulo, icon=icon)
 
-    return render_template('Home.html', titulo=titulo, icon=icon,)
+@app.route('/Convocatorias')
+def Convocatorias():
+    return render_template('convocatorias.html', titulo=titulo, icon=icon)
+
+@app.route('/registro_convocatoria')
+def registro_convocatoria():
+    return render_template('registro_convocatorias.html', titulo=titulo, icon=icon)
 
 if __name__ == '__main__':
     app.run(debug=True)

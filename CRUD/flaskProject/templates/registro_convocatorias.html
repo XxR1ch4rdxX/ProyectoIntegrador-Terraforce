@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Agregar Convocatoria</title>
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    .navbar-custom {
+      background-color: #6FD557;
+    }
+    .form-container {
+      margin-top: 20px;
+      background-color: #e8f5e9;
+      padding: 20px;
+      border-radius: 5px;
+    }
+    .form-group label {
+      font-weight: bold;
+    }
+    .custom-header {
+      font-size: 1.5rem;
+      font-weight: bold;
+      margin-bottom: 20px;
+    }
+    .btn-custom {
+      background-color: #6FD557;
+      color: white;
+    }
+    .btn-custom:hover {
+      background-color: #5cb946;
+    }
+    .btn-secondary-custom {
+      background-color: #dcdcdc;
+      color: black;
+    }
+    .btn-secondary-custom:hover {
+      background-color: #c0c0c0;
+    }
+    .custom-select, .custom-input, .custom-textarea {
+      background-color: #f5f5f5;
+    }
+  </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="#">TerraForce </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="/">Inicio</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/registro">Registro</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/login">Iniciar sesión</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/about">Contacto</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+  <div class="container form-container">
+    <div class="custom-header">Registra la convocatoria</div>
+    <form>
+      <div class="form-group">
+        <label for="title">Título de la convocatoria</label>
+        <input type="text" class="form-control custom-input" id="title" placeholder="Título de la convocatoria">
+      </div>
+      <div class="form-group">
+        <label for="requirements">Requisitos</label>
+        <textarea class="form-control custom-textarea" id="requirements" rows="3"></textarea>
+      </div>
+      <div class="form-row">
+        <div class="form-group col-md-6">
+          <label for="start_date">Fecha de inicio</label>
+          <input type="date" class="form-control custom-input" id="start_date">
+        </div>
+        <div class="form-group col-md-6">
+          <label for="end_date">Fecha de cierre</label>
+          <input type="date" class="form-control custom-input" id="end_date">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group col-md-6">
+          <label for="vacancies">Cantidad de vacantes</label>
+          <input type="number" class="form-control custom-input" id="vacancies">
+        </div>
+        <div class="form-group col-md-6">
+          <label for="topic">Temática</label>
+            <label for="tematica"></label>
+            <input type="text" class="form-control custom-input" id="tematica" placeholder="Temática de la convocatoria">
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="description">Descripción</label>
+        <textarea class="form-control custom-textarea" id="description" rows="5"></textarea>
+      </div>
+      <div class="form-group">
+        <label for="image">Adjuntar imagen</label>
+        <input type="file" class="form-control-file" id="image">
+      </div>
+      <button type="submit" class="btn btn-custom">Publicar</button>
+      <a href="/Convocatorias" class="btn btn-secondary-custom">Regresar</a>
+    </form>
+  </div>
+
+</body>
+</html>
