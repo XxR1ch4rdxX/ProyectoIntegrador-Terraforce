@@ -2,9 +2,68 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <link rel="icon" href="{{ icon }}">
+    <title>{{ titulo }}</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../static/CSS/index.css">
+    <style>
+        .left-column {
+            background-image: url('../static/images/imagen Figma.jpg');
+            background-size: cover;
+            background-position: center;
+            height: 100vh;
+        }
+        .right-column {
+            background-image: url('../static/images/fondo.png');
+            background-size: cover;
+            background-position: center;
+            height: 100vh;
+        }
+    </style>
 </head>
 <body>
+    <div class="container-fluid min-vh-100 d-flex align-items-center">
+        <div class="row w-100 no-gutters">
+            <div class="col-md-6 left-column d-flex align-items-center justify-content-center">
+            </div>
+            <div class="col-md-6 right-column d-flex align-items-center justify-content-center">
+                <!--Inicio del formulario -->
+                <form class="w-75">
+                    <!-- Parte superior del html -->
+                    <a href="/" class="btn-default"> Regresar </a>
+                    <h1 class="mb-4">Registro de la empresa</h1>
+                    
+                    <div class="form-group">
+                        <label for="nombreEmpresa">Nombre de la empresa:</label>
+                        <input type="text" class="form-control" id="nombreEmpresa" name="nombreEmpresa" required>
+                    </div>
 
+                    <div class="form-group">
+                        <label for="RFC">RFC de la empresa</label>
+                        <input type="text" class="form-control" id="RFC" name="RFC" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="correo">Correo:</label>
+                        <input type="email" class="form-control" id="correo" name="correo" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="contrasena">Contraseña:</label>
+                        <input type="password" class="form-control" id="contrasena" name="contrasena" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="confirmar_contrasena">Confirmar contraseña:</label>
+                        <input type="password" class="form-control" id="confirmar_contrasena" name="confirmar_contrasena" required>
+                    </div>
+
+                    <button type="submit" class="btn btn-success btn-block">Registrarse</button>
+                    <p class="mt-3">Quieres ser parte de una comunidad? <a href="/registro">Registrar usuario</a></p>
+                    <p class="mt-3">¿Ya tienes una cuenta? <a href="/login">Inicia sesión</a></p>
+                </form>
+            </div>
+        </div>
+    </div>
 </body>
 </html>

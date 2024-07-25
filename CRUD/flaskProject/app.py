@@ -177,10 +177,14 @@ def update():
     return redirect('crud')
 
 
+
+
+#template /registro
 @app.route('/registro')
 def registro():
     return render_template('registro.html', titulo=titulo, icon=icon)
 
+#funcion d
 @app.route('/login',methods=['GET','POST'])
 def login():
     return render_template('login.html', titulo=titulo, icon=icon)
