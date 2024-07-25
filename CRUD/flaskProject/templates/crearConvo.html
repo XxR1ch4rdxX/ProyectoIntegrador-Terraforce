@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registra la convocatoria</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+        }
+        .header {
+            background-color: #70c337;
+            color: white;
+            padding: 10px;
+            text-align: center;
+        }
+        .header img {
+            vertical-align: middle;
+            margin-right: 10px;
+        }
+        .header a {
+            color: white;
+            text-decoration: none;
+            margin: 0 15px;
+            font-size: 20px;
+        }
+        .container {
+            background-color: #ccffcc;
+            width: 80%;
+            margin: 20px auto;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .container h2 {
+            text-align: center;
+            color: #333;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            font-weight: bold;
+        }
+        .form-group input, .form-group textarea, .form-group select {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .form-group textarea {
+            resize: vertical;
+            height: 100px;
+        }
+        .form-group .date-group {
+            display: flex;
+            justify-content: space-between;
+        }
+        .form-group .date-group input {
+            width: 48%;
+        }
+        .form-container {
+            display: flex;
+            justify-content: space-between;
+        }
+        .form-left, .form-right {
+            width: 48%;
+        }
+        .form-right {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+        }
+        .form-actions button {
+            background-color: #70c337;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 0 10px;
+        }
+        .form-actions button:hover {
+            background-color: #5da62b;
+        }
+        .form-actions button.cancel {
+            background-color: #ccc;
+        }
+        .form-actions button.cancel:hover {
+            background-color: #bbb;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <img src="logo.png" alt="Logo" width="50">
+        Terraforce
+        <a href="#">Inicio</a>
+        <a href="#">Mi perfil</a>
+    </div>
+    <div class="container">
+        <h2>Registra la convocatoria</h2>
+        <form>
+            <div class="form-container">
+                <div class="form-left">
+                    <div class="form-group">
+                        <label for="titulo">Título de la convocatoria</label>
+                        <input type="text" id="titulo" name="titulo">
+                    </div>
+                    <div class="form-group">
+                        <label for="requisitos">Requisitos</label>
+                        <textarea id="requisitos" name="requisitos"></textarea>
+                    </div>
+                    <div class="form-group date-group">
+                        <div>
+                            <label for="fecha_inicio">Fecha de inicio</label>
+                            <input type="date" id="fecha_inicio" name="fecha_inicio">
+                        </div>
+                        <div>
+                            <label for="fecha_cierre">Fecha de cierre</label>
+                            <input type="date" id="fecha_cierre" name="fecha_cierre">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="vacantes">Cantidad de vacantes</label>
+                        <input type="number" id="vacantes" name="vacantes">
+                    </div>
+                    <div class="form-group">
+                        <label for="tematica">Temática</label>
+                        <select id="tematica" name="tematica">
+                            <option value="">Seleccione una temática</option>
+                            <option value="tematica1">Temática 1</option>
+                            <option value="tematica2">Temática 2</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-right">
+                    <div>
+                        <div class="form-group">
+                            <label for="descripcion">Descripción</label>
+                            <textarea id="descripcion" name="descripcion"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="imagen">Adjuntar imagen</label>
+                            <input type="file" id="imagen" name="imagen">
+                        </div>
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="cancel">Regresar</button>
+                        <button type="submit">Publicar</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</body>
+</html>
