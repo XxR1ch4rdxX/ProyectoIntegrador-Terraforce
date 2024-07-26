@@ -233,27 +233,32 @@ def ingresar():
         correo = request.form.get('correo')
         password = request.form.get('contrasena')
 
+
     query='''
-        SELECT id_tipouser from Usuarios
+        SELECT id from Usuarios
         where correo=? and passwrd=?
             '''
 
     cursor.execute(query, (correo, password))
-
-    ingresouser = cursor.fetchone()
-
+    id = cursor.fetchone()
 
 
-    if ingresouser:
-        tipouser = ingresouser[0]
-        return render_template('home.html',tipouser=tipouser)
+    if id:
+        id_user = id[0]
+        cursor.execute("""
+                SELECT id_tipouser from Usuarios
+                where id = ?
+                """,(id_user,))
+        tipo_user = cursor.fetchone()
+        tipo_user = tipo_user[0]
+        if tipo_user == 1:
+            return render_template('home.html',tipo_user=tipo_user,id_user=id_user)
+        else:
+            return render_template('home.html',tipo_user=tipo_user,id_user=id_user)
 
     else:
 
         flash ('Correo o contraseña incorrectos')
-
-
-    return redirect('login')
 
 
 #template /singup_enterprice
@@ -333,6 +338,25 @@ def Convocatorias():
 @app.route('/registro_convocatoria')
 def registro_convocatoria():
     return render_template('registro_convocatorias.html', titulo=titulo, icon=icon)
+@app.route('/registrar_convo',methods=['POST'])
+def registrar_convo():
+    tituloconv = request.form.get('titulo')
+    requisitos = request.form.get('requisistos')
+    fechainicio = request.form.get('fechainicio')
+    fechacierre = request.form.get('fechacierre')
+    vacantes = request.form.get('vacantes')
+    imagen = request.files.get('imagen')
+
+    imagenbin = None
+    if imagen and imagen.filename != '':
+        imagenbin = imagen.read()
+
+    if tituloconv and requisitos and fechainicio and fechacierre and vacantes and imagenbin:
+        return render_template('formulario.html', tituloconv=tituloconv, requisitos=requisitos,
+                               fechainicio=fechainicio, fechacierre=fechacierre, vacantes=vacantes, imagen=imagen)
+    else:
+        return "Rellena todos los campos porfavor", 400
+
 
 if __name__ == '__main__':
     app.run(debug=True)
