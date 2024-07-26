@@ -11,13 +11,13 @@
             background-image: url('../static/images/imagen Figma.jpg');
             background-size: cover;
             background-position: center;
-            height: 100vh;
+            height: 135vh;
         }
         .right-column {
             background-image: url('../static/images/fondo.png');
             background-size: cover;
             background-position: center;
-            height: 100vh;
+            height: 135vh;
         }
     </style>
 </head>
@@ -26,10 +26,26 @@
         <div class="row w-100 no-gutters">
             <div class="col-md-6 left-column d-flex align-items-center justify-content-center">
             </div>
+
+
+
+
             <div class="col-md-6 right-column d-flex align-items-center justify-content-center">
                 <form class="w-75">
                     <a href="/" class="btn-default"> Regresar </a>
                     <h1 class="mb-4">Registro de empresa</h1>
+
+                    {% with messages = get_flashed_messages(with_categories=true) %}
+                        {% if messages %}
+                            <div class="alert-container">
+                                {% for category, message in messages %}
+                                    <div class="alert alert-{{ category }}">{{ message }}</div>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    {% endwith %}
+
+
                     <div class="form-group">
                         <label for="nombre">Nombre de la empresa:</label>
                         <input type="text" class="form-control" id="nombre" name="nombre" required>
@@ -42,6 +58,12 @@
                         <label for="correo">Correo:</label>
                         <input type="email" class="form-control" id="correo" name="correo" required>
                     </div>
+
+                    <div class="form-group">
+                        <label for="telefono">Teléfono:</label>
+                        <input type="phone" class="form-control" id="telefono" name="telefono" required>
+                    </div>
+
                     <div class="form-group">
                         <label for="contrasena">Contraseña:</label>
                         <input type="password" class="form-control" id="contrasena" name="contrasena" required>

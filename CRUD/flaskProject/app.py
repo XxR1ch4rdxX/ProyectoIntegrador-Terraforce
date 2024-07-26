@@ -186,7 +186,7 @@ def registro():
     return render_template('registro.html', titulo=titulo, icon=icon)
 
 
-#metodo para guardar los registros en la DB
+#metodo para guardar los registros de usuarios en la DB
 @app.route('/guardar_registro', methods=['GET', 'POST'])
 def sRegistro():
     if request.method == 'POST':
@@ -263,9 +263,59 @@ def ingresar():
 def signup_enterprice():
     return render_template('signup_enterprice.html', titulo=titulo, icon=icon)
 
+
+
+
+#Template registro de la empresa
 @app.route('/registro_enterprice')
 def registro_enterprice():
     return render_template('registro_enterprice.html', titulo=titulo, icon=icon)
+
+#Funcion para registrar la empresa en la DB (NO ESTA TERMINADO)
+@app.route('/empresaGuardarRegistro', methods=['GET', 'POST'])
+def empresaGuardarRegistro():
+    if request.method == 'POST':
+        name = request.form.get('nombre')
+        lnamep = request.form.get('apellidosp')
+        lnamem = request.form.get('apellidosm')
+        email = request.form.get('correo')
+        passw = request.form.get('contrasena')
+        testpassw = request.form.get('confirmar_contrasena')
+
+        if passw != testpassw:
+            flash('Las contraseñas no coinciden', 'error')
+            return redirect(url_for('registro'))
+
+        try:
+            # Verificar si el correo ya existe
+            cursor.execute("SELECT COUNT(*) FROM Usuarios WHERE correo = ?", email)
+            count = cursor.fetchone()[0]
+
+            if count > 0:
+                flash('El correo electrónico ya está registrado', 'error')
+                return redirect(url_for('registro'))
+
+            # Ejecutar el procedimiento almacenado para insertar el nuevo usuario
+            cursor.execute("EXEC sp_ingresarUsuario @nombre=?, @apellidop=?, @apellidom=?, @correo=?, @password=?",
+                           name, lnamep, lnamem, email, passw)
+            connection.commit()
+            flash('Registro exitoso', 'success')
+        except pyodbc.Error as e:
+            flash(f'Error en el registro: {str(e)}', 'error')
+        finally:
+            cursor.close()
+            connection.close()
+
+        return redirect(url_for('registro'))
+
+
+#Fin de la funcion
+
+
+
+
+
+
 
 
 #template - about
