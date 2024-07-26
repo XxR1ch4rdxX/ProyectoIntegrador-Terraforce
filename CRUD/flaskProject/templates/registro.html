@@ -11,13 +11,13 @@
             background-image: url('../static/images/imagen Figma.jpg');
             background-size: cover;
             background-position: center;
-            height: 100vh;
+            height: 135vh;
         }
         .right-column {
             background-image: url('../static/images/fondo.png');
             background-size: cover;
             background-position: center;
-            height: 100vh;
+            height: 135vh;
         }
     </style>
 </head>
@@ -27,17 +27,33 @@
             <div class="col-md-6 left-column d-flex align-items-center justify-content-center">
             </div>
             <div class="col-md-6 right-column d-flex align-items-center justify-content-center">
-                <form class="w-75">
+                <form class="w-75" method="POST" action="/guardar_registro">
                     <a href="/" class="btn-default"> Regresar </a>
                     <h1 class="mb-4">Registro</h1>
+                    {% with messages = get_flashed_messages(with_categories=true) %}
+                        {% if messages %}
+                            <div class="alert-container">
+                                {% for category, message in messages %}
+                                    <div class="alert alert-{{ category }}">{{ message }}</div>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    {% endwith %}
                     <div class="form-group">
                         <label for="nombre">Nombre(s):</label>
                         <input type="text" class="form-control" id="nombre" name="nombre" required>
                     </div>
+
                     <div class="form-group">
-                        <label for="apellidos">Apellidos:</label>
-                        <input type="text" class="form-control" id="apellidos" name="apellidos" required>
+                        <label for="apellidosp">Apellido Paterno:</label>
+                        <input type="text" class="form-control" id="apellidosp" name="apellidosp" required>
                     </div>
+
+                    <div class="form-group">
+                        <label for="apellidosm">Apellido materno:</label>
+                        <input type="text" class="form-control" id="apellidosm" name="apellidosm" required>
+                    </div>
+
                     <div class="form-group">
                         <label for="correo">Correo:</label>
                         <input type="email" class="form-control" id="correo" name="correo" required>
@@ -57,5 +73,8 @@
             </div>
         </div>
     </div>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>
