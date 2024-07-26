@@ -199,7 +199,8 @@ def sRegistro():
 
         if passw != testpassw:
             flash('Las contraseñas no coinciden', 'error')
-            return redirect(url_for('registro'))
+            return render_template('registro.html', name=name, lnamep=lnamep,
+                                   lnamem=lnamem, email=email)
 
         try:
             # Verificar si el correo ya existe
@@ -217,9 +218,6 @@ def sRegistro():
             flash('Registro exitoso', 'success')
         except pyodbc.Error as e:
             flash(f'Error en el registro: {str(e)}', 'error')
-        finally:
-            cursor.close()
-            connection.close()
 
         return redirect(url_for('registro'))
 
