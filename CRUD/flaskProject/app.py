@@ -42,7 +42,7 @@ else:
 
 try:
     print(Fore.CYAN + 'Estableciendo la conexion con sql server ...' + Style.RESET_ALL)
-    connection = pyodbc.connect('DRIVER={SQL Server}; SERVER=' + server + '; DATABASE=' + database + '; Trusted_Connection=yes;')
+    connection = pyodbc.connect('DRIVER={ODBC Driver 17 for SQL Server}; SERVER=' + server + '; DATABASE=' + database + '; Trusted_Connection=yes;')
     print(Fore.GREEN + 'Tamo en linea ' + Style.RESET_ALL)
     cursor = connection.cursor()
     cursor.execute("SELECT @@version;")
