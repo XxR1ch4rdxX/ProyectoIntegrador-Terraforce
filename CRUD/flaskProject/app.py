@@ -328,17 +328,21 @@ def obtener_calles():
 
 
 
-
+#--------------------------------------------------------------------------------------------------
 #Funcion para registrar la empresa en la DB (NO ESTA TERMINADO)
 @app.route('/empresaGuardarRegistro', methods=['GET', 'POST'])
 def empresaGuardarRegistro():
     if request.method == 'POST':
         name = request.form.get('nombre')
-        lnamep = request.form.get('apellidosp')
-        lnamem = request.form.get('apellidosm')
+        rfc = request.form.get('RFC')
         email = request.form.get('correo')
+        telefono = request.form.get('telefono')
         passw = request.form.get('contrasena')
         testpassw = request.form.get('confirmar_contrasena')
+        estado = request.form.get('estado')
+        municipio = request.form.get('municipio')
+        colonia = request.form.get('colonia')
+        calle = request.form.get('calle')
 
         if passw != testpassw:
             flash('Las contraseñas no coinciden', 'error')
@@ -347,15 +351,24 @@ def empresaGuardarRegistro():
         try:
             # Verificar si el correo ya existe
             cursor.execute("SELECT COUNT(*) FROM Usuarios WHERE correo = ?", email)
-            count = cursor.fetchone()[0]
+            email_count = cursor.fetchone()[0]
 
-            if count > 0:
+            if email_count > 0:
                 flash('El correo electrónico ya está registrado', 'error')
                 return redirect(url_for('registro'))
 
+            # Verificar si el RFC ya existe
+            cursor.execute("SELECT COUNT(*) FROM Empresas WHERE RFC = ?", rfc)
+            rfc_count = cursor.fetchone()[0]
+
+            if rfc_count > 0:
+                flash('El RFC ya está registrado', 'error')
+                return redirect(url_for('registro'))
+
             # Ejecutar el procedimiento almacenado para insertar el nuevo usuario
-            cursor.execute("EXEC sp_ingresarUsuario @nombre=?, @apellidop=?, @apellidom=?, @correo=?, @password=?",
-                           name, lnamep, lnamem, email, passw)
+            cursor.execute("EXEC sp_ingresarEmpresa @nombre= ?, @RFC= ?, @correo= ?, @password= ?, @fone= ?, @estado= ?, @municipio=?, @colonia= ?, @calle= ?;",
+                           name, rfc, email, passw, telefono, estado, municipio, colonia, calle)
+
             connection.commit()
             flash('Registro exitoso', 'success')
         except pyodbc.Error as e:
@@ -367,7 +380,7 @@ def empresaGuardarRegistro():
 #Fin de la funcion
 
 
-
+#--------------------------------------------------------------------------------------------------
 
 
 
