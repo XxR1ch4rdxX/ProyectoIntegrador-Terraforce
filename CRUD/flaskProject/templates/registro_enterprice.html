@@ -11,13 +11,13 @@
             background-image: url('../static/images/imagen Figma.jpg');
             background-size: cover;
             background-position: center;
-            height: 135vh;
+            height: 200vh;
         }
         .right-column {
             background-image: url('../static/images/fondo.png');
             background-size: cover;
             background-position: center;
-            height: 135vh;
+            height: 200vh;
         }
     </style>
 </head>
@@ -26,10 +26,6 @@
         <div class="row w-100 no-gutters">
             <div class="col-md-6 left-column d-flex align-items-center justify-content-center">
             </div>
-
-
-
-
             <div class="col-md-6 right-column d-flex align-items-center justify-content-center">
                 <form class="w-75">
                     <a href="/" class="btn-default"> Regresar </a>
@@ -45,7 +41,6 @@
                         {% endif %}
                     {% endwith %}
 
-
                     <div class="form-group">
                         <label for="nombre">Nombre de la empresa:</label>
                         <input type="text" class="form-control" id="nombre" name="nombre" required>
@@ -58,12 +53,10 @@
                         <label for="correo">Correo:</label>
                         <input type="email" class="form-control" id="correo" name="correo" required>
                     </div>
-
                     <div class="form-group">
                         <label for="telefono">Teléfono:</label>
                         <input type="phone" class="form-control" id="telefono" name="telefono" required>
                     </div>
-
                     <div class="form-group">
                         <label for="contrasena">Contraseña:</label>
                         <input type="password" class="form-control" id="contrasena" name="contrasena" required>
@@ -72,6 +65,35 @@
                         <label for="confirmar_contrasena">Confirmar contraseña:</label>
                         <input type="password" class="form-control" id="confirmar_contrasena" name="confirmar_contrasena" required>
                     </div>
+
+                    <!-- New Fields -->
+                    <div class="form-group">
+                        <label for="estado">Estado:</label>
+                        <select class="form-control" id="estado" name="estado">
+                            {% for estado in estados %}
+                                <option value="{{ estado.id }}">{{ estado.nombre }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="municipio">Municipio:</label>
+                        <select class="form-control" id="municipio" name="municipio">
+                            <option value="">Seleccione un estado primero</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="colonia">Colonia:</label>
+                        <select class="form-control" id="colonia" name="colonia">
+                            <option value="">Seleccione un municipio primero</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="calle">Calle:</label>
+                        <select class="form-control" id="calle" name="calle">
+                            <option value="">Seleccione una colonia primero</option>
+                        </select>
+                    </div>
+
                     <button type="submit" class="btn btn-success btn-block">Registrarse</button>
                     <p class="mt-3">¿No tienes una cuenta? <a href="/registro">Regístrate aquí.</a></p>
                     <p class="mt-3">¿Ya tienes una cuenta? <a href="/login">Inicia sesión</a></p>
@@ -79,5 +101,47 @@
             </div>
         </div>
     </div>
+
+    <!-- JavaScript to handle the dynamic updates -->
+    <script>
+        document.getElementById('estado').addEventListener('change', function() {
+            const estadoId = this.value;
+            fetch(`/obtener_municipios?estado_id=${estadoId}`)
+                .then(response => response.json())
+                .then(data => {
+                    const municipioSelect = document.getElementById('municipio');
+                    municipioSelect.innerHTML = '<option value="">Seleccione un municipio</option>';
+                    data.forEach(municipio => {
+                        municipioSelect.innerHTML += `<option value="${municipio.id}">${municipio.nombre}</option>`;
+                    });
+                });
+        });
+
+        document.getElementById('municipio').addEventListener('change', function() {
+            const municipioId = this.value;
+            fetch(`/obtener_colonias?municipio_id=${municipioId}`)
+                .then(response => response.json())
+                .then(data => {
+                    const coloniaSelect = document.getElementById('colonia');
+                    coloniaSelect.innerHTML = '<option value="">Seleccione una colonia</option>';
+                    data.forEach(colonia => {
+                        coloniaSelect.innerHTML += `<option value="${colonia.id}">${colonia.nombre}</option>`;
+                    });
+                });
+        });
+
+        document.getElementById('colonia').addEventListener('change', function() {
+            const coloniaId = this.value;
+            fetch(`/obtener_calles?colonia_id=${coloniaId}`)
+                .then(response => response.json())
+                .then(data => {
+                    const calleSelect = document.getElementById('calle');
+                    calleSelect.innerHTML = '<option value="">Seleccione una calle</option>';
+                    data.forEach(calle => {
+                        calleSelect.innerHTML += `<option value="${calle.id}">${calle.nombre}</option>`;
+                    });
+                });
+        });
+    </script>
 </body>
 </html>

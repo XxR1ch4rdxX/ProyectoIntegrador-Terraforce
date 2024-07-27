@@ -13,7 +13,7 @@
 from colorama import init, Fore, Style
 from googletrans import Translator
 import pyodbc
-from flask import Flask, render_template, request, flash, redirect,session, url_for, abort
+from flask import Flask, render_template, request, flash, redirect,session, url_for, abort, jsonify
 from flask_mysqldb import MySQL
 import socket
 import sqlite3
@@ -270,6 +270,11 @@ def ingresar():
         flash ('Correo o contraseña incorrectos')
 
 
+
+
+
+
+
 #template /singup_enterprice
 @app.route('/signup_enterprice')
 def signup_enterprice():
@@ -279,9 +284,50 @@ def signup_enterprice():
 
 
 #Template registro de la empresa
+
 @app.route('/registro_enterprice')
 def registro_enterprice():
-    return render_template('registro_enterprice.html', titulo=titulo, icon=icon)
+    try:
+        cursor.execute("SELECT id, nombre FROM Estados")
+        estados = cursor.fetchall()
+        return render_template('registro_enterprice.html', estados=estados)
+    except pyodbc.Error as e:
+        flash(f'Error al cargar los datos: {str(e)}', 'error')
+        return redirect(url_for('index'))
+
+@app.route('/obtener_municipios', methods=['GET'])
+def obtener_municipios():
+    estado_id = request.args.get('estado_id')
+    try:
+        cursor.execute("SELECT id, nombre FROM Municipios WHERE id_estado = ?", estado_id)
+        municipios = cursor.fetchall()
+        return jsonify([{'id': municipio.id, 'nombre': municipio.nombre} for municipio in municipios])
+    except pyodbc.Error as e:
+        return jsonify({'error': str(e)})
+
+@app.route('/obtener_colonias', methods=['GET'])
+def obtener_colonias():
+    municipio_id = request.args.get('municipio_id')
+    try:
+        cursor.execute("SELECT id, nombre FROM Colonias WHERE id_municipio = ?", municipio_id)
+        colonias = cursor.fetchall()
+        return jsonify([{'id': colonia.id, 'nombre': colonia.nombre} for colonia in colonias])
+    except pyodbc.Error as e:
+        return jsonify({'error': str(e)})
+
+@app.route('/obtener_calles', methods=['GET'])
+def obtener_calles():
+    colonia_id = request.args.get('colonia_id')
+    try:
+        cursor.execute("SELECT id, nombre FROM Calles WHERE id_colonia = ?", colonia_id)
+        calles = cursor.fetchall()
+        return jsonify([{'id': calle.id, 'nombre': calle.nombre} for calle in calles])
+    except pyodbc.Error as e:
+        return jsonify({'error': str(e)})
+
+
+
+
 
 #Funcion para registrar la empresa en la DB (NO ESTA TERMINADO)
 @app.route('/empresaGuardarRegistro', methods=['GET', 'POST'])
