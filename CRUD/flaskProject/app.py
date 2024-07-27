@@ -34,6 +34,7 @@ titulo = database
 conn = sqlite3.connect(database)
 cursor = conn.cursor()
 
+
 if database == 'TacoLovers':
     icon = "../static/images/taco.ico"
 elif database == 'TerraForce':
@@ -250,14 +251,19 @@ def ingresar():
                 where id = ?
                 """,(id_user,))
         tipo_user = cursor.fetchone()
-        tipo_user = tipo_user[0]
-        if tipo_user == 1:
-            return render_template('home.html',tipo_user=tipo_user,id_user=id_user)
-        else:
-            return render_template('home.html',tipo_user=tipo_user,id_user=id_user)
+
+        if tipo_user:
+            tipo_user = tipo_user[0]
+            session['tipo_user']=tipo_user
+            session['id_user']=id_user
+
+            if tipo_user == 3:
+                return redirect(url_for('HomeEmpresa'))
+            else:
+                return redirect(url_for('Home'))
+
 
     else:
-
         flash ('Correo o contraseña incorrectos')
 
 
@@ -305,9 +311,6 @@ def empresaGuardarRegistro():
             flash('Registro exitoso', 'success')
         except pyodbc.Error as e:
             flash(f'Error en el registro: {str(e)}', 'error')
-        finally:
-            cursor.close()
-            connection.close()
 
         return redirect(url_for('registro'))
 
@@ -329,7 +332,31 @@ def about():
 #template - Home
 @app.route('/Home')
 def Home():
-    return render_template('Home.html', titulo=titulo, icon=icon)
+
+
+    id = session.get('id_user')
+    tipouser = session.get('tipo_user')
+    usuario_logeado=False
+
+    if tipouser == 3:
+        redirect(url_for('HomeEmpresa'))
+
+    if id and tipouser:
+        usuario_logeado=True
+        cursor.execute("""
+        SELECT id_persona from Usuarios where id = ? 
+        """,(id))
+        id_persona = cursor.fetchone()
+        id_persona = id_persona[0]
+        cursor.execute("""
+        select nombre from Personas where id = ?
+        """,(id_persona))
+        nombre=cursor.fetchone()[0]
+        return render_template('Home.html', titulo=titulo, icon=icon,nombre=nombre,usuario_logeado=usuario_logeado)
+    else:
+        return render_template('Home.html', titulo=titulo, icon=icon,usuario_logeado=usuario_logeado)
+
+
 
 @app.route('/Convocatorias')
 def Convocatorias():
@@ -357,6 +384,10 @@ def registrar_convo():
     else:
         return "Rellena todos los campos porfavor", 400
 
+
+@app.route('/HomeEmpresa')
+def HomeEmpresa():
+    return render_template('HomeEmpresa.html', titulo=titulo, icon=icon)
 
 if __name__ == '__main__':
     app.run(debug=True)
