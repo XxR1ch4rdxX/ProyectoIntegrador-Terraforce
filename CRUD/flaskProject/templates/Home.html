@@ -83,7 +83,7 @@
             <div class="nav-item">
                 <h2>Hola! {{ nombre }}</h2>
             </div>
-            <div class="nav-item" style="display: {% if usuario_logeado %}block{% else %}none{% endif %}">
+            <div class="nav-item" style="display: {% if usuario_logeado %}none{% else %}block{% endif %}">
                 <a href="/login">Iniciar sesión</a>
             </div>
         </nav>
@@ -99,8 +99,8 @@
                 <p><strong>25/30</strong> - Fecha de cierre: 25-05-2025</p>
             </div>
             <div class="convocatoria-buttons">
-                <button style="display: {% if usuario_logeado %}none{% else %}block{% endif %}">Más detalles</button>
-                <button style="display: {% if usuario_logeado %}none{% else %}block{% endif %}">Registrar</button>
+                <button style="display: {% if usuario_logeado %}block{% else %}none{% endif %}">Más detalles</button>
+                <button style="display: {% if usuario_logeado %}block{% else %}none{% endif %}">Registrar</button>
             </div>
         </div>
     </div>
