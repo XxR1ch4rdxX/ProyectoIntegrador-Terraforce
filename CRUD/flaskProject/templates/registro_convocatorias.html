@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Agregar Convocatoria</title>
+   <link rel="icon" href="{{ icon }}">
+    <title>{{ titulo }}</title>
   <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
   <style>
     .navbar-custom {
@@ -43,8 +44,17 @@
   </style>
 </head>
 <body>
+    {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <div class="alert alert-info" role="alert">
+                    {% for message in messages %}
+                        {{ message }}
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a class="navbar-brand" href="#">TerraForce </a>
+        <a class="navbar-brand" href="/">TerraForce </a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -68,7 +78,7 @@
 
   <div class="container form-container">
     <div class="custom-header">Registra la convocatoria</div>
-    <form>
+    <form action="/registrar">
       <div class="form-group">
         <label for="title">Título de la convocatoria</label>
         <input type="text" class="form-control custom-input" id="title" placeholder="Título de la convocatoria">

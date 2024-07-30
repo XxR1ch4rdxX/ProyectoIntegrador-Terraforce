@@ -14,7 +14,6 @@ from colorama import init, Fore, Style
 from googletrans import Translator
 import pyodbc
 from flask import Flask, render_template, request, flash, redirect,session, url_for, abort, jsonify
-from flask_mysqldb import MySQL
 import socket
 import sqlite3
 
@@ -58,6 +57,11 @@ try:
 
 except pyodbc.Error as e:
     print(Fore.GREEN + 'Error :c' + Style.RESET_ALL)
+finally:
+    cursor.close()
+
+
+
 
 def espanolizar(text):
     translator = Translator()
@@ -71,6 +75,7 @@ def index():
 
 @app.route('/crud', methods=['GET'])
 def consultartablas():
+    cursor = connection.cursor()
     palabrita = ""
     tablaselect = request.args.get('tablaselect', '')
     flash("Aqui se mostraran las alertas :)")
@@ -95,10 +100,13 @@ def consultartablas():
     except pyodbc.Error as e:
         error_message = f"Error al recuperar las tablas: {espanolizar(str(e))}"
         return render_template('error.html', error_message=error_message)
+    finally:
+        cursor.close()
 
 @app.route('/remove', methods=['GET'])
 #con este metodo borramos campos , obteniendo el id con el boton de el campo solicitado
 def remove():
+    cursor = connection.cursor()
     registro_id = request.args.get('id')
     tablaname = request.args.get('tablaselect')
     if registro_id and tablaname:
@@ -109,11 +117,15 @@ def remove():
         except pyodbc.Error as e:
             error_message = f"Error al eliminar el registro: {espanolizar(str(e))}"
             flash(error_message, 'error' + " :c")
+        finally:
+            cursor.close()
     return redirect('crud')
+
 
 @app.route('/aggreg', methods=['POST'])
 #lo mismo que el de borrar pero en ves de borrar , agrega campos, dependiendo la tabla donde se ubique
 def aggreg():
+    cursor = connection.cursor()
     tabla = request.form.get('tablaselect')
     if not tabla:
         flash('No hay tablas seleccionadas :(')
@@ -134,6 +146,8 @@ def aggreg():
         except pyodbc.Error as e:
             flash(f"Error al insertar registro :c {espanolizar(str(e))}")
             return redirect('crud')
+        finally:
+            cursor.close()
     else:
         flash("No has introducido algun valor para los registros :c")
         return redirect('crud')
@@ -141,6 +155,7 @@ def aggreg():
 @app.route('/edit', methods=['GET'])
 
 def editar():
+    cursor = connection.cursor()
     id = request.args.get('id')
     tabla = request.args.get('tablaselect')
     cursor.execute(f"SELECT * FROM {tabla} WHERE 1=0")
@@ -157,6 +172,7 @@ def editar():
 #en imputs de html , para que el usuario los edite segun el quiera
 #de hecho lo hice 2 veces , pero ya no lo quite porque podria fallar el programa
 def update():
+    cursor = connection.cursor()
     tabla = request.form.get('tablaselect')
     registro_id = request.form.get('id')
     cursor.execute(f"SELECT * FROM {tabla} WHERE id = ?", (registro_id,))
@@ -173,14 +189,14 @@ def update():
         #como aqui.
         cursor.execute(update_query, valores[1:])
         connection.commit()
-        flash('Registro actualizado correctamente')
-        flash(valores)
+        flash('Registro actualizado correctamente',valores)
         return redirect('crud')
     except pyodbc.Error as e:
-        flash(f"Error al actualizar registro :c {espanolizar(str(e))}")
-    flash(valores)
-    return redirect('crud')
+        flash(f"Error al actualizar registro :c {espanolizar(str(e))}",valores)
+    finally:
+        cursor.close()
 
+    return redirect('crud')
 
 
 
@@ -194,6 +210,7 @@ def registro():
 @app.route('/guardar_registro', methods=['GET', 'POST'])
 def sRegistro():
     if request.method == 'POST':
+        cursor = connection.cursor()
         name = request.form.get('nombre')
         lnamep = request.form.get('apellidosp')
         lnamem = request.form.get('apellidosm')
@@ -222,7 +239,8 @@ def sRegistro():
             flash('Registro exitoso', 'success')
         except pyodbc.Error as e:
             flash(f'Error en el registro: {str(e)}', 'error')
-
+        finally:
+            cursor.close()
         return redirect(url_for('registro'))
 
 
@@ -233,7 +251,9 @@ def login():
 #function login
 @app.route('/ingresar',methods=['GET','POST'])
 def ingresar():
+
     if request.method == 'POST':
+        cursor = connection.cursor()
         correo = request.form.get('correo')
         password = request.form.get('contrasena')
 
@@ -262,14 +282,14 @@ def ingresar():
 
             if tipo_user == 3:
                 return redirect(url_for('HomeEmpresa'))
+                cursor.close()
             else:
                 return redirect(url_for('Home'))
-
+                cursor.close()
 
     else:
         flash ('Correo o contraseña incorrectos')
-
-
+        cursor.close()
 
 
 
@@ -281,32 +301,37 @@ def signup_enterprice():
     return render_template('signup_enterprice.html', titulo=titulo, icon=icon)
 
 
-
-
 #Template registro de la empresa
 
 @app.route('/registro_enterprice')
 def registro_enterprice():
     try:
+        cursor = connection.cursor()
         cursor.execute("SELECT id, nombre FROM Estados")
         estados = cursor.fetchall()
         return render_template('registro_enterprice.html', estados=estados)
     except pyodbc.Error as e:
         flash(f'Error al cargar los datos: {str(e)}', 'error')
         return redirect(url_for('index'))
+    finally:
+        cursor.close()
 
 @app.route('/obtener_municipios', methods=['GET'])
 def obtener_municipios():
     estado_id = request.args.get('estado_id')
+    cursor = connection.cursor()
     try:
         cursor.execute("SELECT id, nombre FROM Municipios WHERE id_estado = ?", estado_id)
         municipios = cursor.fetchall()
         return jsonify([{'id': municipio.id, 'nombre': municipio.nombre} for municipio in municipios])
     except pyodbc.Error as e:
         return jsonify({'error': str(e)})
+    finally:
+        cursor.close()
 
 @app.route('/obtener_colonias', methods=['GET'])
 def obtener_colonias():
+    cursor = connection.cursor()
     municipio_id = request.args.get('municipio_id')
     try:
         cursor.execute("SELECT id, nombre FROM Colonias WHERE id_municipio = ?", municipio_id)
@@ -314,9 +339,12 @@ def obtener_colonias():
         return jsonify([{'id': colonia.id, 'nombre': colonia.nombre} for colonia in colonias])
     except pyodbc.Error as e:
         return jsonify({'error': str(e)})
+    finally:
+        cursor.close()
 
 @app.route('/obtener_calles', methods=['GET'])
 def obtener_calles():
+    cursor = connection.cursor()
     colonia_id = request.args.get('colonia_id')
     try:
         cursor.execute("SELECT id, nombre FROM Calles WHERE id_colonia = ?", colonia_id)
@@ -324,6 +352,8 @@ def obtener_calles():
         return jsonify([{'id': calle.id, 'nombre': calle.nombre} for calle in calles])
     except pyodbc.Error as e:
         return jsonify({'error': str(e)})
+    finally:
+        cursor.close()
 
 
 
@@ -333,6 +363,8 @@ def obtener_calles():
 @app.route('/empresaGuardarRegistro', methods=['GET', 'POST'])
 def empresaGuardarRegistro():
     if request.method == 'POST':
+
+        cursor = connection.cursor()
         name = request.form.get('nombre')
         rfc = request.form.get('RFC')
         email = request.form.get('correo')
@@ -373,8 +405,9 @@ def empresaGuardarRegistro():
             flash('Registro exitoso', 'success')
         except pyodbc.Error as e:
             flash(f'Error en el registro: {str(e)}', 'error')
-
-        return redirect(url_for('registro'))
+            return redirect(url_for('registro'))
+        finally:
+            cursor.close()
 
 
 #Fin de la funcion
@@ -394,14 +427,14 @@ def about():
 #template - Home
 @app.route('/Home')
 def Home():
-
-
+    cursor = connection.cursor()
     id = session.get('id_user')
     tipouser = session.get('tipo_user')
     usuario_logeado=False
 
     if tipouser == 3:
         redirect(url_for('HomeEmpresa'))
+        cursor.close()
 
     if id and tipouser:
         usuario_logeado=True
@@ -415,9 +448,10 @@ def Home():
         """,(id_persona))
         nombre=cursor.fetchone()[0]
         return render_template('Home.html', titulo=titulo, icon=icon,nombre=nombre,usuario_logeado=usuario_logeado)
+        cursor.close()
     else:
         return render_template('Home.html', titulo=titulo, icon=icon,usuario_logeado=usuario_logeado)
-
+        cursor.close()
 
 
 @app.route('/Convocatorias')
@@ -429,6 +463,7 @@ def registro_convocatoria():
     return render_template('registro_convocatorias.html', titulo=titulo, icon=icon)
 @app.route('/registrar_convo',methods=['POST'])
 def registrar_convo():
+    cursor = connection.cursor()
     tituloconv = request.form.get('titulo')
     requisitos = request.form.get('requisistos')
     fechainicio = request.form.get('fechainicio')
@@ -437,15 +472,23 @@ def registrar_convo():
     imagen = request.files.get('imagen')
 
     imagenbin = None
-    if imagen and imagen.filename != '':
-        imagenbin = imagen.read()
+    try:
+        if imagen and imagen.filename != '':
+            imagenbin = imagen.read()
 
-    if tituloconv and requisitos and fechainicio and fechacierre and vacantes and imagenbin:
-        return render_template('formulario.html', tituloconv=tituloconv, requisitos=requisitos,
-                               fechainicio=fechainicio, fechacierre=fechacierre, vacantes=vacantes, imagen=imagen)
-    else:
-        return "Rellena todos los campos porfavor", 400
+        if tituloconv and requisitos and fechainicio and fechacierre and vacantes and imagenbin:
+            return render_template('formulario.html', tituloconv=tituloconv, requisitos=requisitos,
+                                   fechainicio=fechainicio, fechacierre=fechacierre, vacantes=vacantes,
+                                   imagen=imagenbin)
 
+        else:
+            return render_template('registro_convocatorias.html')
+            flash('Por favor rellena todos los datos solicitados para el registro')
+
+    except :
+        return 'Error 404'
+    finally:
+        cursor.close()
 
 @app.route('/HomeEmpresa')
 def HomeEmpresa():
