@@ -13,7 +13,7 @@
 from colorama import init, Fore, Style
 from googletrans import Translator
 import pyodbc
-from flask import Flask, render_template, request, flash, redirect,session, url_for, abort, jsonify
+from flask import Flask, render_template, request, flash, redirect, session, url_for, abort, jsonify
 import socket
 import sqlite3
 
@@ -281,19 +281,17 @@ def ingresar():
             session['id_user']=id_user
 
             if tipo_user == 3:
+                #Primero se cierra el cursor y luego te redirige
+                cursor.close()
                 return redirect(url_for('HomeEmpresa'))
-                cursor.close()
             else:
-                return redirect(url_for('Home'))
                 cursor.close()
+                return redirect(url_for('Home'))
 
     else:
         flash('Correo o contraseña incorrectos')
-        return render_template('login.html')
         cursor.close()
-
-
-
+        return render_template('login.html')
 
 
 #template /singup_enterprice
@@ -502,8 +500,12 @@ def HomeEmpresa():
 
 @app.route('/logout')
 def logout():
-    session.pop('id_user', None)
-    session.pop('tipo_user', None)
+    #session.pop('id_user', None)
+    #session.pop('tipo_user', None)
+    #flash('Sesión cerrada correctamente', 'success')
+    #return redirect(url_for('index'))
+    session.clear()
+    flash('Sesión cerrada correctamente', 'success')
     return redirect(url_for('index'))
 
 
