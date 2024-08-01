@@ -17,8 +17,8 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="CSS File" />
-        <option value="HTML File" />
         <option value="Dockerfile" />
+        <option value="HTML File" />
       </list>
     </option>
   </component>
@@ -102,7 +102,7 @@
       <workItem from="1722433257180" duration="7476000" />
       <workItem from="1722469676715" duration="1549000" />
       <workItem from="1722471257820" duration="2679000" />
-      <workItem from="1722518757883" duration="3070000" />
+      <workItem from="1722518757883" duration="8183000" />
     </task>
     <servers />
   </component>
@@ -126,9 +126,20 @@
       </map>
     </option>
   </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/CRUD/flaskProject/app.py</url>
+          <line>492</line>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+  </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/ProyectoIntegrador$app.coverage" NAME="app Coverage Results" MODIFIED="1720039147128" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/CRUD/flaskProject" />
-    <SUITE FILE_PATH="coverage/ProyectoIntegrador_Terraforce$app.coverage" NAME="app Coverage Results" MODIFIED="1722521709909" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/CRUD/flaskProject" />
+    <SUITE FILE_PATH="coverage/ProyectoIntegrador_Terraforce$app.coverage" NAME="app Coverage Results" MODIFIED="1722532500066" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/CRUD/flaskProject" />
     <SUITE FILE_PATH="coverage/ProyectoIntegrador_Terraforc$app.coverage" NAME="app Coverage Results" MODIFIED="1722474622629" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/CRUD/flaskProject" />
   </component>
 </project>

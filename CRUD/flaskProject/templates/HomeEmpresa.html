@@ -1,11 +1,78 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="{{ icon }}">
     <title>{{ titulo }}</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../static/CSS/index.css">
 </head>
 <body>
+{#<h1>ESTA ES LA HOME DE LA EMPRESA , si eres usuario tipo 2 no puedes estar aqui a no ser que seas admin</h1>#}
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-light bg-light sticky-top">
+            <a class="navbar-brand d-flex align-items-center" href="/">
+                <img src="{{ url_for('static', filename='images/tlogo.png') }}" style="cursor: pointer" onclick="volver()" alt="Logo" height="40px">
+            </a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item" style="display: {% if usuario_logeado %}block{% else %}none{% endif %}">
+                        <h2 class="nav-link">Hola! {{ nombre }}</h2>
+                    </li>
+                </ul>
+                <ul class="navbar-nav ml-auto">
+                 <!-- los que tienen el block después del none, se ocultaran cuando el usuario esté loggeado -->
+                    <li class="nav-item" style="display: {% if usuario_logeado %}none{% else %}block{% endif %}">
+                        <a class="nav-link" href="/registro">Registro</a>
+                    </li>
+                    <li class="nav-item" style="display: {% if usuario_logeado %}none{% else %}block{% endif %}">
+                        <a class="nav-link" href="/login">Iniciar sesión</a>
+                    </li>
+                    <li class="nav-item" style="display: {% if usuario_logeado %}block{% else %}none{% endif %}">
+                        <a class="nav-link" href="/logout">Cerrar sesión</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/Convocatorias">Convocatorias</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/about">Conócenos</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </header>
 
+
+    <div class="container my-5">
+        <div class="section">
+            <div class="section-details">
+                <h2>Título del Texto</h2>
+                <p>Este es el texto que se muestra al lado de la imagen. Puedes añadir más contenido aquí según tus necesidades.</p>
+            </div>
+            <img src="../static/images/tu-imagen1.jpg" alt="Imagen">
+        </div>
+
+        <div class="section">
+            <img src="../static/images/tu-imagen2.jpg" alt="Imagen">
+            <div class="section-details">
+                <h2>Título del Texto</h2>
+                <p>Este es el texto que se muestra al lado de la imagen. Puedes añadir más contenido aquí según tus necesidades.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function volver(){
+            window.location.href='/'
+        }
+    </script>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>

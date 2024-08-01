@@ -34,7 +34,8 @@
 <div class="menuselection">
     <form action="/crud" method="GET">
         <label for="tabla">Selecciona una tabla:</label>
-        <select id="tabla" name="tablaselect" class="selecccion">
+
+        <select id="tabla" name="tablaselect" class="selecccion" >
             {% for tabla in tablas %}
             <option value="{{ tabla }}" class="selecccion">{{ tabla }}</option>
             {% endfor %}

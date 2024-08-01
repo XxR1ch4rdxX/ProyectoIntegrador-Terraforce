@@ -3,8 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registra la convocatoria</title>
-    <style>
+     <link rel="icon" href="{{ icon }}">
+    <title>{{ titulo }}</title>
+</head>
+ <style>
         body {
             font-family: Arial, sans-serif;
             background-color: #f0f0f0;
@@ -99,47 +101,68 @@
             background-color: #bbb;
         }
     </style>
-</head>
+<script>
+    function volver(){
+        window.location='/'
+    }
+</script>
 <body>
     <div class="header">
-        <img src="logo.png" alt="Logo" width="50">
+        <img src="../static/images/logoterra1.ico" alt="Logo" width="50" onclick="volver()" style="cursor: pointer">
         Terraforce
-        <a href="#">Inicio</a>
-        <a href="#">Mi perfil</a>
+        <a href="/">Inicio</a>
+        <a href="/profile">Mi perfil</a>
+    </div>
+   <div class="container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }} mt-4" role="alert">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        {% block content %}{% endblock %}
     </div>
     <div class="container">
         <h2>Registra la convocatoria</h2>
-        <form>
+        <form action="/registrar_convo" method="POST">
             <div class="form-container">
                 <div class="form-left">
                     <div class="form-group">
                         <label for="titulo">Título de la convocatoria</label>
-                        <input type="text" id="titulo" name="titulo">
+                        <input type="text" id="titulo" name="titulo" required>
                     </div>
                     <div class="form-group">
                         <label for="requisitos">Requisitos</label>
-                        <textarea id="requisitos" name="requisitos"></textarea>
+                        <textarea id="requisitos" name="requisitos" required></textarea>
                     </div>
                     <div class="form-group date-group">
                         <div>
                             <label for="fecha_inicio">Fecha de inicio</label>
-                            <input type="date" id="fecha_inicio" name="fecha_inicio">
+                            <input type="date" id="fecha_inicio" name="fecha_inicio" required>
                         </div>
                         <div>
                             <label for="fecha_cierre">Fecha de cierre</label>
-                            <input type="date" id="fecha_cierre" name="fecha_cierre">
+                            <input type="date" id="fecha_cierre" name="fecha_cierre" required>
                         </div>
                     </div>
                     <div class="form-group">
                         <label for="vacantes">Cantidad de vacantes</label>
-                        <input type="number" id="vacantes" name="vacantes">
+                        <input type="number" id="vacantes" name="vacantes" required>
                     </div>
                     <div class="form-group">
                         <label for="tematica">Temática</label>
-                        <select id="tematica" name="tematica">
-                            <option value="">Seleccione una temática</option>
-                            <option value="tematica1">Temática 1</option>
-                            <option value="tematica2">Temática 2</option>
+                        <select id="tematica" name="tematica" placeholder="hola">
+
+                            <option value="tematica1" required>
+                                {% for temas in tematica %}
+                                    {{ temas }}
+                                {% endfor %}
+                            </option>
+
                         </select>
                     </div>
                 </div>

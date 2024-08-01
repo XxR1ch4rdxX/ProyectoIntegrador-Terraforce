@@ -75,6 +75,15 @@ def index():
 
 @app.route('/crud', methods=['GET'])
 def consultartablas():
+
+    if 'id_user' not in session:
+        return redirect(url_for('login'))
+
+    tipouser = session.get('tipo_user')
+
+    if tipouser != 1:
+            return redirect(url_for('errorpage'))
+
     cursor = connection.cursor()
     palabrita = ""
     tablaselect = request.args.get('tablaselect', '')
@@ -436,7 +445,7 @@ def Home():
 
     if tipouser == 3:
         cursor.close()
-        return redirect(url_for('HomeEmpresa'))
+        return redirect(url_for('errorpage'))
 
     if id and tipouser:
         usuario_logeado = True
@@ -463,9 +472,15 @@ def Convocatorias():
 
 @app.route('/registro_convocatoria')
 def registro_convocatoria():
-    return render_template('registro_convocatorias.html', titulo=titulo, icon=icon)
+    cursor = connection.cursor()
+    cursor.execute("""
+        SELECT * FROM Tematicas
+        """)
+    tematica = cursor.fetchall()
+    return render_template('crearConvo.html', titulo=titulo, icon=icon,tematica=tematica)
 @app.route('/registrar_convo',methods=['POST'])
 def registrar_convo():
+
     cursor = connection.cursor()
     tituloconv = request.form.get('titulo')
     requisitos = request.form.get('requisistos')
@@ -473,6 +488,7 @@ def registrar_convo():
     fechacierre = request.form.get('fechacierre')
     vacantes = request.form.get('vacantes')
     imagen = request.files.get('imagen')
+
 
     imagenbin = None
     try:
@@ -485,17 +501,28 @@ def registrar_convo():
                                    imagen=imagenbin)
 
         else:
-            return render_template('registro_convocatorias.html')
+            return render_template('crearConvo.html')
             flash('Por favor rellena todos los datos solicitados para el registro')
 
     except :
-        return 'Error 404'
+        flash('Por favor rellena todos los datos solicitados para el registro')
+        return render_template('crearConvo.html')
+
     finally:
         cursor.close()
 
 @app.route('/HomeEmpresa')
 def HomeEmpresa():
-    return render_template('HomeEmpresa.html', titulo=titulo, icon=icon)
+    # Esto para que, si no estas logueado, te mande al login en vez de al Home
+    if 'id_user' not in session:
+        return redirect(url_for('login'))
+
+    tipouser = session.get('tipo_user')
+
+    if tipouser == 2:
+            return redirect(url_for('errorpage'))
+    else:
+        return render_template('HomeEmpresa.html', titulo=titulo, icon=icon)
 
 @app.route('/logout')
 def logout():
@@ -506,6 +533,11 @@ def logout():
     session.clear()
     flash('Sesión cerrada correctamente', 'success')
     return redirect(url_for('index'))
+
+@app.route('/error')
+def errorpage():
+    return render_template('error.html',titulo=titulo, icon=icon)
+
 
 
 if __name__ == '__main__':

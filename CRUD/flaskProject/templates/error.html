@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="icon" href="{{ icon }}">
+    <title>{{ titulo }}</title>
+</head>
+<style>
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .animated-text {
+            animation: fadeIn 2s ease-in-out;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(-100%); }
+            to { transform: translateX(0); }
+        }
+
+        .slide-in-text {
+            animation: slideIn 1.5s ease-in-out;
+        }
+    </style>
+<body>
+    <h1 class="animated-text">Algo salio mal...</h1>
+    <p class="slide-in-text">Contacta a un administrador , o envia un correo a </p>
+    <a href="/">TerraForce.Suport@gmail.com</a>
+</body>
+</html>
