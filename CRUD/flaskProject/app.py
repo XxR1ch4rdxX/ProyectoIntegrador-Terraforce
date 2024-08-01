@@ -428,31 +428,36 @@ def about():
 #template - Home
 @app.route('/Home')
 def Home():
+    #Esto para que, si no estas logueado, te mande al login en vez de al Home
+    if 'id_user' not in session:
+        return redirect(url_for('login'))
+
     cursor = connection.cursor()
     id = session.get('id_user')
     tipouser = session.get('tipo_user')
-    usuario_logeado=False
+    usuario_logeado = False
 
     if tipouser == 3:
-        redirect(url_for('HomeEmpresa'))
         cursor.close()
+        return redirect(url_for('HomeEmpresa'))
 
     if id and tipouser:
-        usuario_logeado=True
+        usuario_logeado = True
         cursor.execute("""
         SELECT id_persona from Usuarios where id = ? 
-        """,(id))
+        """, (id,))
         id_persona = cursor.fetchone()
         id_persona = id_persona[0]
         cursor.execute("""
         select nombre from Personas where id = ?
-        """,(id_persona))
-        nombre=cursor.fetchone()[0]
-        return render_template('Home.html', titulo=titulo, icon=icon,nombre=nombre,usuario_logeado=usuario_logeado)
+        """, (id_persona,))
+        nombre = cursor.fetchone()[0]
         cursor.close()
+        return render_template('Home.html', titulo=titulo, icon=icon, nombre=nombre, usuario_logeado=usuario_logeado)
     else:
-        return render_template('Home.html', titulo=titulo, icon=icon,usuario_logeado=usuario_logeado)
         cursor.close()
+        return render_template('Home.html', titulo=titulo, icon=icon, usuario_logeado=usuario_logeado)
+
 
 
 @app.route('/Convocatorias')
@@ -494,6 +499,13 @@ def registrar_convo():
 @app.route('/HomeEmpresa')
 def HomeEmpresa():
     return render_template('HomeEmpresa.html', titulo=titulo, icon=icon)
+
+@app.route('/logout')
+def logout():
+    session.pop('id_user', None)
+    session.pop('tipo_user', None)
+    return redirect(url_for('index'))
+
 
 if __name__ == '__main__':
     app.run(debug=True)
