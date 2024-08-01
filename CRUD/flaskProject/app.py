@@ -251,9 +251,8 @@ def login():
 #function login
 @app.route('/ingresar',methods=['GET','POST'])
 def ingresar():
-
+    cursor = connection.cursor()
     if request.method == 'POST':
-        cursor = connection.cursor()
         correo = request.form.get('correo')
         password = request.form.get('contrasena')
 
@@ -510,4 +509,4 @@ def logout():
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host="0.0.0.0",port=5000,debug=True)

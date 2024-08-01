@@ -1,0 +1,19 @@
+version: '3.8'
+
+services:
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:latest
+    environment:
+      SA_PASSWORD: ""
+      ACCEPT_EULA: "Y"
+    ports:
+      - "1433:1433"
+    volumes:
+      - ./db:/docker-entrypoint-initdb.d/db.sql
+
+  pythonapp:
+    build: ./flaskProject
+    depends_on:
+      - sqlserver
+    ports:
+      - "4000:5000"
