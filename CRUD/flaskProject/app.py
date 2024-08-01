@@ -288,7 +288,8 @@ def ingresar():
                 cursor.close()
 
     else:
-        flash ('Correo o contraseña incorrectos')
+        flash('Correo o contraseña incorrectos')
+        return render_template('login.html')
         cursor.close()
 
 
