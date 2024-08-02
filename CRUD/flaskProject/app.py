@@ -2,7 +2,7 @@
 #como links a otros html , getters , sertters cookies
 #incluso la conexion con la base de datos
 
-#ESTE ES EL CORAZON DE LA PAGINA WEB (por asi decirlo)
+#ESTE ES EL CORAZON de la applicacion web (por asi decirlo)
 #Los documentos html adjuntos unicamente se utilizara el de crud, index y editar, los otros
 #son "plantillas" que estan colocadas para usarse en algun momento
 #Universal Crud :D
@@ -59,8 +59,6 @@ except pyodbc.Error as e:
     print(Fore.GREEN + 'Error :c' + Style.RESET_ALL)
 finally:
     cursor.close()
-
-
 
 
 def espanolizar(text):
@@ -480,47 +478,51 @@ def Convocatorias():
     ''')
     results = cursor.fetchall()
     cursor.close()
-    return render_template('convocatorias.html', results=results)
+    return render_template('convocatorias.html', results=results,titulo=titulo,icon=icon)
 
 
 
 @app.route('/registro_convocatoria')
 def registro_convocatoria():
-    cursor = connection.cursor()
-    cursor.execute("""
-        SELECT * FROM Tematicas
-        """)
-    tematica = cursor.fetchall()
-    return render_template('crearConvo.html', titulo=titulo, icon=icon,tematica=tematica)
+    return render_template('crearConvo.html', titulo=titulo, icon=icon)
 @app.route('/registrar_convo',methods=['POST'])
 def registrar_convo():
 
     cursor = connection.cursor()
     tituloconv = request.form.get('titulo')
-    requisitos = request.form.get('requisistos')
-    fechainicio = request.form.get('fechainicio')
-    fechacierre = request.form.get('fechacierre')
+    requisitos = request.form.get('requisitos')
+    fechainicio = request.form.get('fecha_inicio')
+    fechacierre = request.form.get('fecha_cierre')
+    tematicas = request.form.get('tematicas')
     vacantes = request.form.get('vacantes')
     imagen = request.files.get('imagen')
 
-
     imagenbin = None
+
+
     try:
         if imagen and imagen.filename != '':
             imagenbin = imagen.read()
 
-        if tituloconv and requisitos and fechainicio and fechacierre and vacantes and imagenbin:
+        if vacantes:
+            vacantes = int(vacantes)
+            if vacantes < 10:
+                flash('El número de vacantes mínimo es de 10')
+                return redirect('registro_convocatoria')
+
+
+        if tituloconv and requisitos and fechainicio and fechacierre and vacantes and tematicas:
             return render_template('formulario.html', tituloconv=tituloconv, requisitos=requisitos,
                                    fechainicio=fechainicio, fechacierre=fechacierre, vacantes=vacantes,
-                                   imagen=imagenbin)
+                                   imagen=imagenbin,tematicas=tematicas)
 
         else:
-            return render_template('crearConvo.html')
             flash('Por favor rellena todos los datos solicitados para el registro')
+            return redirect('registro_convocatoria')
 
     except :
-        flash('Por favor rellena todos los datos solicitados para el registro')
-        return render_template('crearConvo.html')
+        flash('error')
+        return redirect('registro_convocatoria')
 
     finally:
         cursor.close()
