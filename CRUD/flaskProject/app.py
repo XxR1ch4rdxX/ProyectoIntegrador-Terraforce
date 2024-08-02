@@ -466,9 +466,24 @@ def Home():
 
 
 
-@app.route('/Convocatorias')
+@app.route('/Convocatorias', methods=["GET"])
 def Convocatorias():
-    return render_template('convocatorias.html', titulo=titulo, icon=icon)
+    cursor = connection.cursor()
+    cursor.execute('''
+        SELECT c.id, c.titulo, c.requisitos, c.imagen, c.usuarios_registrados, 
+               c.limite_usuarios, c.fecha_inicio, c.fecha_final, t.tematica, 
+               em.nombre AS empresa_nombre
+        FROM Convocatorias AS c 
+        INNER JOIN Estatus AS e ON c.id_estatus = e.id 
+        INNER JOIN Empresas AS em ON em.id = c.id_empresa 
+        INNER JOIN Tematicas AS t ON t.id = c.id_tematica
+    ''')
+    results = cursor.fetchall()
+    cursor.close()
+    connection.close()
+    return render_template('convocatorias.html', results=results)
+
+
 
 @app.route('/registro_convocatoria')
 def registro_convocatoria():

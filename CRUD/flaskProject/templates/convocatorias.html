@@ -1,31 +1,31 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Visualización de Convocatorias</title>
-  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-  <style>
-    .navbar-custom {
-      background-color: #6FD557;
-    }
-    .card-custom {
-      margin-top: 20px;
-    }
-    .card-header-custom {
-      background-color: #6FD557;
-      color: white;
-    }
-    .btn-register {
-      background-color: #6FD557;
-      color: white;
-      margin-top: 20px;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visualización de Convocatorias</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .navbar-custom {
+            background-color: #6FD557;
+        }
+        .card-custom {
+            margin-top: 20px;
+        }
+        .card-header-custom {
+            background-color: #6FD557;
+            color: white;
+        }
+        .btn-register {
+            background-color: #6FD557;
+            color: white;
+            margin-top: 20px;
+        }
+    </style>
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a class="navbar-brand" href="#">TerraForce </a>
+        <a class="navbar-brand" href="#">TerraForce</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -47,25 +47,27 @@
         </div>
     </nav>
 
-  <div class="container">
-    <div class="card card-custom">
-      <div class="card-header card-header-custom">
-        Titulo de la convocatoria
-
-          <!-- ESTO SE VA A BORRAR, SOLO ES UN EJEMPLO DE MÁS O MENOS COMO SE TENDRÍA QUE MEDIO VER -->
-      </div>
-      <div class="card-body">
-        <h5 class="card-title">Creado por: Coca-cola</h5>
-        <p class="card-text">Tematica: Mares</p>
-        <p class="card-text">Lorem Ipsum es simplemente el texto de relleno de las imprentas y archivos de texto...</p>
-        <p class="card-text"><small class="text-muted">Fecha de cierre: 25-05-2025</small></p>
-        <a href="#" class="btn btn-primary">Más detalles</a>
-        <a href="#" class="btn btn-success">Registrar</a>
-      </div>
+    <div class="container">
+        {% for convo in results %}
+        <div class="card card-custom">
+            <div class="card-header card-header-custom">
+                {{ convo.titulo }}
+            </div>
+            <div class="card-body">
+                <h5 class="card-title">Creado por: {{ convo.empresa_nombre }}</h5>
+                <p class="card-text">Temática: {{ convo.tematica }}</p>
+                <p class="card-text">Requisitos: {{ convo.requisitos }}</p>
+                <p class="card-text"><small class="text-muted">Fecha de cierre: {{ convo.fecha_final }}</small></p>
+                <a href="#" class="btn btn-primary">Más detalles</a>
+                <a href="#" class="btn btn-success">Registrar</a>
+            </div>
+        </div>
+        {% endfor %}
+        <a href="/registro_convocatoria" class="btn btn-register">Registrar nueva convocatoria</a>
     </div>
 
-    <!-- Botón para ir a la página de registro -->
-    <a href="/registro_convocatoria" class="btn btn-register">Registrar nueva convocatoria</a>
-  </div>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>
