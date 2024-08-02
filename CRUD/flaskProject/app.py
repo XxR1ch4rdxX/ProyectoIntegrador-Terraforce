@@ -429,6 +429,51 @@ def empresaGuardarRegistro():
 def about():
     return render_template('about.html', titulo=titulo, icon=icon)
 
+
+
+@app.route('/usermd', methods=['GET'])
+def userhome():
+    if 'id_user' in session:
+        id = session.get('id_user')
+        query = '''
+        SELECT u.id, u.correo, u.passwrd, p.nombre, p.apellidop, p.apellidom
+            FROM Usuarios as u
+            JOIN Personas as p on u.id_persona = p.id
+            WHERE u.id = ?
+        '''
+
+        cursor = connection.cursor()
+        cursor.execute(query, (id,))
+        user = cursor.fetchone()
+        user_id = user[0]
+        user_correo = user[1]
+        user_pass = user[2]
+        user_name = user[3]
+        user_apellidop = user[4]
+        user_apellidom = user[5]
+
+        userdata = {
+            'id': user_id,
+            'correo': user_correo,
+            'pass': user_pass,
+            'name': user_name,
+            'apellidop': user_apellidop,
+            'apellidom': user_apellidom,
+        }
+
+        return render_template('usermd.html', userdata=userdata)
+    return "No user in session", 401
+
+
+
+
+
+
+
+
+
+
+
 #template - Home
 @app.route('/Home')
 def Home():
