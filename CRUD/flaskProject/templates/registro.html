@@ -76,5 +76,20 @@
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        // Espera a que el documento esté listo
+        document.addEventListener('DOMContentLoaded', function() {
+            // Selecciona el elemento de alerta
+            const alertMessage = document.getElementById('alert-message');
+
+            // Si existe una alerta y es de tipo "success"
+            if (alertMessage && alertMessage.classList.contains('alert-success')) {
+                // Redirige a la página de login después de 2 segundos
+                setTimeout(function() {
+                    window.location.href = "/login";
+                }, 2000); // 2000 milisegundos = 2 segundos
+            }
+        });
+    </script>
 </body>
 </html>
