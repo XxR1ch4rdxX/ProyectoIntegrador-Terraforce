@@ -496,13 +496,11 @@ def registrar_convo():
     tematicas = request.form.get('tematicas')
     vacantes = request.form.get('vacantes')
     imagen = request.files.get('imagen')
+    imagenbin = imagen.read()
 
-    imagenbin = None
 
 
     try:
-        if imagen and imagen.filename != '':
-            imagenbin = imagen.read()
 
         if vacantes:
             vacantes = int(vacantes)
@@ -512,9 +510,11 @@ def registrar_convo():
 
 
         if tituloconv and requisitos and fechainicio and fechacierre and vacantes and tematicas:
+
             return render_template('formulario.html', tituloconv=tituloconv, requisitos=requisitos,
                                    fechainicio=fechainicio, fechacierre=fechacierre, vacantes=vacantes,
-                                   imagen=imagenbin,tematicas=tematicas)
+                                   imagen=imagenbin, tematicas=tematicas)
+
 
         else:
             flash('Por favor rellena todos los datos solicitados para el registro')
