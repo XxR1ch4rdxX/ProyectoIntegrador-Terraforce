@@ -480,7 +480,6 @@ def Convocatorias():
     ''')
     results = cursor.fetchall()
     cursor.close()
-    connection.close()
     return render_template('convocatorias.html', results=results)
 
 

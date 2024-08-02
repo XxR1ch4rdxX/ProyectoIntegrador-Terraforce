@@ -58,8 +58,37 @@
                 <p class="card-text">Temática: {{ convo.tematica }}</p>
                 <p class="card-text">Requisitos: {{ convo.requisitos }}</p>
                 <p class="card-text"><small class="text-muted">Fecha de cierre: {{ convo.fecha_final }}</small></p>
-                <a href="#" class="btn btn-primary">Más detalles</a>
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#detailsModal{{ convo.id }}">
+                    Más detalles
+                </button>
                 <a href="#" class="btn btn-success">Registrar</a>
+            </div>
+        </div>
+
+        <!-- Modal -->
+        <div class="modal fade" id="detailsModal{{ convo.id }}" tabindex="-1" aria-labelledby="detailsModalLabel{{ convo.id }}" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="detailsModalLabel{{ convo.id }}">{{ convo.titulo }}</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <h5 class="card-title">Creado por: {{ convo.empresa_nombre }}</h5>
+                        <p class="card-text">Temática: {{ convo.tematica }}</p>
+                        <p class="card-text">Requisitos: {{ convo.requisitos }}</p>
+                        <p class="card-text">Usuarios Registrados: {{ convo.usuarios_registrados }}</p>
+                        <p class="card-text">Límite de Usuarios: {{ convo.limite_usuarios }}</p>
+                        <p class="card-text">Fecha de Inicio: {{ convo.fecha_inicio }}</p>
+                        <p class="card-text">Fecha de Finalización: {{ convo.fecha_final }}</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                        <a href="#" class="btn btn-success">Registrar</a>
+                    </div>
+                </div>
             </div>
         </div>
         {% endfor %}
