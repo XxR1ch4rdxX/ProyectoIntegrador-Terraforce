@@ -150,20 +150,12 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="vacantes">Cantidad de vacantes</label>
+                        <label for="vacantes">Cantidad de vacantes (min:10)</label>
                         <input type="number" id="vacantes" name="vacantes" required>
                     </div>
                     <div class="form-group">
-                        <label for="tematica">Temática</label>
-                        <select id="tematica" name="tematica" placeholder="hola">
-
-                            <option value="tematica1" required>
-                                {% for temas in tematica %}
-                                    {{ temas }}
-                                {% endfor %}
-                            </option>
-
-                        </select>
+                        <label for="tematicas">Tematica</label>
+                        <input type="text" id="tematicas" name="tematicas" required placeholder="Tecnologia">
                     </div>
                 </div>
                 <div class="form-right">
