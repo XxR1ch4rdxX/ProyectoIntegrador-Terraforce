@@ -56,7 +56,7 @@
 
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
-                <div class="alert-container">
+                <div class="alert-container" id="alert-message">
                     {% for category, message in messages %}
                         <div class="alert alert-{{ category }}">{{ message }}</div>
                     {% endfor %}
@@ -104,6 +104,20 @@
         document.getElementById('show-password-confirm').addEventListener('change', function() {
             var passConfirmField = document.getElementById('pass_confirm');
             passConfirmField.type = this.checked ? 'text' : 'password';
+        });
+
+        // Espera a que el documento esté listo
+        document.addEventListener('DOMContentLoaded', function() {
+            // Selecciona el elemento de alerta
+            const alertMessage = document.getElementById('alert-message');
+
+            // Si existe una alerta y es de tipo "success"
+            if (alertMessage && alertMessage.querySelector('.alert-success')) {
+                // Redirige a la página de login después de 2 segundos
+                setTimeout(function() {
+                    window.location.href = "/Home";
+                }, 1000); // 1000 milisegundos = 1 segundos
+            }
         });
     </script>
 </body>
