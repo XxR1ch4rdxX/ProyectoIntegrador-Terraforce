@@ -488,7 +488,7 @@ def Home():
 
     if tipouser == 3:
         cursor.close()
-        return redirect(url_for('errorpage'))
+        return redirect(url_for('HomeEmpresa'))
 
     if id and tipouser:
         usuario_logeado = True
@@ -578,12 +578,42 @@ def HomeEmpresa():
     if 'id_user' not in session:
         return redirect(url_for('login'))
 
+    cursor = connection.cursor()
+    id = session.get('id_user')
     tipouser = session.get('tipo_user')
+    usuario_logeado = False
 
     if tipouser == 2:
-            return redirect(url_for('errorpage'))
+        cursor.close()
+        return redirect(url_for('errorpage'))
+    #Palos admin
+    if tipouser == 1:
+        usuario_logeado = True
+        cursor.execute("""
+        SELECT id_persona from Usuarios where id = ? 
+            """, (id,))
+        id_persona = cursor.fetchone()
+        id_persona = id_persona[0]
+        cursor.execute("""
+        select nombre from Personas where id = ?
+        """, (id_persona,))
+        nombre = cursor.fetchone()[0]
+        cursor.close()
+        return render_template('Home.html', titulo=titulo, icon=icon, nombre=nombre,usuario_logeado=usuario_logeado)
+
+#Palas empresas
+    if id and tipouser:
+        usuario_logeado = True
+        cursor.execute("""
+        select e.nombre from usuarios as u
+        join Empresas as e on u.id_empresa = e.id
+        WHERE u.id=?
+        """, (id,))
+        nombre= cursor.fetchone()[0]
+        cursor.close()
+        return render_template('HomeEmpresa.html', titulo=titulo, icon=icon, nombre=nombre, usuario_logeado=usuario_logeado)
     else:
-        return render_template('HomeEmpresa.html', titulo=titulo, icon=icon)
+        return render_template('HomeEmpresa.html', titulo=titulo, icon=icon, usuario_logeado=usuario_logeado)
 
 @app.route('/logout')
 def logout():
