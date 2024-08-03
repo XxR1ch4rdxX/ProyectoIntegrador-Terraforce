@@ -1,16 +1,110 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>User Details</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="{{ icon }}">
+    <title>{{ titulo }}</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../static/CSS/index.css">
+    <style>
+        .alert-container {
+            margin-bottom: 20px;
+        }
+    </style>
 </head>
 <body>
-    <h1>User Details</h1>
-    <p><strong>ID:</strong> {{ userdata.id }}</p>
-    <p><strong>Correo:</strong> {{ userdata.correo }}</p>
-    <p><strong>Contraseña:</strong> {{ userdata.pass }}</p>
-    <p><strong>Nombre:</strong> {{ userdata.name }}</p>
-    <p><strong>Apellido Paterno:</strong> {{ userdata.apellidop }}</p>
-    <p><strong>Apellido Materno:</strong> {{ userdata.apellidom }}</p>
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-light bg-light sticky-top">
+            <a class="navbar-brand d-flex align-items-center" href="/">
+                <img src="{{ url_for('static', filename='images/tlogo.png') }}" style="cursor: pointer" onclick="volver()" alt="Logo" height="40px">
+            </a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item" style="display: {% if usuario_logeado %}block{% else %}none{% endif %}">
+                        <a class="nav-link" href="{{ url_for('userhome') }}">Hola! {{ nombre }}</a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="javascript:history.back()">Regresar</a>
+                    </li>
+                    <li class="nav-item" style="display: {% if usuario_logeado %}none{% else %}block{% endif %}">
+                        <a class="nav-link" href="/registro">Registro</a>
+                    </li>
+                    <li class="nav-item" style="display: {% if usuario_logeado %}none{% else %}block{% endif %}">
+                        <a class="nav-link" href="/login">Iniciar sesión</a>
+                    </li>
+                    <li class="nav-item" style="display: {% if usuario_logeado %}block{% else %}none{% endif %}">
+                        <a class="nav-link" href="/logout">Cerrar sesión</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/Convocatorias">Convocatorias</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/about">Conócenos</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+    <div class="container mt-4">
+        <h1>Editar Perfil</h1>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="alert-container">
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }}">{{ message }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        <form method="POST" action="{{ url_for('modify') }}">
+            <div class="form-group">
+                <label for="correo">Correo:</label>
+                <input type="email" class="form-control" id="correo" name="correo" value="{{ userdata.correo }}" readonly>
+            </div>
+            <div class="form-group">
+                <label for="pass">Contraseña:</label>
+                <input type="password" class="form-control" id="pass" name="pass" value="{{ userdata.pass }}" required>
+                <input type="checkbox" id="show-password"> Mostrar Contraseña
+            </div>
+            <div class="form-group">
+                <label for="pass_confirm">Confirmar Contraseña:</label>
+                <input type="password" class="form-control" id="pass_confirm" name="pass_confirm" required>
+                <input type="checkbox" id="show-password-confirm"> Mostrar Contraseña
+            </div>
+            <div class="form-group">
+                <label for="name">Nombre:</label>
+                <input type="text" class="form-control" id="name" name="name" value="{{ userdata.name }}" readonly>
+            </div>
+            <div class="form-group">
+                <label for="apellidop">Apellido Paterno:</label>
+                <input type="text" class="form-control" id="apellidop" name="apellidop" value="{{ userdata.apellidop }}" readonly>
+            </div>
+            <div class="form-group">
+                <label for="apellidom">Apellido Materno:</label>
+                <input type="text" class="form-control" id="apellidom" name="apellidom" value="{{ userdata.apellidom }}" readonly>
+            </div>
+            <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById('show-password').addEventListener('change', function() {
+            var passField = document.getElementById('pass');
+            passField.type = this.checked ? 'text' : 'password';
+        });
+
+        document.getElementById('show-password-confirm').addEventListener('change', function() {
+            var passConfirmField = document.getElementById('pass_confirm');
+            passConfirmField.type = this.checked ? 'text' : 'password';
+        });
+    </script>
 </body>
 </html>

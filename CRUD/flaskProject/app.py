@@ -436,6 +436,8 @@ def about():
 def userhome():
     if 'id_user' in session:
         id = session.get('id_user')
+        tipouser = session.get('tipo_user')
+        usuario_logeado = False
         query = '''
         SELECT u.id, u.correo, u.passwrd, p.nombre, p.apellidop, p.apellidom
             FROM Usuarios as u
@@ -462,7 +464,27 @@ def userhome():
             'apellidom': user_apellidom,
         }
 
-        return render_template('usermd.html', userdata=userdata)
+        if tipouser == 3:
+            cursor.close()
+            return redirect(url_for('Home'))
+
+        if id and tipouser:
+            usuario_logeado = True
+            cursor.execute("""
+            SELECT id_persona from Usuarios where id = ? 
+            """, (id,))
+            id_persona = cursor.fetchone()
+            id_persona = id_persona[0]
+            cursor.execute("""
+            select nombre from Personas where id = ?
+            """, (id_persona,))
+            nombre = cursor.fetchone()[0]
+            cursor.close()
+            return render_template('usermd.html', titulo=titulo, icon=icon, nombre=nombre,
+                                   usuario_logeado=usuario_logeado, tipouser=tipouser, userdata=userdata)
+        else:
+            cursor.close()
+            return render_template('usermd.html', titulo=titulo, icon=icon, usuario_logeado=usuario_logeado)
     return "No user in session", 401
 
 
@@ -763,6 +785,92 @@ def misconvocatorias():
     else:
         return render_template('misconvocatorias.html', titulo=titulo, icon=icon, usuario_logeado=usuario_logeado, tipouser=tipouser)
 
+@app.route('/modify', methods=['GET', 'POST'])
+def modify():
+    if request.method == 'POST':
+        if 'id_user' in session:
+            id = session.get('id_user')
+            correo = request.form['correo']
+            passwrd = request.form['pass']
+            pass_confirm = request.form['pass_confirm']
+            name = request.form['name']
+            apellidop = request.form['apellidop']
+            apellidom = request.form['apellidom']
+
+            if passwrd != pass_confirm:
+                flash('Las contraseñas no coinciden. Intenta nuevamente.', 'danger')
+                return redirect(url_for('userhome'))
+
+            # Actualizar datos en la base de datos
+            cursor = connection.cursor()
+            update_user_query = '''
+            UPDATE Usuarios
+            SET correo = ?, passwrd = ?
+            WHERE id = ?
+            '''
+            cursor.execute(update_user_query, (correo, passwrd, id))
+
+            update_person_query = '''
+            UPDATE Personas
+            SET nombre = ?, apellidop = ?, apellidom = ?
+            WHERE id = (
+                SELECT id_persona
+                FROM Usuarios
+                WHERE id = ?
+            )
+            '''
+            cursor.execute(update_person_query, (name, apellidop, apellidom, id))
+
+            connection.commit()
+            cursor.close()
+
+            flash('Datos actualizados correctamente.', 'success')
+            return redirect(url_for('userhome'))
+
+        return "No user in session", 401
+
+    else:
+        # Manejo de GET
+        if 'id_user' in session:
+            id = session.get('id_user')
+            cursor = connection.cursor()
+            cursor.execute('''
+                SELECT u.id, u.correo, u.passwrd, p.nombre, p.apellidop, p.apellidom
+                FROM Usuarios AS u
+                JOIN Personas AS p ON u.id_persona = p.id
+                WHERE u.id = ?
+            ''', (id,))
+            user = cursor.fetchone()
+
+            if user:
+                userdata = {
+                    'id': user[0],
+                    'correo': user[1],
+                    'pass': user[2],
+                    'name': user[3],
+                    'apellidop': user[4],
+                    'apellidom': user[5],
+                }
+            else:
+                userdata = {}
+
+            if request.method == 'POST':
+                password = request.form.get('pass')
+                confirm_password = request.form.get('pass_confirm')
+
+                if password != confirm_password:
+                    flash('Las contraseñas no coinciden. Inténtalo de nuevo.', 'danger')
+                    return redirect(url_for('modify'))
+
+                # Aquí iría la lógica para actualizar la contraseña, por ejemplo:
+                # if update_password(password):
+                flash('Contraseña actualizada exitosamente', 'success')
+                return redirect(url_for('modify'))
+
+            cursor.close()
+            return render_template('usermd.html', titulo=titulo, icon=icon, userdata=userdata)
+
+        return "No user in session", 401
 
 
 if __name__ == '__main__':

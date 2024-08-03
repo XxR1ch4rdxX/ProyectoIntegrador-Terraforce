@@ -6,6 +6,9 @@
   <component name="ChangeListManager">
     <list default="true" id="11d711e8-d4c4-4c80-b804-f95e893baf3a" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CRUD/flaskProject/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/CRUD/flaskProject/app.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CRUD/flaskProject/templates/preview.html" beforeDir="false" afterPath="$PROJECT_DIR$/CRUD/flaskProject/templates/preview.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CRUD/flaskProject/templates/usermd.html" beforeDir="false" afterPath="$PROJECT_DIR$/CRUD/flaskProject/templates/usermd.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -105,6 +108,7 @@
       <workItem from="1722471257820" duration="2679000" />
       <workItem from="1722518757883" duration="8183000" />
       <workItem from="1722637103843" duration="7109000" />
+      <workItem from="1722666309286" duration="353000" />
     </task>
     <servers />
   </component>
@@ -130,7 +134,7 @@
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/ProyectoIntegrador_Terraforce$app.coverage" NAME="app Coverage Results" MODIFIED="1722532500066" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/CRUD/flaskProject" />
-    <SUITE FILE_PATH="coverage/ProyectoIntegrador_Terraforc$app.coverage" NAME="app Coverage Results" MODIFIED="1722645006876" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/CRUD/flaskProject" />
+    <SUITE FILE_PATH="coverage/ProyectoIntegrador_Terraforc$app.coverage" NAME="app Coverage Results" MODIFIED="1722666468004" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/CRUD/flaskProject" />
     <SUITE FILE_PATH="coverage/ProyectoIntegrador$app.coverage" NAME="app Coverage Results" MODIFIED="1720039147128" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/CRUD/flaskProject" />
   </component>
 </project>
