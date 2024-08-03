@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+     <link rel="icon" href="{{ icon }}">
+    <title>{{ titulo }}</title>
+    <link  href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<header>
+        <nav class="navbar navbar-expand-lg navbar-light bg-light sticky-top">
+            <a class="navbar-brand d-flex align-items-center" href="/">
+                <img src="{{ url_for('static', filename='images/tlogo.png') }}" style="cursor: pointer" onclick="volver()" alt="Logo" height="40px">
+            </a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item" style="display: {% if usuario_logeado %}block{% else %}none{% endif %}">
+                        <h2 class="nav-link">Hola! {{ nombre }}</h2>
+                    </li>
+                </ul>
+                <ul class="navbar-nav ml-auto">
+                 <!-- los que tienen el block después del none, se ocultaran cuando el usuario esté loggeado -->
+                    <li class="nav-item" style="display: {% if usuario_logeado %}none{% else %}block{% endif %}">
+                        <a class="nav-link" href="/registro">Registro</a>
+                    </li>
+                    <li class="nav-item" style="display: {% if usuario_logeado %}none{% else %}block{% endif %}">
+                        <a class="nav-link" href="/login">Iniciar sesión</a>
+                    </li>
+                    <li class="nav-item" style="display: {% if usuario_logeado %}block{% else %}none{% endif %}">
+                        <a class="nav-link" href="/logout">Cerrar sesión</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/Convocatorias">Convocatorias</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/about">Conócenos</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+<h1>Tidulo convocatoria: {{ tituloconv }} </h1>
+<h1>Requisistos: {{ requisitos }} </h1>
+<h1>Inicio: {{ fechainicio }} </h1>
+<h1>Fin: {{ fechacierre }} </h1>
+<h1>Vacantes: {{ vacantes }} </h1>
+<h1>IMG: {{ imagen }} </h1>
+<h1>Tematicas: {{ tematicas }} </h1>
+<h1>usuario: {{ empresa }} </h1>
+<h1>tipo user: {{ tipo_user }} </h1>
+{#<div class="container">#}
+{#        {% for convo in results %}#}
+{#        <div class="card card-custom">#}
+{#            <div class="card-header card-header-custom">#}
+{#                {{ convo.titulo }}#}
+{#            </div>#}
+{#            <div class="card-body">#}
+{#                <h5 class="card-title">Creado por: {{ convo.empresa_nombre }}</h5>#}
+{#                <p class="card-text">Temática: {{ convo.tematica }}</p>#}
+{#                <p class="card-text">Requisitos: {{ convo.requisitos }}</p>#}
+{#                <p class="card-text"><small class="text-muted">Fecha de cierre: {{ convo.fecha_final }}</small></p>#}
+{#                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#detailsModal{{ convo.id }}">#}
+{#                    Más detalles#}
+{#                </button>#}
+{#                <a href="#" class="btn btn-success">Registrar</a>#}
+{#            </div>#}
+{#        </div>#}
+</body>
+</html>
