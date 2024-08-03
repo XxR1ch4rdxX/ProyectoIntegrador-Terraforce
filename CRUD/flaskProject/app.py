@@ -550,10 +550,10 @@ def Convocatorias():
         """, (id_persona,))
         nombre = cursor.fetchone()[0]
         cursor.close()
-        return render_template('convocatorias.html', titulo=titulo, icon=icon, nombre=nombre, usuario_logeado=usuario_logeado, tipouser=tipouser)
+        return render_template('convocatorias.html', results = results, titulo=titulo, icon=icon, nombre=nombre, usuario_logeado=usuario_logeado, tipouser=tipouser)
     else:
         cursor.close()
-        return render_template('convocatorias.html', titulo=titulo, icon=icon, usuario_logeado=usuario_logeado)
+        return render_template('convocatorias.html', results = results, titulo=titulo, icon=icon, usuario_logeado=usuario_logeado)
 
 
 
