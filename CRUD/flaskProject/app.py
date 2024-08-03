@@ -16,7 +16,8 @@ import pyodbc
 from flask import Flask, render_template, request, flash, redirect, session, url_for, abort, jsonify
 import socket
 import sqlite3
-
+import io
+from PIL import Image
 
 
 #establece la conexion con sql server
@@ -594,8 +595,10 @@ def registrar_convo():
 
         if tituloconv and requisitos and fechainicio and fechacierre and vacantes and tematicas and descripcion:
 
-
-
+            image = Image.open(io.BytesIO(imagenbin))
+            img_io = io.BytesIO()
+            image.save(img_io, 'PNG')
+            img_io.seek(0)
 
             cursor.execute("""
                 EXEC FIND_id_empresa ?
