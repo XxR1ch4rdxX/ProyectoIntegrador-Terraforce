@@ -25,9 +25,6 @@
     </style>
 </head>
 <body>
-
-
-
     <header>
         <nav class="navbar navbar-expand-lg navbar-light bg-light sticky-top">
             <a class="navbar-brand d-flex align-items-center" href="/">
@@ -92,11 +89,13 @@
                 <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#detailsModal{{ convo.id }}">
                     Más detalles
                 </button>
-                <a href="{{ url_for('registrarse_convo', idconvo=convo.id) }}" class="btn btn-success">Registrar</a>
+                <button type="button" class="btn btn-success" data-toggle="modal" data-target="#confirmModal{{ convo.id }}">
+                    Registrar
+                </button>
             </div>
         </div>
 
-        <!-- Modal -->
+        <!-- Modal de detalles -->
         <div class="modal fade" id="detailsModal{{ convo.id }}" tabindex="-1" aria-labelledby="detailsModalLabel{{ convo.id }}" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -117,7 +116,28 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-                        <a href="{{ url_for('registrarse_convo', idconvo=convo.id) }}" class="btn btn-success">Registrar</a>
+                        <button type="button" class="btn btn-success" data-toggle="modal" data-target="#confirmModal{{ convo.id }}">Registrar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal de confirmación -->
+        <div class="modal fade" id="confirmModal{{ convo.id }}" tabindex="-1" aria-labelledby="confirmModalLabel{{ convo.id }}" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="confirmModalLabel{{ convo.id }}">Confirmar Registro</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        ¿Estás seguro de que deseas registrarte en la convocatoria "{{ convo.titulo }}"?
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                        <a href="{{ url_for('registrarse_convo', idconvo=convo.id) }}" class="btn btn-success">Confirmar</a>
                     </div>
                 </div>
             </div>
