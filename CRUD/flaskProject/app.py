@@ -384,7 +384,7 @@ def empresaGuardarRegistro():
 
         if passw != testpassw:
             flash('Las contraseñas no coinciden', 'error')
-            return redirect(url_for('registro'))
+            return redirect(url_for('registro_enterprice'))
 
         try:
             # Verificar si el correo ya existe
@@ -393,7 +393,7 @@ def empresaGuardarRegistro():
 
             if email_count > 0:
                 flash('El correo electrónico ya está registrado', 'error')
-                return redirect(url_for('registro'))
+                return redirect(url_for('registro_enterprice'))
 
             # Verificar si el RFC ya existe
             cursor.execute("SELECT COUNT(*) FROM Empresas WHERE RFC = ?", rfc)
@@ -401,7 +401,7 @@ def empresaGuardarRegistro():
 
             if rfc_count > 0:
                 flash('El RFC ya está registrado', 'error')
-                return redirect(url_for('registro'))
+                return redirect(url_for('registro_enterprice'))
 
             # Ejecutar el procedimiento almacenado para insertar el nuevo usuario
             cursor.execute("EXEC sp_ingresarEmpresa @nombre= ?, @RFC= ?, @correo= ?, @password= ?, @fone= ?, @estado= ?, @municipio=?, @colonia= ?, @calle= ?;",
@@ -411,9 +411,13 @@ def empresaGuardarRegistro():
             flash('Registro exitoso', 'success')
         except pyodbc.Error as e:
             flash(f'Error en el registro: {str(e)}', 'error')
-            return redirect(url_for('registro'))
+            return redirect(url_for('registro_enterprice'))
         finally:
             cursor.close()
+
+        return redirect(url_for('registro_enterprice'))
+
+    return render_template('registro_enterprice.html')
 
 
 #Fin de la funcion
