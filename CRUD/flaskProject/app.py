@@ -509,6 +509,40 @@ def Home():
         return render_template('Home.html', titulo=titulo, icon=icon, usuario_logeado=usuario_logeado)
 
 
+@app.route('/registrarse_convo/<int:idconvo>', methods=['GET'])
+def registrarse_convo(idconvo):
+    if 'id_user' in session:
+        cursor = connection.cursor()
+        try:
+            cursor.execute('EXEC sp_RegistroConvoUser @iduser = ?, @idconvo = ?', (session['id_user'], idconvo))
+            connection.commit()
+
+            # Captura y procesa los mensajes de PRINT
+            messages = []
+            while cursor.messages:
+                message = cursor.messages.pop(0)
+                messages.append(message[1])
+
+            # Verifica los mensajes y muestra flash adecuado
+            if any('El usuario ya está registrado en esta convocatoria' in msg for msg in messages):
+                flash('El usuario ya está registrado en esta convocatoria.', 'danger')
+            elif any('No es posible registrar más usuarios en esta convocatoria' in msg for msg in messages):
+                flash('No es posible registrar más usuarios en esta convocatoria.', 'danger')
+            else:
+                flash('Registro exitoso', 'success')
+                for message in messages:
+                    flash(message, 'info')
+
+        except Exception as e:
+            error_message = str(e)
+            flash('Ocurrió un error al intentar registrarse: ' + error_message, 'danger')
+        finally:
+            cursor.close()
+        return redirect(url_for('Convocatorias'))
+    else:
+        flash('Debes iniciar sesión para registrarte', 'danger')
+        return redirect(url_for('login'))
+
 
 @app.route('/Convocatorias', methods=["GET"])
 def Convocatorias():
