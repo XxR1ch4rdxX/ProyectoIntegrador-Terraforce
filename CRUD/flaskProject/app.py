@@ -502,7 +502,7 @@ def Home():
         """, (id_persona,))
         nombre = cursor.fetchone()[0]
         cursor.close()
-        return render_template('Home.html', titulo=titulo, icon=icon, nombre=nombre, usuario_logeado=usuario_logeado)
+        return render_template('Home.html', titulo=titulo, icon=icon, nombre=nombre, usuario_logeado=usuario_logeado, tipouser=tipouser)
     else:
         cursor.close()
         return render_template('Home.html', titulo=titulo, icon=icon, usuario_logeado=usuario_logeado)
@@ -511,6 +511,7 @@ def Home():
 
 @app.route('/Convocatorias', methods=["GET"])
 def Convocatorias():
+
     cursor = connection.cursor()
     cursor.execute('''
         SELECT c.id, c.titulo, c.requisitos, c.imagen, c.usuarios_registrados, 
@@ -523,7 +524,36 @@ def Convocatorias():
     ''')
     results = cursor.fetchall()
     cursor.close()
-    return render_template('convocatorias.html', results=results,titulo=titulo,icon=icon)
+
+    #Esto para que, si no estas logueado, te mande al login en vez de al Home
+    if 'id_user' not in session:
+        return redirect(url_for('login'))
+
+    cursor = connection.cursor()
+    id = session.get('id_user')
+    tipouser = session.get('tipo_user')
+    usuario_logeado = False
+
+    if tipouser == 3:
+        cursor.close()
+        return redirect(url_for('HomeEmpresa'))
+
+    if id and tipouser:
+        usuario_logeado = True
+        cursor.execute("""
+        SELECT id_persona from Usuarios where id = ? 
+        """, (id,))
+        id_persona = cursor.fetchone()
+        id_persona = id_persona[0]
+        cursor.execute("""
+        select nombre from Personas where id = ?
+        """, (id_persona,))
+        nombre = cursor.fetchone()[0]
+        cursor.close()
+        return render_template('convocatorias.html', titulo=titulo, icon=icon, nombre=nombre, usuario_logeado=usuario_logeado, tipouser=tipouser)
+    else:
+        cursor.close()
+        return render_template('convocatorias.html', titulo=titulo, icon=icon, usuario_logeado=usuario_logeado)
 
 
 
@@ -599,7 +629,7 @@ def HomeEmpresa():
         """, (id_persona,))
         nombre = cursor.fetchone()[0]
         cursor.close()
-        return render_template('Home.html', titulo=titulo, icon=icon, nombre=nombre,usuario_logeado=usuario_logeado)
+        return render_template('HomeEmpresa.html', titulo=titulo, icon=icon, nombre=nombre,usuario_logeado=usuario_logeado, tipouser=tipouser)
 
 #Palas empresas
     if id and tipouser:
@@ -611,9 +641,9 @@ def HomeEmpresa():
         """, (id,))
         nombre= cursor.fetchone()[0]
         cursor.close()
-        return render_template('HomeEmpresa.html', titulo=titulo, icon=icon, nombre=nombre, usuario_logeado=usuario_logeado)
+        return render_template('HomeEmpresa.html', titulo=titulo, icon=icon, nombre=nombre, usuario_logeado=usuario_logeado, tipouser=tipouser)
     else:
-        return render_template('HomeEmpresa.html', titulo=titulo, icon=icon, usuario_logeado=usuario_logeado)
+        return render_template('HomeEmpresa.html', titulo=titulo, icon=icon, usuario_logeado=usuario_logeado, tipouser=tipouser)
 
 @app.route('/logout')
 def logout():
@@ -628,6 +658,49 @@ def logout():
 @app.route('/error')
 def errorpage():
     return render_template('error.html',titulo=titulo, icon=icon)
+
+@app.route('/misconvocatorias')
+def misconvocatorias():
+        # Esto para que, si no estas logueado, te mande al login en vez de al Home
+    if 'id_user' not in session:
+        return redirect(url_for('login'))
+
+    cursor = connection.cursor()
+    id = session.get('id_user')
+    tipouser = session.get('tipo_user')
+    usuario_logeado = False
+
+    if tipouser == 2:
+         cursor.close()
+         return redirect(url_for('errorpage'))
+     # Palos admin
+    if tipouser == 1:
+        usuario_logeado = True
+        cursor.execute("""
+        SELECT id_persona from Usuarios where id = ? 
+            """, (id,))
+        id_persona = cursor.fetchone()
+        id_persona = id_persona[0]
+        cursor.execute("""
+        select nombre from Personas where id = ?
+        """, (id_persona,))
+        nombre = cursor.fetchone()[0]
+        cursor.close()
+        return render_template('convocatorias.html', titulo=titulo, icon=icon, nombre=nombre,usuario_logeado=usuario_logeado, tipouser=tipouser)
+
+    # Palas empresas
+    if id and tipouser:
+        usuario_logeado = True
+        cursor.execute("""
+        select e.nombre from usuarios as u
+        join Empresas as e on u.id_empresa = e.id
+        WHERE u.id=?
+        """, (id,))
+        nombre = cursor.fetchone()[0]
+        cursor.close()
+        return render_template('misconvocatorias.html', titulo=titulo, icon=icon, nombre=nombre,usuario_logeado=usuario_logeado, tipouser=tipouser)
+    else:
+        return render_template('misconvocatorias.html', titulo=titulo, icon=icon, usuario_logeado=usuario_logeado, tipouser=tipouser)
 
 
 
