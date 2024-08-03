@@ -528,13 +528,30 @@ def Home():
         select nombre from Personas where id = ?
         """, (id_persona,))
         nombre = cursor.fetchone()[0]
+
+        query = '''
+        SELECT c.id, c.titulo, c.requisitos, c.imagen, c.usuarios_registrados,
+        c.limite_usuarios, c.fecha_inicio, c.fecha_final, e.nombre AS empresa_nombre
+        FROM Registros as r
+        JOIN Convocatorias as c ON r.id_convocatoria = c.id
+        JOIN Empresas AS e on c.id_empresa = e.id
+        JOIN Estatus AS es on c.id_estatus = es.id
+        WHERE id_voluntario = ?;
+        '''
+        cursor.execute(query, (id))
+        results = cursor.fetchall()
+
         cursor.close()
-        return render_template('Home.html', titulo=titulo, icon=icon, nombre=nombre, usuario_logeado=usuario_logeado, tipouser=tipouser)
+
+
+        return render_template('Home.html', results = results, titulo=titulo, icon=icon, nombre=nombre, usuario_logeado=usuario_logeado, tipouser=tipouser)
     else:
         cursor.close()
         return render_template('Home.html', titulo=titulo, icon=icon, usuario_logeado=usuario_logeado)
 
 
+
+#Funcion para borrar una convocatoria
 @app.route('/registrarse_convo/<int:idconvo>', methods=['GET'])
 def registrarse_convo(idconvo):
     if 'id_user' in session:
@@ -568,6 +585,28 @@ def registrarse_convo(idconvo):
     else:
         flash('Debes iniciar sesión para registrarte', 'danger')
         return redirect(url_for('login'))
+
+
+
+    #Funcion para salirse de una convocatoria
+@app.route('/borrarConvo/<int:idconvo>', methods=['GET'])
+def borrarConvo(idconvo):
+    if 'id_user' in session:
+        cursor = connection.cursor()
+        try:
+            cursor.execute('EXEC sp_borrarRegistroUser @iduser = ?, @idconvo = ?;', (session['id_user'], idconvo))
+            connection.commit()
+            flash('Borrado exitoso', 'success')
+        except Exception as e:
+            error_message = str(e)
+            flash('Ocurrió un error al intentar borrar la convocatoria: ' + error_message, 'danger')
+        finally:
+            cursor.close()
+        return redirect(url_for('Home'))
+    else:
+        flash('Debes iniciar sesión para borrar una convocatoria', 'danger')
+        return redirect(url_for('login'))
+
 
 
 @app.route('/Convocatorias', methods=["GET"])
