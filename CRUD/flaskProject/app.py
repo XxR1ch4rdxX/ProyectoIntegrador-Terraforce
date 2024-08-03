@@ -560,22 +560,31 @@ def Convocatorias():
 @app.route('/registro_convocatoria')
 def registro_convocatoria():
     return render_template('crearConvo.html', titulo=titulo, icon=icon)
-@app.route('/registrar_convo',methods=['POST'])
-def registrar_convo():
 
+
+@app.route('/registrar_convo', methods=['POST'])
+def registrar_convo():
     cursor = connection.cursor()
     tituloconv = request.form.get('titulo')
+    descripcion = request.form.get('descripcion')
     requisitos = request.form.get('requisitos')
     fechainicio = request.form.get('fecha_inicio')
     fechacierre = request.form.get('fecha_cierre')
     tematicas = request.form.get('tematicas')
     vacantes = request.form.get('vacantes')
     imagen = request.files.get('imagen')
-    imagenbin = imagen.read()
 
+    imagenbin = None
+    if imagen:
+        imagenbin = imagen.read()
 
+    id_user = session.get('id_user')
+    tipo_user = session.get('tipo_user')
 
     try:
+        if not id_user:
+            flash('Usuario no autenticado')
+            return redirect('registro_convocatoria')
 
         if vacantes:
             vacantes = int(vacantes)
@@ -583,22 +592,41 @@ def registrar_convo():
                 flash('El número de vacantes mínimo es de 10')
                 return redirect('registro_convocatoria')
 
+        if tituloconv and requisitos and fechainicio and fechacierre and vacantes and tematicas and descripcion:
 
-        if tituloconv and requisitos and fechainicio and fechacierre and vacantes and tematicas:
 
-            return render_template('formulario.html', tituloconv=tituloconv, requisitos=requisitos,
+
+
+            cursor.execute("""
+                EXEC FIND_id_empresa ?
+            """, id_user)
+            id_empresa_row = cursor.fetchone()
+            if not id_empresa_row:
+                flash('No se encontró la empresa para el usuario dado')
+                return redirect('registro_convocatoria')
+
+            id_empresa = id_empresa_row[0]
+
+
+            cursor.execute("""
+                EXEC nombre_empresa ?
+            """, id_empresa)
+            empresa_row = cursor.fetchone()
+            if not empresa_row:
+                flash('No se encontró el nombre de la empresa para el ID dado')
+                return redirect('registro_convocatoria')
+
+            empresa = empresa_row[0]
+
+            return render_template('preview.html', tituloconv=tituloconv, requisitos=requisitos,
                                    fechainicio=fechainicio, fechacierre=fechacierre, vacantes=vacantes,
-                                   imagen=imagenbin, tematicas=tematicas)
-
-
+                                   imagen=imagenbin, tematicas=tematicas, empresa=empresa,tipo_user=tipo_user,descripcion=descripcion)
         else:
             flash('Por favor rellena todos los datos solicitados para el registro')
-            return redirect('registro_convocatoria')
-
-    except :
-        flash('error')
+            return render_template('registro_convocatoria')
+    except Exception as e:
+        flash(f'Error: {str(e)}')
         return redirect('registro_convocatoria')
-
     finally:
         cursor.close()
 
@@ -647,10 +675,6 @@ def HomeEmpresa():
 
 @app.route('/logout')
 def logout():
-    #session.pop('id_user', None)
-    #session.pop('tipo_user', None)
-    #flash('Sesión cerrada correctamente', 'success')
-    #return redirect(url_for('index'))
     session.clear()
     flash('Sesión cerrada correctamente', 'success')
     return redirect(url_for('index'))
