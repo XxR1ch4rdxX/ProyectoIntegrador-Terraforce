@@ -51,22 +51,21 @@
 <h1>Tematicas: {{ tematicas }} </h1>
 <h1>usuario: {{ empresa }} </h1>
 <h1>tipo user: {{ tipo_user }} </h1>
-{#<div class="container">#}
-{#        {% for convo in results %}#}
-{#        <div class="card card-custom">#}
-{#            <div class="card-header card-header-custom">#}
-{#                {{ convo.titulo }}#}
-{#            </div>#}
-{#            <div class="card-body">#}
-{#                <h5 class="card-title">Creado por: {{ convo.empresa_nombre }}</h5>#}
-{#                <p class="card-text">Temática: {{ convo.tematica }}</p>#}
-{#                <p class="card-text">Requisitos: {{ convo.requisitos }}</p>#}
-{#                <p class="card-text"><small class="text-muted">Fecha de cierre: {{ convo.fecha_final }}</small></p>#}
-{#                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#detailsModal{{ convo.id }}">#}
-{#                    Más detalles#}
-{#                </button>#}
-{#                <a href="#" class="btn btn-success">Registrar</a>#}
-{#            </div>#}
-{#        </div>#}
+<div class="container">
+        <div class="card card-custom">
+            <div class="card-header card-header-custom">
+                {{ tituloconv }}
+            </div>
+            <div class="card-body">
+                <h5 class="card-title">Creado por: {{ empresa }}</h5>
+                <p class="card-text">Temática: {{ tematicas }}</p>
+                <p class="card-text">Requisitos: {{ requisitos }}</p>
+                <p class="card-text"><small class="text-muted">Fecha de cierre: {{ fechacierre }}</small></p>
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#detailsModal{{ convo.id }}">
+                    Más detalles
+                </button>
+                <a href="#" class="btn btn-success">Registrar</a>
+            </div>
+        </div>
 </body>
 </html>

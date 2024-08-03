@@ -536,6 +536,7 @@ def registro_convocatoria():
 def registrar_convo():
     cursor = connection.cursor()
     tituloconv = request.form.get('titulo')
+    descripcion = request.form.get('descripcion')
     requisitos = request.form.get('requisitos')
     fechainicio = request.form.get('fecha_inicio')
     fechacierre = request.form.get('fecha_cierre')
@@ -561,7 +562,7 @@ def registrar_convo():
                 flash('El número de vacantes mínimo es de 10')
                 return redirect('registro_convocatoria')
 
-        if tituloconv and requisitos and fechainicio and fechacierre and vacantes and tematicas:
+        if tituloconv and requisitos and fechainicio and fechacierre and vacantes and tematicas and descripcion:
 
 
 
@@ -589,12 +590,10 @@ def registrar_convo():
 
             return render_template('preview.html', tituloconv=tituloconv, requisitos=requisitos,
                                    fechainicio=fechainicio, fechacierre=fechacierre, vacantes=vacantes,
-                                   imagen=imagenbin, tematicas=tematicas, empresa=empresa,tipo_user=tipo_user)
+                                   imagen=imagenbin, tematicas=tematicas, empresa=empresa,tipo_user=tipo_user,descripcion=descripcion)
         else:
             flash('Por favor rellena todos los datos solicitados para el registro')
-            return render_template('registro_convocatoria', tituloconv=tituloconv, requisitos=requisitos,
-                                   fechainicio=fechainicio, fechacierre=fechacierre, vacantes=vacantes,
-                                   imagen=imagenbin, tematicas=tematicas, id_user=id_user)
+            return render_template('registro_convocatoria')
     except Exception as e:
         flash(f'Error: {str(e)}')
         return redirect('registro_convocatoria')
@@ -646,10 +645,6 @@ def HomeEmpresa():
 
 @app.route('/logout')
 def logout():
-    #session.pop('id_user', None)
-    #session.pop('tipo_user', None)
-    #flash('Sesión cerrada correctamente', 'success')
-    #return redirect(url_for('index'))
     session.clear()
     flash('Sesión cerrada correctamente', 'success')
     return redirect(url_for('index'))
