@@ -429,6 +429,51 @@ def empresaGuardarRegistro():
 def about():
     return render_template('about.html', titulo=titulo, icon=icon)
 
+
+
+@app.route('/usermd', methods=['GET'])
+def userhome():
+    if 'id_user' in session:
+        id = session.get('id_user')
+        query = '''
+        SELECT u.id, u.correo, u.passwrd, p.nombre, p.apellidop, p.apellidom
+            FROM Usuarios as u
+            JOIN Personas as p on u.id_persona = p.id
+            WHERE u.id = ?
+        '''
+
+        cursor = connection.cursor()
+        cursor.execute(query, (id,))
+        user = cursor.fetchone()
+        user_id = user[0]
+        user_correo = user[1]
+        user_pass = user[2]
+        user_name = user[3]
+        user_apellidop = user[4]
+        user_apellidom = user[5]
+
+        userdata = {
+            'id': user_id,
+            'correo': user_correo,
+            'pass': user_pass,
+            'name': user_name,
+            'apellidop': user_apellidop,
+            'apellidom': user_apellidom,
+        }
+
+        return render_template('usermd.html', userdata=userdata)
+    return "No user in session", 401
+
+
+
+
+
+
+
+
+
+
+
 #template - Home
 @app.route('/Home')
 def Home():
@@ -443,7 +488,7 @@ def Home():
 
     if tipouser == 3:
         cursor.close()
-        return redirect(url_for('errorpage'))
+        return redirect(url_for('HomeEmpresa'))
 
     if id and tipouser:
         usuario_logeado = True
@@ -562,12 +607,42 @@ def HomeEmpresa():
     if 'id_user' not in session:
         return redirect(url_for('login'))
 
+    cursor = connection.cursor()
+    id = session.get('id_user')
     tipouser = session.get('tipo_user')
+    usuario_logeado = False
 
     if tipouser == 2:
-            return redirect(url_for('errorpage'))
+        cursor.close()
+        return redirect(url_for('errorpage'))
+    #Palos admin
+    if tipouser == 1:
+        usuario_logeado = True
+        cursor.execute("""
+        SELECT id_persona from Usuarios where id = ? 
+            """, (id,))
+        id_persona = cursor.fetchone()
+        id_persona = id_persona[0]
+        cursor.execute("""
+        select nombre from Personas where id = ?
+        """, (id_persona,))
+        nombre = cursor.fetchone()[0]
+        cursor.close()
+        return render_template('Home.html', titulo=titulo, icon=icon, nombre=nombre,usuario_logeado=usuario_logeado)
+
+#Palas empresas
+    if id and tipouser:
+        usuario_logeado = True
+        cursor.execute("""
+        select e.nombre from usuarios as u
+        join Empresas as e on u.id_empresa = e.id
+        WHERE u.id=?
+        """, (id,))
+        nombre= cursor.fetchone()[0]
+        cursor.close()
+        return render_template('HomeEmpresa.html', titulo=titulo, icon=icon, nombre=nombre, usuario_logeado=usuario_logeado)
     else:
-        return render_template('HomeEmpresa.html', titulo=titulo, icon=icon)
+        return render_template('HomeEmpresa.html', titulo=titulo, icon=icon, usuario_logeado=usuario_logeado)
 
 @app.route('/logout')
 def logout():
