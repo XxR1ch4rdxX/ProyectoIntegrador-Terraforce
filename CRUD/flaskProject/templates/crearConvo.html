@@ -62,6 +62,9 @@
                     <li class="nav-item" style="display: {% if usuario_logeado and tipouser==1 %}block{% else %}none{% endif %}">
                         <a class="nav-link" href="/Home">Ir al Home</a>
                     </li>
+                    <li class="nav-item" style="display: {% if usuario_logeado and tipouser==3 %}block{% else %}none{% endif %}">
+                        <a class="nav-link" href="/HomeEmpresa">HOME</a>
+                    </li>
                     <li class="nav-item" style="display: {% if usuario_logeado %}none{% else %}block{% endif %}">
                         <a class="nav-link" href="/registro">Registro</a>
                     </li>
@@ -70,9 +73,6 @@
                     </li>
                     <li class="nav-item" style="display: {% if usuario_logeado %}block{% else %}none{% endif %}">
                         <a class="nav-link" href="/logout">Cerrar sesión</a>
-                    </li>
-                    <li class="nav-item" style="display: {% if usuario_logeado and tipouser==1%}none{% else %}block{% endif %}">
-                        <a class="nav-link" href="/misconvocatorias">Mis Convocatorias</a>
                     </li>
                     <li class="nav-item" style="display: {% if usuario_logeado and tipouser==1%}block{% else %}none{% endif %}">
                         <a class="nav-link" href="/Convocatorias">Convocatorias</a>
