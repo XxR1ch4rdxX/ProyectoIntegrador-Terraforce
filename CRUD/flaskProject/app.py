@@ -734,7 +734,7 @@ def registrar_convo():
 
 @app.route('/HomeEmpresa')
 def HomeEmpresa():
-    # Esto para que, si no estas logueado, te mande al login en vez de al Home
+    # Si no estás logueado, redirige al login
     if 'id_user' not in session:
         return redirect(url_for('login'))
 
@@ -742,25 +742,60 @@ def HomeEmpresa():
     id = session.get('id_user')
     tipouser = session.get('tipo_user')
     usuario_logeado = False
+    titulo = "Mis Convocatorias"
+    icon = url_for('static', filename='images/tlogo.png')
 
     if tipouser == 2:
         cursor.close()
         return redirect(url_for('errorpage'))
-    #Palos admin
+
+    # Para admin
     if tipouser == 1:
         usuario_logeado = True
-        cursor.execute("""
-        SELECT id_persona from Usuarios where id = ? 
-            """, (id,))
+        cursor.execute("SELECT id_persona FROM Usuarios WHERE id = ?", (id,))
         id_persona = cursor.fetchone()
-        id_persona = id_persona[0]
-        cursor.execute("""
-        select nombre from Personas where id = ?
-        """, (id_persona,))
-        nombre = cursor.fetchone()[0]
-        cursor.close()
-        return render_template('HomeEmpresa.html', titulo=titulo, icon=icon, nombre=nombre,usuario_logeado=usuario_logeado, tipouser=tipouser)
+        if id_persona:
+            id_persona = id_persona[0]
+            cursor.execute("SELECT nombre FROM Personas WHERE id = ?", (id_persona,))
+            nombre = cursor.fetchone()[0]
+            cursor.close()
+            return render_template('convocatorias.html', titulo=titulo, icon=icon, nombre=nombre,
+                                   usuario_logeado=usuario_logeado, tipouser=tipouser)
+        else:
+            cursor.close()
+            return redirect(url_for('errorpage'))
 
+    # Para empresas
+    if id and tipouser:
+        usuario_logeado = True
+        cursor.execute("""
+            SELECT e.nombre FROM usuarios AS u
+            JOIN Empresas AS e ON u.id_empresa = e.id
+            WHERE u.id = ?
+        """, (id,))
+        nombre = cursor.fetchone()[0]
+
+        cursor.execute("SELECT id_empresa FROM Usuarios WHERE id = ?", (id,))
+        idempresa = cursor.fetchone()[0]
+
+        cursor.execute("""
+            SELECT c.id, c.titulo, c.requisitos, c.descripcion,
+                   c.usuarios_registrados, c.limite_usuarios, c.fecha_inicio,
+                   c.fecha_final, e.nombre AS empresa_nombre, es.nombre AS estatus_nombre, t.tematica
+            FROM Convocatorias AS c
+            JOIN Empresas AS e ON e.id = c.id_empresa
+            JOIN Estatus AS es ON es.id = c.id_estatus
+            JOIN Tematicas AS t ON t.id = c.id_tematica
+            WHERE c.id_empresa = ?
+        """, (idempresa,))
+        results = cursor.fetchall()
+        cursor.close()
+
+        return render_template('HomeEmpresa.html', titulo=titulo, results=results, icon=icon, nombre=nombre,
+                               usuario_logeado=usuario_logeado, tipouser=tipouser)
+    else:
+        return render_template('HomeEmpresa.html', titulo=titulo, icon=icon, usuario_logeado=usuario_logeado,
+                               tipouser=tipouser)
 #Palas empresas
     if id and tipouser:
         usuario_logeado = True
@@ -771,6 +806,7 @@ def HomeEmpresa():
         """, (id,))
         nombre= cursor.fetchone()[0]
         cursor.close()
+
         return render_template('HomeEmpresa.html', titulo=titulo, icon=icon, nombre=nombre, usuario_logeado=usuario_logeado, tipouser=tipouser)
     else:
         return render_template('HomeEmpresa.html', titulo=titulo, icon=icon, usuario_logeado=usuario_logeado, tipouser=tipouser)
@@ -785,49 +821,11 @@ def logout():
 def errorpage():
     return render_template('error.html',titulo=titulo, icon=icon)
 
-@app.route('/misconvocatorias')
-def misconvocatorias():
-        # Esto para que, si no estas logueado, te mande al login en vez de al Home
-    if 'id_user' not in session:
-        return redirect(url_for('login'))
 
-    cursor = connection.cursor()
-    id = session.get('id_user')
-    tipouser = session.get('tipo_user')
-    usuario_logeado = False
 
-    if tipouser == 2:
-         cursor.close()
-         return redirect(url_for('errorpage'))
-     # Palos admin
-    if tipouser == 1:
-        usuario_logeado = True
-        cursor.execute("""
-        SELECT id_persona from Usuarios where id = ? 
-            """, (id,))
-        id_persona = cursor.fetchone()
-        id_persona = id_persona[0]
-        cursor.execute("""
-        select nombre from Personas where id = ?
-        """, (id_persona,))
-        nombre = cursor.fetchone()[0]
-        cursor.close()
-        return render_template('convocatorias.html', titulo=titulo, icon=icon, nombre=nombre,usuario_logeado=usuario_logeado, tipouser=tipouser)
 
-    # Palas empresas
-    if id and tipouser:
-        usuario_logeado = True
-        cursor.execute("""
-        select e.nombre from usuarios as u
-        join Empresas as e on u.id_empresa = e.id
-        WHERE u.id=?
-        """, (id,))
-        nombre = cursor.fetchone()[0]
-        cursor.close()
-        return render_template('misconvocatorias.html', titulo=titulo, icon=icon, nombre=nombre,usuario_logeado=usuario_logeado, tipouser=tipouser)
-    else:
-        return render_template('misconvocatorias.html', titulo=titulo, icon=icon, usuario_logeado=usuario_logeado, tipouser=tipouser)
 
+#Modificar
 @app.route('/modify', methods=['GET', 'POST'])
 def modify():
     if request.method == 'POST':

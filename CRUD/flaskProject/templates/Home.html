@@ -121,7 +121,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-                        <button type="button" class="btn btn-success" data-toggle="modal" data-target="#confirmModal{{ convo.id }}">Registrar</button>
+                        <button type="button" class="btn btn-success" data-toggle="modal" data-target="#confirmModal{{ convo.id }}">Salir de la Convocatoria</button>
                     </div>
                 </div>
             </div>
@@ -148,7 +148,7 @@
             </div>
         </div>
         {% endfor %}
-        <a href="{{ url_for('registro_convocatoria') }}" class="btn btn-register">Registrar nueva convocatoria</a>
+        <a href="{{ url_for('Convocatorias') }}" class="btn btn-register">Registrarse a una nueva convocatoria</a>
     </div>
 
     <script>

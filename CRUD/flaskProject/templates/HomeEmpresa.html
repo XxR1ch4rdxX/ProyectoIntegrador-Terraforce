@@ -7,9 +7,35 @@
     <title>{{ titulo }}</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="../static/CSS/index.css">
+    <style>
+        .convocatoria-card {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            background-color: #f8f9fa;
+        }
+        .convocatoria-card-header {
+            background-color: #28a745;
+            color: white;
+            padding: 10px;
+            border-top-left-radius: 8px;
+            border-top-right-radius: 8px;
+            font-weight: bold;
+        }
+        .convocatoria-card-body {
+            padding: 10px;
+        }
+        .convocatoria-actions {
+            display: flex;
+            justify-content: space-between;
+        }
+        .convocatoria-actions button {
+            margin-right: 10px;
+        }
+    </style>
 </head>
 <body>
-{#<h1>ESTA ES LA HOME DE LA EMPRESA , si eres usuario tipo 2 no puedes estar aqui a no ser que seas admin</h1>#}
     <header>
         <nav class="navbar navbar-expand-lg navbar-light bg-light sticky-top">
             <a class="navbar-brand d-flex align-items-center" href="/">
@@ -19,13 +45,12 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav mr-auto">
-                <li class="nav-item" style="display: {% if usuario_logeado %}block{% else %}none{% endif %}">
-                    <a class="nav-link" href="{{ url_for('userhome') }}">Hola! {{ nombre }}</a>
-                </li>
-            </ul>
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item" style="display: {% if usuario_logeado %}block{% else %}none{% endif %}">
+                        <a class="nav-link" href="{{ url_for('userhome') }}">Hola! {{ nombre }}</a>
+                    </li>
+                </ul>
                 <ul class="navbar-nav ml-auto">
-                 <!-- los que tienen el block después del none, se ocultaran cuando el usuario esté loggeado -->
                     <li class="nav-item" style="display: {% if usuario_logeado and tipouser==1 %}block{% else %}none{% endif %}">
                         <a class="nav-link" href="/Home">Ir al Home</a>
                     </li>
@@ -52,22 +77,63 @@
         </nav>
     </header>
 
-
     <div class="container my-5">
         <div class="section">
-            <div class="section-details">
-                <h2>Título del Texto para las empresas</h2>
-                <p>Este es el texto que se muestra al lado de la imagen. Puedes añadir más contenido aquí según tus necesidades.</p>
-            </div>
-            <img src="../static/images/tu-imagen1.jpg" alt="Imagen">
-        </div>
+            <h2>Mis Convocatorias</h2>
+            {% if results %}
+                {% for convocatoria in results %}
+                    <div class="convocatoria-card">
+                        <div class="convocatoria-card-header">
+                            Convocatoria {{ convocatoria[1] }}
+                        </div>
+                        <div class="convocatoria-card-body">
+                            <p>Creado por: {{ convocatoria[8] }}</p>
+                            <p>Temática: {{ convocatoria[10] }}</p>
+                            <p>Requisitos: {{ convocatoria[2] }}</p>
+                            <p>Fecha de cierre: {{ convocatoria[7] }}</p>
+                            <div class="convocatoria-actions">
+                                <button class="btn btn-primary" data-toggle="modal" data-target="#detallesModal{{ convocatoria[0] }}">Más detalles</button>
+                                <button class="btn btn-warning">Modificar convocatoria</button>
+                                <button class="btn btn-info">Ver usuarios registrados</button>
+                            </div>
+                        </div>
+                    </div>
 
-        <div class="section">
-            <img src="../static/images/tu-imagen2.jpg" alt="Imagen">
-            <div class="section-details">
-                <h2>Título del Texto</h2>
-                <p>Este es el texto que se muestra al lado de la imagen. Puedes añadir más contenido aquí según tus necesidades.</p>
-            </div>
+                    <!-- Modal de detalles -->
+
+                <div class="modal fade" id="detallesModal{{ convocatoria[0] }}" tabindex="-1" role="dialog" aria-labelledby="detallesModalLabel{{ convocatoria[0] }}" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="detallesModalLabel{{ convocatoria[0] }}">Detalles de Convocatoria {{ convocatoria[1] }}</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <p><strong>Creado por:</strong> {{ convocatoria[8] }}</p>
+                                <p><strong>Temática:</strong> {{ convocatoria[10] }}</p>
+                                <p><strong>Requisitos:</strong> {{ convocatoria[2] }}</p>
+                                <p><strong>Fecha de cierre:</strong> {{ convocatoria[7] }}</p>
+                                <p><strong>Descripción:</strong> {{ convocatoria[3] }}</p>
+                                <p><strong>Empresa:</strong> {{ convocatoria[9] }}</p>
+                                <p><strong>Estatus:</strong> {{ convocatoria[10] }}</p>
+                                <p><strong>Usuarios Registrados:</strong> {{ convocatoria[4] }} de {{ convocatoria[5] }}</p>
+                                <p><strong>Fecha de inicio:</strong> {{ convocatoria[6] }}</p>
+                                <!-- Agrega aquí cualquier otro detalle relevante -->
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {% endfor %}
+                <button class="btn btn-success mt-3"><a href="{{ url_for('registro_convocatoria') }}" class="btn btn-register">Registrar nueva convocatoria</a></button>
+            {% else %}
+                <p>No hay convocatorias disponibles.</p>
+            {% endif %}
         </div>
     </div>
 
