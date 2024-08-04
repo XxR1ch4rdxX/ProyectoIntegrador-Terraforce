@@ -889,6 +889,26 @@ def HomeEmpresa():
         return render_template('HomeEmpresa.html', titulo=titulo, icon=icon, usuario_logeado=usuario_logeado, tipouser=tipouser)
 
 
+#Funcion para mostrar los usuarios registrados en una convocatoria
+@app.route('/verUsuarios/<int:idconvo>', methods=['GET'])
+def verUsuarios(idconvo):
+    cursor = connection.cursor()
+    query = '''
+            SELECT p.nombre, concat(p.apellidop,' ', p.apellidom) as apellidos, u.correo 
+            FROM Registros as r
+            JOIN Usuarios as u ON u.id = r.id_voluntario
+            JOIN Personas as p on p.id = u.id_persona
+            WHERE r.id_convocatoria = ?
+            '''
+    cursor.execute(query, (idconvo,))
+    results = cursor.fetchall()
+    cursor.close()
+
+    return render_template('verUsuarios.html', results=results)
+
+
+
+#Funcion
 
 
 #Funcion para modificar una convocatoria

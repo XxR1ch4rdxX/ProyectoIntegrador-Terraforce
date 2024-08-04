@@ -104,7 +104,7 @@
                             <div class="convocatoria-actions">
                                 <button class="btn btn-primary" data-toggle="modal" data-target="#detallesModal{{ convocatoria[0] }}">Más detalles</button>
                                  <a href="{{ url_for('editarConvo', idconvo=convocatoria[0]) }}" class="btn btn-warning">Modificar convocatoria</a>
-                                <button class="btn btn-info">Ver usuarios registrados</button>
+                                 <a href="{{ url_for('verUsuarios', idconvo=convocatoria[0]) }}" class="btn btn-info">Ver usuarios registrados</a>
                             </div>
                         </div>
                     </div>
