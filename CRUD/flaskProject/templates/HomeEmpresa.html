@@ -33,6 +33,19 @@
         .convocatoria-actions button {
             margin-right: 10px;
         }
+        .btn-register {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+        }
+        .btn-register:hover {
+            background-color: #218838;
+            color: white;
+            text-decoration: none;
+        }
     </style>
 </head>
 <body>
@@ -47,7 +60,7 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item" style="display: {% if usuario_logeado %}block{% else %}none{% endif %}">
-                        <a class="nav-link" href="{{ url_for('userhome') }}">Hola! {{ nombre }}</a>
+                        <a>Hola! {{ nombre }}</a>
                     </li>
                 </ul>
                 <ul class="navbar-nav ml-auto">
@@ -100,41 +113,39 @@
                     </div>
 
                     <!-- Modal de detalles -->
-
-                <div class="modal fade" id="detallesModal{{ convocatoria[0] }}" tabindex="-1" role="dialog" aria-labelledby="detallesModalLabel{{ convocatoria[0] }}" aria-hidden="true">
-                    <div class="modal-dialog" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="detallesModalLabel{{ convocatoria[0] }}">Detalles de Convocatoria {{ convocatoria[1] }}</h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div class="modal-body">
-                                <p><strong>Creado por:</strong> {{ convocatoria[8] }}</p>
-                                <p><strong>Temática:</strong> {{ convocatoria[10] }}</p>
-                                <p><strong>Requisitos:</strong> {{ convocatoria[2] }}</p>
-                                <p><strong>Fecha de cierre:</strong> {{ convocatoria[7] }}</p>
-                                <p><strong>Descripción:</strong> {{ convocatoria[3] }}</p>
-                                <p><strong>Empresa:</strong> {{ convocatoria[9] }}</p>
-                                <p><strong>Estatus:</strong> {{ convocatoria[10] }}</p>
-                                <p><strong>Usuarios Registrados:</strong> {{ convocatoria[4] }} de {{ convocatoria[5] }}</p>
-                                <p><strong>Fecha de inicio:</strong> {{ convocatoria[6] }}</p>
-                                <!-- Agrega aquí cualquier otro detalle relevante -->
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                    <div class="modal fade" id="detallesModal{{ convocatoria[0] }}" tabindex="-1" role="dialog" aria-labelledby="detallesModalLabel{{ convocatoria[0] }}" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="detallesModalLabel{{ convocatoria[0] }}">Detalles de Convocatoria {{ convocatoria[1] }}</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <p><strong>Creado por:</strong> {{ convocatoria[8] }}</p>
+                                    <p><strong>Temática:</strong> {{ convocatoria[10] }}</p>
+                                    <p><strong>Requisitos:</strong> {{ convocatoria[2] }}</p>
+                                    <p><strong>Fecha de cierre:</strong> {{ convocatoria[7] }}</p>
+                                    <p><strong>Descripción:</strong> {{ convocatoria[3] }}</p>
+                                    <p><strong>Empresa:</strong> {{ convocatoria[9] }}</p>
+                                    <p><strong>Estatus:</strong> {{ convocatoria[10] }}</p>
+                                    <p><strong>Usuarios Registrados:</strong> {{ convocatoria[4] }} de {{ convocatoria[5] }}</p>
+                                    <p><strong>Fecha de inicio:</strong> {{ convocatoria[6] }}</p>
+                                    <!-- Agrega aquí cualquier otro detalle relevante -->
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-
                 {% endfor %}
-                <button class="btn btn-success mt-3"><a href="{{ url_for('registro_convocatoria') }}" class="btn btn-register">Registrar nueva convocatoria</a></button>
             {% else %}
                 <p>No hay convocatorias disponibles.</p>
             {% endif %}
         </div>
+        <a href="{{ url_for('registro_convocatoria') }}" class="btn btn-register mt-3">Registrar nueva convocatoria</a>
     </div>
 
     <script>

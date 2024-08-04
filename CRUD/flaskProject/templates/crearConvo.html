@@ -1,181 +1,143 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-     <link rel="icon" href="{{ icon }}">
-    <title>{{ titulo }}</title>
-</head>
- <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f0f0f0;
-            margin: 0;
-            padding: 0;
-        }
-        .header {
-            background-color: #70c337;
-            color: white;
-            padding: 10px;
-            text-align: center;
-        }
-        .header img {
-            vertical-align: middle;
-            margin-right: 10px;
-        }
-        .header a {
-            color: white;
-            text-decoration: none;
-            margin: 0 15px;
-            font-size: 20px;
-        }
-        .container {
-            background-color: #ccffcc;
-            width: 80%;
-            margin: 20px auto;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-        .container h2 {
-            text-align: center;
-            color: #333;
-        }
-        .form-group {
-            margin-bottom: 15px;
-        }
-        .form-group label {
-            display: block;
-            font-weight: bold;
-        }
-        .form-group input, .form-group textarea, .form-group select {
-            width: calc(100% - 20px);
-            padding: 10px;
-            margin-top: 5px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-        .form-group textarea {
-            resize: vertical;
-            height: 100px;
-        }
-        .form-group .date-group {
-            display: flex;
-            justify-content: space-between;
-        }
-        .form-group .date-group input {
-            width: 48%;
-        }
-        .form-container {
-            display: flex;
-            justify-content: space-between;
-        }
-        .form-left, .form-right {
-            width: 48%;
-        }
-        .form-right {
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-        }
-        .form-actions {
-            display: flex;
-            justify-content: flex-end;
-        }
-        .form-actions button {
-            background-color: #70c337;
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            margin: 0 10px;
-        }
-        .form-actions button:hover {
-            background-color: #5da62b;
-        }
-        .form-actions button.cancel {
-            background-color: #ccc;
-        }
-        .form-actions button.cancel:hover {
-            background-color: #bbb;
-        }
-    </style>
-<script>
-    function volver(){
-        window.location='/'
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="{{ icon }}">
+  <title>{{ titulo }}</title>
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    .navbar-custom {
+      background-color: #6FD557;
     }
-</script>
+    .form-container {
+      margin-top: 20px;
+      background-color: #e8f5e9;
+      padding: 20px;
+      border-radius: 5px;
+    }
+    .form-group label {
+      font-weight: bold;
+    }
+    .custom-header {
+      font-size: 1.5rem;
+      font-weight: bold;
+      margin-bottom: 20px;
+    }
+    .btn-custom {
+      background-color: #6FD557;
+      color: white;
+    }
+    .btn-custom:hover {
+      background-color: #5cb946;
+    }
+    .btn-secondary-custom {
+      background-color: #dcdcdc;
+      color: black;
+    }
+    .btn-secondary-custom:hover {
+      background-color: #c0c0c0;
+    }
+    .custom-select, .custom-input, .custom-textarea {
+      background-color: #f5f5f5;
+    }
+  </style>
+</head>
 <body>
-    <div class="header">
-        <img src="../static/images/logoterra1.ico" alt="Logo" width="50" onclick="volver()" style="cursor: pointer">
-        Terraforce
-        <a href="/">Inicio</a>
-        <a href="/profile">Mi perfil</a>
-    </div>
-   <div class="container">
-        {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-                {% for category, message in messages %}
-                    <div class="alert alert-{{ category }} mt-4" role="alert">
-                        {{ message }}
-                    </div>
-                {% endfor %}
-            {% endif %}
-        {% endwith %}
-
-        {% block content %}{% endblock %}
-    </div>
-    <div class="container">
-        <h2>Registra la convocatoria</h2>
-        <form action="/registrar_convo" method="POST" enctype="multipart/form-data">
-            <div class="form-container">
-                <div class="form-left">
-                    <div class="form-group">
-                        <label for="titulo">Título de la convocatoria</label>
-                        <input type="text" id="titulo" name="titulo" required placeholder="Coca-Cola StarShip" >
-                    </div>
-                    <div class="form-group">
-                        <label for="requisitos">Requisitos</label>
-                        <textarea id="requisitos" name="requisitos" required placeholder="Requisitos para tu Convocatoria" ></textarea>
-                    </div>
-                    <div class="form-group date-group">
-                        <div>
-                            <label for="fecha_inicio">Fecha de inicio</label>
-                            <input type="date" id="fecha_inicio" name="fecha_inicio" required >
-                        </div>
-                        <div>
-                            <label for="fecha_cierre">Fecha de cierre</label>
-                            <input type="date" id="fecha_cierre" name="fecha_cierre" required>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="vacantes">Cantidad de vacantes (min:10)</label>
-                        <input type="number" id="vacantes" name="vacantes" required placeholder="10" >
-                    </div>
-                    <div class="form-group">
-                        <label for="tematicas">Tematica</label>
-                        <input type="text" id="tematicas" name="tematicas" required placeholder="Tecnologia" >
-                    </div>
-                </div>
-                <div class="form-right">
-                    <div>
-                        <div class="form-group">
-                            <label for="descripcion">Descripción</label>
-                            <textarea id="descripcion" name="descripcion" placeholder="Describe tu convocatoria" ></textarea>
-                        </div>
-                        <div class="form-group">
-                            <label for="imagen">Adjuntar imagen</label>
-                            <input type="file" id="imagen" name="imagen" class="form-control">
-                        </div>
-                    </div>
-                    <div class="form-actions">
-                        <button type="button" class="cancel">Regresar</button>
-                        <button type="submit">Publicar</button>
-                    </div>
-                </div>
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-light bg-light sticky-top">
+            <a class="navbar-brand d-flex align-items-center" href="/">
+                <img src="{{ url_for('static', filename='images/tlogo.png') }}" style="cursor: pointer" onclick="volver()" alt="Logo" height="40px">
+            </a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item" style="display: {% if usuario_logeado %}block{% else %}none{% endif %}">
+                        <a>Hola! {{ nombre }}</a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item" style="display: {% if usuario_logeado and tipouser==1 %}block{% else %}none{% endif %}">
+                        <a class="nav-link" href="/Home">Ir al Home</a>
+                    </li>
+                    <li class="nav-item" style="display: {% if usuario_logeado %}none{% else %}block{% endif %}">
+                        <a class="nav-link" href="/registro">Registro</a>
+                    </li>
+                    <li class="nav-item" style="display: {% if usuario_logeado %}none{% else %}block{% endif %}">
+                        <a class="nav-link" href="/login">Iniciar sesión</a>
+                    </li>
+                    <li class="nav-item" style="display: {% if usuario_logeado %}block{% else %}none{% endif %}">
+                        <a class="nav-link" href="/logout">Cerrar sesión</a>
+                    </li>
+                    <li class="nav-item" style="display: {% if usuario_logeado and tipouser==1%}none{% else %}block{% endif %}">
+                        <a class="nav-link" href="/misconvocatorias">Mis Convocatorias</a>
+                    </li>
+                    <li class="nav-item" style="display: {% if usuario_logeado and tipouser==1%}block{% else %}none{% endif %}">
+                        <a class="nav-link" href="/Convocatorias">Convocatorias</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/about">Conócenos</a>
+                    </li>
+                </ul>
             </div>
-        </form>
-    </div>
+        </nav>
+    </header>
+
+  <div class="container form-container">
+
+    <div class="custom-header">Registra la convocatoria</div>
+    <form action="/registrar_convo" method="POST">
+      <div class="form-group">
+        <label for="title">Título de la convocatoria</label>
+        <input type="text" class="form-control custom-input" id="title" name="titulo" placeholder="Título de la convocatoria">
+      </div>
+      <div class="form-group">
+        <label for="requirements">Requisitos</label>
+        <textarea class="form-control custom-textarea" id="requirements" name="requisitos" rows="3"></textarea>
+      </div>
+      <div class="form-row">
+        <div class="form-group col-md-6">
+          <label for="start_date">Fecha de inicio</label>
+          <input type="date" class="form-control custom-input" id="start_date" name="fecha_inicio">
+        </div>
+        <div class="form-group col-md-6">
+          <label for="end_date">Fecha de cierre</label>
+          <input type="date" class="form-control custom-input" id="end_date" name="fecha_cierre">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group col-md-6">
+          <label for="vacancies">Cantidad de vacantes</label>
+          <input type="number" class="form-control custom-input" id="vacancies" name="vacantes">
+        </div>
+        <div class="form-group col-md-6">
+          <label for="topic">Temática</label>
+          <input type="text" class="form-control custom-input" id="topic" name="tematica" placeholder="Temática de la convocatoria">
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="description">Descripción</label>
+        <textarea class="form-control custom-textarea" id="description" name="descripcion" rows="5"></textarea>
+      </div>
+      <div class="form-group">
+        <label for="image">Adjuntar imagen</label>
+        <input type="file" class="form-control-file" id="image" name="imagen">
+      </div>
+      <button type="submit" class="btn btn-custom">Publicar</button>
+      <a href="/Convocatorias" class="btn btn-secondary-custom">Regresar</a>
+    </form>
+  </div>
+
+  <script>
+    function volver(){
+      window.location.href='/'
+    }
+  </script>
+
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>
