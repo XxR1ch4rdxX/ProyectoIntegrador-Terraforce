@@ -888,6 +888,55 @@ def HomeEmpresa():
     else:
         return render_template('HomeEmpresa.html', titulo=titulo, icon=icon, usuario_logeado=usuario_logeado, tipouser=tipouser)
 
+
+
+
+#Funcion para modificar una convocatoria
+@app.route('/editarConvo/<int:idconvo>', methods=['GET', 'POST'])
+def editarConvo(idconvo):
+    cursor = connection.cursor()
+    if request.method == 'POST':
+        # Procesamos el formulario enviado y actualizamos la base de datos
+        titulo = request.form['titulo']
+        requisitos = request.form['requisitos']
+        fecha_inicio = request.form['fecha_inicio']
+        fecha_final = request.form['fecha_final']
+        limite_usuarios = request.form['limite_usuarios']
+        id_tematica = request.form['id_tematica']
+        descripcion = request.form['descripcion']
+
+        cursor.execute("""
+            UPDATE Convocatorias
+            SET titulo = ?, requisitos = ?, fecha_inicio = ?, fecha_final = ?, 
+                limite_usuarios = ?, id_tematica = ?, descripcion = ?
+            WHERE id = ?
+        """, (titulo, requisitos, fecha_inicio, fecha_final, limite_usuarios, id_tematica, descripcion, idconvo))
+
+        connection.commit()
+        cursor.close()
+        return redirect(url_for('Convocatorias'))
+
+    cursor.execute("""
+        SELECT c.id, c.titulo, c.requisitos, c.descripcion, c.usuarios_registrados, 
+               c.limite_usuarios, c.fecha_inicio, c.fecha_final, e.nombre AS empresa_nombre, 
+               es.nombre AS estatus_nombre, t.tematica
+        FROM Convocatorias AS c
+        JOIN Empresas AS e ON e.id = c.id_empresa
+        JOIN Estatus AS es ON es.id = c.id_estatus
+        JOIN Tematicas AS t ON t.id = c.id_tematica
+        WHERE c.id = ?
+    """, (idconvo,))
+
+    convocatoria = cursor.fetchone()
+
+    cursor.execute("SELECT id, tematica FROM Tematicas")
+    tematicas = cursor.fetchall()
+
+    cursor.close()
+    return render_template('editarConvo.html', convocatoria=convocatoria, tematicas=tematicas)
+
+#Funcion para cerrar sesion
+
 @app.route('/logout')
 def logout():
     session.clear()

@@ -103,7 +103,7 @@
                             <p>Fecha de cierre: {{ convocatoria[7] }}</p>
                             <div class="convocatoria-actions">
                                 <button class="btn btn-primary" data-toggle="modal" data-target="#detallesModal{{ convocatoria[0] }}">Más detalles</button>
-                                <button class="btn btn-warning">Modificar convocatoria</button>
+                                 <a href="{{ url_for('editarConvo', idconvo=convocatoria[0]) }}" class="btn btn-warning">Modificar convocatoria</a>
                                 <button class="btn btn-info">Ver usuarios registrados</button>
                             </div>
                         </div>
