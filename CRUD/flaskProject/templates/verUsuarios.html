@@ -2,8 +2,11 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lista de Usuarios Registrados</title>
+    <link rel="icon" href="{{ icon }}">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <title>{{ titulo }}</title>
     <style>
         table {
             width: 100%;
@@ -19,9 +22,10 @@
     </style>
 </head>
 <body>
-    <h2>Usuarios Registrados</h2>
-    <table>
-        <thead>
+    <div class="container">
+        <h2 class="heading-text">Usuarios Registrados</h2>
+    <table class="table table-striped">
+        <thead class="thead-dark">
             <tr>
                 <th>Nombre</th>
                 <th>Apellidos</th>
@@ -38,5 +42,6 @@
             {% endfor %}
         </tbody>
     </table>
+    </div>
 </body>
 </html>

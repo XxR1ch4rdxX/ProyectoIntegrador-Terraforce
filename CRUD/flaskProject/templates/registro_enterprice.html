@@ -19,6 +19,21 @@
             background-position: center;
             height: 200vh;
         }
+
+        .flash {
+            padding: 10px;
+            margin: 10px 0;
+        }
+        .flash.success {
+            color: green;
+            border: 1px solid green;
+        }
+        .flash.error {
+            color: red;
+            border: 1px solid red;
+        }
+
+
     </style>
 </head>
 <body>
@@ -59,12 +74,12 @@
                         <input type="text" class="form-control" id="telefono" name="telefono" required>
                     </div>
                     <div class="form-group">
-                        <label for="contrasena">Contraseña:</label>
-                        <input type="password" class="form-control" id="contrasena" name="contrasena" required>
+                        <label for="contrasena">Contraseña(minimo 8 caracteres):</label>
+                        <input type="password" class="form-control" id="contrasena" name="contrasena" minlength="8"  required>
                     </div>
                     <div class="form-group">
                         <label for="confirmar_contrasena">Confirmar contraseña:</label>
-                        <input type="password" class="form-control" id="confirmar_contrasena" name="confirmar_contrasena" required>
+                        <input type="password" class="form-control" id="confirmar_contrasena" name="confirmar_contrasena"  required>
                     </div>
 
                     <!-- New Fields -->

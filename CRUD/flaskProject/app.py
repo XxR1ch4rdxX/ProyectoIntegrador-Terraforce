@@ -2,7 +2,7 @@
 #como links a otros html , getters , sertters cookies
 #incluso la conexion con la base de datos
 import base64
-import mimetypes
+
 import os
 
 #ESTE ES EL CORAZON de la applicacion web (por asi decirlo)
@@ -319,7 +319,7 @@ def sRegistro():
         testpassw = request.form.get('confirmar_contrasena')
 
         if passw != testpassw:
-            flash('Las contraseñas no coinciden', 'danger')
+            flash('Las contraseñas no coinciden', 'error')
             return render_template('registro.html', name=name, lnamep=lnamep,
                                    lnamem=lnamem, email=email)
 
@@ -475,7 +475,7 @@ def empresaGuardarRegistro():
         calle = request.form.get('calle')
 
         if passw != testpassw:
-            flash('Las contraseñas no coinciden', 'error','danger')
+            flash('Las contraseñas no coinciden', 'error')
             return redirect(url_for('registro_enterprice'))
 
         try:
@@ -492,7 +492,7 @@ def empresaGuardarRegistro():
             rfc_count = cursor.fetchone()[0]
 
             if rfc_count > 0:
-                flash('El RFC ya está registrado', 'error','danger')
+                flash('El RFC ya está registrado', 'error')
                 return redirect(url_for('registro_enterprice'))
 
             # Ejecutar el procedimiento almacenado para insertar el nuevo usuario
@@ -502,7 +502,7 @@ def empresaGuardarRegistro():
             connection.commit()
             flash('Registro exitoso', 'success')
         except pyodbc.Error as e:
-            flash(f'Error en el registro: {str(e)}', 'error','danger')
+            flash(f'Error en el registro: {str(e)}', 'error')
             return redirect(url_for('registro_enterprice'))
         finally:
             cursor.close()
@@ -1280,7 +1280,7 @@ def verUsuarios(idconvo):
     results = cursor.fetchall()
     cursor.close()
 
-    return render_template('verUsuarios.html', results=results)
+    return render_template('verUsuarios.html', results=results,titulo=titulo,icon=icon)
 
 
 
