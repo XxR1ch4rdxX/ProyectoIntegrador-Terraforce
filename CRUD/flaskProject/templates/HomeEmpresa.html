@@ -46,6 +46,17 @@
             color: white;
             text-decoration: none;
         }
+
+             .img-preview {
+    max-width: 300px;
+    max-height: 300px;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    border: 1px solid #000000;
+    border-radius: 5px;
+    padding: 5px;
+  }
     </style>
 </head>
 <body>
@@ -99,6 +110,11 @@
                         <div class="convocatoria-card-body">
                             <p>Creado por: {{ convocatoria[8] }}</p>
                             <p>Temática: {{ convocatoria[10] }}</p>
+                            {% if convocatoria.id in imagenes %}
+                                <img src="data:{{ imagenes[convocatoria.id].mime_type }};base64,{{ imagenes[convocatoria.id].img_base64 }}" alt="imagen" class="img-preview">
+                                {% else %}
+                         <p>No hay imagen disponible</p>
+                            {% endif %}
                             <p>Requisitos: {{ convocatoria[2] }}</p>
                             <p>Fecha de cierre: {{ convocatoria[7] }}</p>
                             <div class="convocatoria-actions">
@@ -145,6 +161,9 @@
         <a href="{{ url_for('registro_convocatoria') }}" class="btn btn-register mt-3">Registrar nueva convocatoria</a>
     </div>
 
+
+
+
     <script>
         function volver(){
             window.location.href='/'
@@ -152,7 +171,7 @@
     </script>
 
 {#    Pa ver si si jalaaa#}
-{#    <h1>{{ results }}</h1>#}
+{#    <h1>{{ imagenes }}</h1>#}
 {#    <h1>{{  nombre }}</h1>#}
 {#    <h1>{{ usuario_logeado  }}</h1>#}
 {#    <h1>{{ tipouser  }}</h1>#}

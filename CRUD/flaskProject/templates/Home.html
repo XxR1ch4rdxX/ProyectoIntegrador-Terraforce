@@ -92,6 +92,7 @@
                 <h5 class="card-title">Creado por: {{ convo.empresa_nombre }}</h5>
                 <p class="card-text">Temática: {{ convo.tematica }}</p>
                 <p class="card-text">Requisitos: {{ convo.requisitos }}</p>
+                <img src="data:{{ mime_type }};base64,{{ img_base64 }}" alt="imagen" class="img-preview">
                 <p class="card-text"><small class="text-muted">Fecha de cierre: {{ convo.fecha_final }}</small></p>
                 <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#detailsModal{{ convo.id }}">
                     Más detalles

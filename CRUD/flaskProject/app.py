@@ -2,6 +2,7 @@
 #como links a otros html , getters , sertters cookies
 #incluso la conexion con la base de datos
 import base64
+import mimetypes
 import os
 
 #ESTE ES EL CORAZON de la applicacion web (por asi decirlo)
@@ -15,7 +16,7 @@ import os
 from colorama import init, Fore, Style
 from googletrans import Translator
 import pyodbc
-from flask import Flask, render_template, request, flash, redirect, session, url_for, jsonify
+from flask import Flask, render_template, request, flash, redirect, session, url_for, jsonify, send_file
 import socket
 import sqlite3
 import io
@@ -571,6 +572,29 @@ def Home():
         cursor.execute(query, (id))
         results = cursor.fetchall()
 
+        cursor.execute("""
+        exec sp_FIND_id_empresa ?
+        """,id)
+        idempresa=cursor.fetchone()[0]
+
+        cursor.execute("""
+                  SELECT imagen, mime_type FROM Convocatorias 
+                  WHERE id_empresa = ?
+              """, (idempresa,))
+        img = cursor.fetchone()
+
+        if img:
+            imagen, mime_type = img
+            img_base64 = base64.b64encode(imagen).decode('utf-8')
+        else:
+            imagen = mime_type = img_base64 = None
+
+        cursor.close()
+
+        return render_template('HomeEmpresa.html', titulo=titulo, results=results, icon=icon, nombre=nombre,
+                               usuario_logeado=usuario_logeado, tipouser=tipouser, img=imagen,
+                               mime_type=mime_type, img_base64=img_base64)
+
         cursor.close()
 
 
@@ -653,6 +677,28 @@ def Convocatorias():
         INNER JOIN Tematicas AS t ON t.id = c.id_tematica
     ''')
     results = cursor.fetchall()
+
+    ids = [row[0] for row in results]
+
+    # Recuperar las imágenes para cada ID
+    imagenes = {}
+    for convocatoria_id in ids:
+        cursor.execute("""
+                    SELECT imagen, mime_type FROM Convocatorias 
+                    WHERE id = ?
+                """, (convocatoria_id,))
+        img = cursor.fetchone()
+
+        if img:
+            imagen, mime_type = img
+            if imagen:
+                img_base64 = base64.b64encode(imagen).decode('utf-8')
+                imagenes[convocatoria_id] = {
+                    'img_base64': img_base64,
+                    'mime_type': mime_type
+
+                }
+
     cursor.close()
 
     #Esto para que, si no estas logueado, te mande al login en vez de al Home
@@ -679,8 +725,17 @@ def Convocatorias():
         select nombre from Personas where id = ?
         """, (id_persona,))
         nombre = cursor.fetchone()[0]
+
+
+
         cursor.close()
-        return render_template('convocatorias.html', results = results, titulo=titulo, icon=icon, nombre=nombre, usuario_logeado=usuario_logeado, tipouser=tipouser)
+
+        print("Convocatorias:", results)
+        print("IDs de Convocatorias:", ids)
+        print("Imágenes:", imagenes)
+
+        return render_template('convocatorias.html', titulo=titulo, results=results, icon=icon, nombre=nombre,
+                               usuario_logeado=usuario_logeado, tipouser=tipouser, imagenes=imagenes,)
     else:
         cursor.close()
         return render_template('convocatorias.html', results = results, titulo=titulo, icon=icon, usuario_logeado=usuario_logeado)
@@ -755,7 +810,7 @@ def registro_convocatoria():
             """, (idempresa,))
         results = cursor.fetchall()
 
-        
+
         cursor.execute("""
                                SELECT tematica from Tematicas 
                                """)
@@ -902,7 +957,8 @@ def registrar_convo():
                                    mime_type=mime_type,
                                    id_user=id_user,
                                    id_empresa=id_empresa,
-                                   imagenbin=imagenbin,)
+                                   imagenbin=imagenbin,
+                                   format_img=format_img)
                                    # tamanoima=tamanoima)
         else:
             flash(f'Por favor rellena todos los datos solicitados para el registro {tituloconv,requisitos,fechainicio,fechacierre,vacantes,tematicas,descripcion}','danger')
@@ -913,6 +969,8 @@ def registrar_convo():
         return redirect('registro_convocatoria')
     finally:
         cursor.close()
+
+
 
 @app.route('/post', methods=['POST'])
 def upload():
@@ -926,6 +984,8 @@ def upload():
     vacantes = int(request.form.get('vacantes'))
     imagenbin = request.form.get('imagenbin')
     id_empresa = int(request.form.get('id_empresa'))
+    format_img = request.form.get('format_img')
+    format_img = f'image/{format_img.lower()}'
 
     if imagenbin:
 
@@ -939,12 +999,12 @@ def upload():
     """,tematicas)
     id_tematica=cursor.fetchone()[0]
 
-    if id_tematica and tituloconv and descripcion and requisitos and fechainicio and fechacierre and vacantes and id_empresa and img_data:
+    if id_tematica and tituloconv and descripcion and requisitos and fechainicio and fechacierre and vacantes and id_empresa and img_data and format_img:
         try:
             cursor.execute("""
-                exec sp_post_publicacion ?,?,?,?,?,?,?,?,?
+                exec sp_post_publicacion ?,?,?,?,?,?,?,?,?,?
                 """,tituloconv,descripcion,requisitos,fechainicio,id_empresa,id_tematica,
-                           img_data,vacantes,fechacierre)
+                           img_data,vacantes,fechacierre,format_img)
 
 
             flash('Publicacion creada :D','succes')
@@ -956,9 +1016,9 @@ def upload():
     if id_tematica and tituloconv and descripcion and requisitos and fechainicio and fechacierre and vacantes and id_empresa :
             try:
                 cursor.execute("""
-                    exec sp_post_publicacion ?,?,?,?,?,?,?,?,?
+                    exec sp_post_publicacion ?,?,?,?,?,?,?,?,?,?
                     """, tituloconv, descripcion, requisitos, fechainicio, id_empresa, id_tematica,
-                               'Null', vacantes, fechacierre)
+                               'Null', vacantes, fechacierre,'Null')
 
                 flash('Publicacion creada :D, pero sin imagen', 'succes')
                 return redirect('registro_convocatoria')
@@ -984,7 +1044,6 @@ def upload():
     return render_template('preview.html')
 
 
-
 @app.route('/HomeEmpresa')
 def HomeEmpresa():
     # Si no estás logueado, redirige al login
@@ -1002,7 +1061,6 @@ def HomeEmpresa():
         cursor.close()
         return redirect(url_for('errorpage'))
 
-    # Para admin
     if tipouser == 1:
         usuario_logeado = True
         cursor.execute("SELECT id_persona FROM Usuarios WHERE id = ?", (id,))
@@ -1018,9 +1076,9 @@ def HomeEmpresa():
             cursor.close()
             return redirect(url_for('errorpage'))
 
-    # Para empresas
     if id and tipouser:
         usuario_logeado = True
+        # Recupera el nombre de la empresa
         cursor.execute("""
             SELECT e.nombre FROM usuarios AS u
             JOIN Empresas AS e ON u.id_empresa = e.id
@@ -1028,9 +1086,11 @@ def HomeEmpresa():
         """, (id,))
         nombre = cursor.fetchone()[0]
 
+        # Recupera la ID de la empresa
         cursor.execute("SELECT id_empresa FROM Usuarios WHERE id = ?", (id,))
         idempresa = cursor.fetchone()[0]
 
+        # Recupera las convocatorias
         cursor.execute("""
             SELECT c.id, c.titulo, c.requisitos, c.descripcion,
                    c.usuarios_registrados, c.limite_usuarios, c.fecha_inicio,
@@ -1042,29 +1102,40 @@ def HomeEmpresa():
             WHERE c.id_empresa = ?
         """, (idempresa,))
         results = cursor.fetchall()
+
+        ids = [row[0] for row in results]
+
+        # Recuperar las imágenes para cada ID
+        imagenes = {}
+        for convocatoria_id in ids:
+            cursor.execute("""
+                SELECT imagen, mime_type FROM Convocatorias 
+                WHERE id = ?
+            """, (convocatoria_id,))
+            img = cursor.fetchone()
+
+            if img:
+                imagen, mime_type = img
+                if imagen:
+                    img_base64 = base64.b64encode(imagen).decode('utf-8')
+                    imagenes[convocatoria_id] = {
+                        'img_base64': img_base64,
+                        'mime_type': mime_type
+                    }
+
         cursor.close()
+
+        print("Convocatorias:", results)
+        print("IDs de Convocatorias:", ids)
+        print("Imágenes:", imagenes)
 
         return render_template('HomeEmpresa.html', titulo=titulo, results=results, icon=icon, nombre=nombre,
-                               usuario_logeado=usuario_logeado, tipouser=tipouser)
-    else:
-        return render_template('HomeEmpresa.html', titulo=titulo, icon=icon, usuario_logeado=usuario_logeado,
-                               tipouser=tipouser)
-#Palas empresas
-    if id and tipouser:
-        usuario_logeado = True
-        cursor.execute("""
-        select e.nombre from usuarios as u
-        join Empresas as e on u.id_empresa = e.id
-        WHERE u.id=?
-        """, (id,))
-        nombre= cursor.fetchone()[0]
-        cursor.close()
+                               usuario_logeado=usuario_logeado, tipouser=tipouser,imagenes=imagenes)
 
-        return render_template('HomeEmpresa.html', titulo=titulo, icon=icon, nombre=nombre, usuario_logeado=usuario_logeado, tipouser=tipouser)
-    else:
-        return render_template('HomeEmpresa.html', titulo=titulo, icon=icon, usuario_logeado=usuario_logeado, tipouser=tipouser)
-
-
+    # Manejo para cuando `id` o `tipouser` no están presentes
+    cursor.close()
+    return render_template('HomeEmpresa.html', titulo=titulo, icon=icon, usuario_logeado=usuario_logeado,
+                           tipouser=tipouser)
 #Funcion para mostrar los usuarios registrados en una convocatoria
 @app.route('/verUsuarios/<int:idconvo>', methods=['GET'])
 def verUsuarios(idconvo):

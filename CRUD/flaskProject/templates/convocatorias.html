@@ -22,6 +22,17 @@
             color: white;
             margin-top: 20px;
         }
+
+              .img-preview {
+    max-width: 300px;
+    max-height: 300px;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    border: 1px solid #000000;
+    border-radius: 5px;
+    padding: 5px;
+  }
     </style>
 </head>
 <body>
@@ -91,6 +102,12 @@
                 <h5 class="card-title">Creado por: {{ convo.empresa_nombre }}</h5>
                 <p class="card-text">Temática: {{ convo.tematica }}</p>
                 <p class="card-text">Requisitos: {{ convo.requisitos }}</p>
+                {% set image_found = false %}
+            {% if convo.id in imagenes %}
+                <img src="data:{{ imagenes[convo.id].mime_type }};base64,{{ imagenes[convo.id].img_base64 }}" alt="imagen" class="img-preview">
+             {% else %}
+               <p>No hay imagen disponible</p>
+            {% endif %}
                 <p class="card-text"><small class="text-muted">Fecha de cierre: {{ convo.fecha_final }}</small></p>
                 <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#detailsModal{{ convo.id }}">
                     Más detalles
