@@ -172,6 +172,10 @@ def consultartablas():
 
     id = session.get('id_user')
     tipouser = session.get('tipo_user')
+
+    if tipouser in [2, 3]:
+        return redirect(url_for('errorpage'))
+
     usuario_logeado = False
 
     cursor = connection.cursor()
@@ -183,31 +187,7 @@ def consultartablas():
     nombre = ""
 
     try:
-        if tipouser == 3:
-            usuario_logeado = True
-            cursor.execute("""
-                SELECT e.nombre FROM usuarios AS u
-                JOIN Empresas AS e ON u.id_empresa = e.id
-                WHERE u.id = ?
-            """, (id,))
-            nombre = cursor.fetchone()[0]
-
-            cursor.execute("SELECT id_empresa FROM Usuarios WHERE id = ?", (id,))
-            idempresa = cursor.fetchone()[0]
-
-            cursor.execute("""
-                SELECT c.id, c.titulo, c.requisitos, c.descripcion,
-                       c.usuarios_registrados, c.limite_usuarios, c.fecha_inicio,
-                       c.fecha_final, e.nombre AS empresa_nombre, es.nombre AS estatus_nombre, t.tematica
-                FROM Convocatorias AS c
-                JOIN Empresas AS e ON e.id = c.id_empresa
-                JOIN Estatus AS es ON es.id = c.id_estatus
-                JOIN Tematicas AS t ON t.id = c.id_tematica
-                WHERE c.id_empresa = ?
-            """, (idempresa,))
-            results = cursor.fetchall()
-
-        elif id and tipouser:
+        if id and tipouser:
             usuario_logeado = True
             cursor.execute("""
             SELECT id_persona from Usuarios where id = ? 
@@ -257,6 +237,7 @@ def consultartablas():
         return render_template('error.html', error_message=error_message)
     finally:
         cursor.close()
+
 
 
 @app.route('/remove', methods=['GET'])

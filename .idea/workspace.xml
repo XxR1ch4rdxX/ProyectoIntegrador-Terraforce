@@ -4,14 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="11d711e8-d4c4-4c80-b804-f95e893baf3a" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CRUD/flaskProject/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/CRUD/flaskProject/app.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CRUD/flaskProject/templates/Home.html" beforeDir="false" afterPath="$PROJECT_DIR$/CRUD/flaskProject/templates/Home.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CRUD/flaskProject/templates/about.html" beforeDir="false" afterPath="$PROJECT_DIR$/CRUD/flaskProject/templates/about.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CRUD/flaskProject/templates/convocatorias.html" beforeDir="false" afterPath="$PROJECT_DIR$/CRUD/flaskProject/templates/convocatorias.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CRUD/flaskProject/templates/crud.html" beforeDir="false" afterPath="$PROJECT_DIR$/CRUD/flaskProject/templates/crud.html" afterDir="false" />
-    </list>
+    <list default="true" id="11d711e8-d4c4-4c80-b804-f95e893baf3a" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
