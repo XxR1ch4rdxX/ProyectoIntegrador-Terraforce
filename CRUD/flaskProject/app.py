@@ -268,7 +268,7 @@ def sRegistro():
             count = cursor.fetchone()[0]
 
             if count > 0:
-                flash('El correo electrónico ya está registrado', 'error','danger')
+                flash('El correo electrónico ya está registrado', 'error')
                 return redirect(url_for('registro'))
 
             # Ejecutar el procedimiento almacenado para insertar el nuevo usuario
@@ -277,7 +277,7 @@ def sRegistro():
             connection.commit()
             flash('Registro exitoso', 'success')
         except pyodbc.Error as e:
-            flash(f'Error en el registro: {str(e)}', 'error','danger')
+            flash(f'Error en el registro: {str(e)}', 'error')
         finally:
             cursor.close()
         return redirect(url_for('registro'))
