@@ -33,21 +33,29 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item" style="display: {% if usuario_logeado %}block{% else %}none{% endif %}">
-                        <h2 class="nav-link">Hola! {{ nombre }}</h2>
+                        <a>Hola! {{ nombre }}</a>
                     </li>
                 </ul>
                 <ul class="navbar-nav ml-auto">
-                 <!-- los que tienen el block después del none, se ocultaran cuando el usuario esté loggeado -->
+                    <li class="nav-item" style="display: {% if usuario_logeado and tipouser==1 %}block{% else %}none{% endif %}">
+                        <a class="nav-link" href="/crud">CRUD</a>
+                    </li>
+                    <li class="nav-item" style="display: {% if usuario_logeado and tipouser==1 %}block{% else %}none{% endif %}">
+                        <a class="nav-link" href="/HomeEmpresa">Home/Empresa</a>
+                    </li>
+                    <li class="nav-item" style="display: {% if usuario_logeado and tipouser==1 %}block{% else %}none{% endif %}">
+                        <a class="nav-link" href="/Home">Home/Usuario</a>
+                    </li>
                     <li class="nav-item" style="display: {% if usuario_logeado %}none{% else %}block{% endif %}">
                         <a class="nav-link" href="/registro">Registro</a>
                     </li>
                     <li class="nav-item" style="display: {% if usuario_logeado %}none{% else %}block{% endif %}">
                         <a class="nav-link" href="/login">Iniciar sesión</a>
                     </li>
-                    <li class="nav-item" style="display: {% if usuario_logeado %}none{% else %}block{% endif %}">
+                    <li class="nav-item" style="display: {% if usuario_logeado %}block{% else %}none{% endif %}">
                         <a class="nav-link" href="/logout">Cerrar sesión</a>
                     </li>
-                    <li class="nav-item">
+                    <li class="nav-item" style="display: {% if usuario_logeado and tipouser==1%}block{% else %}none{% endif %}">
                         <a class="nav-link" href="/Convocatorias">Convocatorias</a>
                     </li>
                     <li class="nav-item">
@@ -56,8 +64,9 @@
                 </ul>
             </div>
         </nav>
+    </header>
 
-        <div class="container" id="alert">
+<div class="container" id="alert">
     {% with messages = get_flashed_messages() %}
     {% if messages %}
     <div class="alert alert-success" role="alert">
@@ -66,8 +75,6 @@
     {% endif %}
     {% endwith %}
 </div>
-    </header>
-
 <div class="menuselection">
     <form action="/crud" method="GET">
         <label for="tabla">Selecciona una tabla:</label>
