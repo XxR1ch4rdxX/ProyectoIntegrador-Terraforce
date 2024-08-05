@@ -36,30 +36,27 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item" style="display: {% if usuario_logeado %}block{% else %}none{% endif %}">
-                        <a class="nav-link" href="{{ url_for('userhome') }}">Hola! {{ nombre }}</a>
+                        <a>Hola! {{ nombre }}</a>
                     </li>
                 </ul>
                 <ul class="navbar-nav ml-auto">
                     <li class="nav-item" style="display: {% if usuario_logeado and tipouser==1 %}block{% else %}none{% endif %}">
-                        <a class="nav-link" href="{{ url_for('HomeEmpresa') }}">Ir al HomeEmpresas</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('Home') }}">HOME</a>
+                        <a class="nav-link" href="/Home">Ir al Home</a>
                     </li>
                     <li class="nav-item" style="display: {% if usuario_logeado %}none{% else %}block{% endif %}">
-                        <a class="nav-link" href="{{ url_for('registro') }}">Registro</a>
+                        <a class="nav-link" href="/registro">Registro</a>
                     </li>
                     <li class="nav-item" style="display: {% if usuario_logeado %}none{% else %}block{% endif %}">
-                        <a class="nav-link" href="{{ url_for('login') }}">Iniciar sesión</a>
+                        <a class="nav-link" href="/login">Iniciar sesión</a>
                     </li>
                     <li class="nav-item" style="display: {% if usuario_logeado %}block{% else %}none{% endif %}">
-                        <a class="nav-link" href="{{ url_for('logout') }}">Cerrar sesión</a>
+                        <a class="nav-link" href="/logout">Cerrar sesión</a>
+                    </li>
+                    <li class="nav-item" style="display: {% if usuario_logeado and tipouser==1%}block{% else %}none{% endif %}">
+                        <a class="nav-link" href="/Convocatorias">Convocatorias</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('Convocatorias') }}">Convocatorias</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('about') }}">Conócenos</a>
+                        <a class="nav-link" href="/about">Conócenos</a>
                     </li>
                 </ul>
             </div>

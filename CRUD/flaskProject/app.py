@@ -2,6 +2,7 @@
 #como links a otros html , getters , sertters cookies
 #incluso la conexion con la base de datos
 import traceback
+from datetime import datetime
 
 #ESTE ES EL CORAZON de la applicacion web (por asi decirlo)
 #Los documentos html adjuntos unicamente se utilizara el de crud, index y editar, los otros
@@ -14,7 +15,7 @@ import traceback
 from colorama import init, Fore, Style
 from googletrans import Translator
 import pyodbc
-from flask import Flask, render_template, request, flash, redirect, session, url_for, abort, jsonify
+from flask import Flask, render_template, request, flash, redirect, session, url_for, jsonify
 import socket
 import sqlite3
 import io
@@ -34,6 +35,8 @@ database = 'TerraForce'  #si queremos cambiar de db , debemos cambiar el 'TU_BAS
 titulo = database
 conn = sqlite3.connect(database)
 cursor = conn.cursor()
+
+
 
 
 if database == 'TacoLovers':
@@ -768,6 +771,9 @@ def registro_convocatoria():
 
 @app.route('/registrar_convo', methods=['POST'])
 def registrar_convo():
+
+
+
     cursor = connection.cursor()
     tituloconv = request.form.get('titulo')
     descripcion = request.form.get('descripcion')
@@ -778,12 +784,19 @@ def registrar_convo():
     vacantes = request.form.get('vacantes')
     imagen = request.files.get('imagen')
 
+
+
+    id_user = session.get('id_user')
+    tipo_user = session.get('tipo_user')
+
     imagenbin = None
     if imagen:
         imagenbin = imagen.read()
 
-    id_user = session.get('id_user')
-    tipo_user = session.get('tipo_user')
+
+    if fechainicio == fechacierre :
+            flash('La fecha de inicio y de termino no pueden ser iguales')
+            return redirect('registro_convocatoria')
 
     try:
         if not id_user:
@@ -804,7 +817,7 @@ def registrar_convo():
             img_io.seek(0)
 
             cursor.execute("""
-                EXEC FIND_id_empresa ?
+                EXEC sp_FIND_id_empresa ?
             """, id_user)
             id_empresa_row = cursor.fetchone()
             if not id_empresa_row:
@@ -815,7 +828,7 @@ def registrar_convo():
 
 
             cursor.execute("""
-                EXEC nombre_empresa ?
+                EXEC sp_nombre_empresa ?
             """, id_empresa)
             empresa_row = cursor.fetchone()
             if not empresa_row:
@@ -989,7 +1002,7 @@ def editarConvo(idconvo):
 def logout():
     session.clear()
     flash('Sesión cerrada correctamente', 'success')
-    return redirect(url_for('index'))
+    return render_template('index.html')
 
 @app.route('/error')
 def errorpage():
