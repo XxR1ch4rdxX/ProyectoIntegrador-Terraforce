@@ -239,7 +239,6 @@ def consultartablas():
         cursor.close()
 
 
-
 @app.route('/remove', methods=['GET'])
 #con este metodo borramos campos , obteniendo el id con el boton de el campo solicitado
 def remove():
@@ -1080,7 +1079,7 @@ def registrar_convo():
 
                 if vacantes:
                     vacantes = int(vacantes)
-                    if vacantes < 10:
+                    if vacantes < 10 or vacantes<0:
                         flash('El número de vacantes mínimo es de 10')
                         return redirect('registro_convocatoria')
 
@@ -1327,27 +1326,42 @@ def verUsuarios(idconvo):
 #Funcion para modificar una convocatoria
 @app.route('/editarConvo/<int:idconvo>', methods=['GET', 'POST'])
 def editarConvo(idconvo):
+
+    if 'id_user' not in session:
+        return redirect(url_for('login'))
+
+
     cursor = connection.cursor()
-    if request.method == 'POST':
-        # Procesamos el formulario enviado y actualizamos la base de datos
-        titulo = request.form['titulo']
-        requisitos = request.form['requisitos']
-        fecha_inicio = request.form['fecha_inicio']
-        fecha_final = request.form['fecha_final']
-        limite_usuarios = request.form['limite_usuarios']
-        id_tematica = request.form['id_tematica']
-        descripcion = request.form['descripcion']
+    id = session.get('id_user')
+    tipouser = session.get('tipo_user')
+    usuario_logeado = False
 
-        cursor.execute("""
-            UPDATE Convocatorias
-            SET titulo = ?, requisitos = ?, fecha_inicio = ?, fecha_final = ?, 
-                limite_usuarios = ?, id_tematica = ?, descripcion = ?
-            WHERE id = ?
-        """, (titulo, requisitos, fecha_inicio, fecha_final, limite_usuarios, id_tematica, descripcion, idconvo))
-
-        connection.commit()
+    if tipouser == 2:
         cursor.close()
-        return redirect(url_for('Convocatorias'))
+        return redirect(url_for('errorpage'))
+
+    if request.method == 'POST':
+        if id and tipouser:
+            usuario_logeado = True
+            # Procesamos el formulario enviado y actualizamos la base de datos
+            titulo = request.form['titulo']
+            requisitos = request.form['requisitos']
+            fecha_inicio = request.form['fecha_inicio']
+            fecha_final = request.form['fecha_final']
+            limite_usuarios = request.form['limite_usuarios']
+            id_tematica = request.form['id_tematica']
+            descripcion = request.form['descripcion']
+
+            cursor.execute("""
+                UPDATE Convocatorias
+                SET titulo = ?, requisitos = ?, fecha_inicio = ?, fecha_final = ?, 
+                    limite_usuarios = ?, id_tematica = ?, descripcion = ?
+                WHERE id = ?
+            """, (titulo, requisitos, fecha_inicio, fecha_final, limite_usuarios, id_tematica, descripcion, idconvo))
+
+            connection.commit()
+            cursor.close()
+            return redirect(url_for('Convocatorias'))
 
     cursor.execute("""
         SELECT c.id, c.titulo, c.requisitos, c.descripcion, c.usuarios_registrados, 
@@ -1366,7 +1380,7 @@ def editarConvo(idconvo):
     tematicas = cursor.fetchall()
 
     cursor.close()
-    return render_template('editarConvo.html', convocatoria=convocatoria, tematicas=tematicas)
+    return render_template('editarConvo.html', convocatoria=convocatoria, tematicas=tematicas, tipouser=tipouser, usuario_logeado=usuario_logeado)
 
 #Funcion para cerrar sesion
 
