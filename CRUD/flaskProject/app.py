@@ -755,6 +755,7 @@ def registro_convocatoria():
             """, (idempresa,))
         results = cursor.fetchall()
 
+        
         cursor.execute("""
                                SELECT tematica from Tematicas 
                                """)

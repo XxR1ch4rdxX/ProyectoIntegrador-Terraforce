@@ -5,13 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="11d711e8-d4c4-4c80-b804-f95e893baf3a" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/CRUD/flaskProject/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/CRUD/flaskProject/app.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CRUD/flaskProject/templates/convocatorias.html" beforeDir="false" afterPath="$PROJECT_DIR$/CRUD/flaskProject/templates/convocatorias.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CRUD/flaskProject/templates/crearConvo.html" beforeDir="false" afterPath="$PROJECT_DIR$/CRUD/flaskProject/templates/crearConvo.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CRUD/flaskProject/templates/formulario.html" beforeDir="false" afterPath="$PROJECT_DIR$/CRUD/flaskProject/templates/formulario.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CRUD/flaskProject/templates/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/CRUD/flaskProject/templates/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CRUD/flaskProject/templates/preview.html" beforeDir="false" afterPath="$PROJECT_DIR$/CRUD/flaskProject/templates/preview.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -113,7 +107,7 @@
       <workItem from="1722637103843" duration="7109000" />
       <workItem from="1722666309286" duration="353000" />
       <workItem from="1722824501572" duration="1111000" />
-      <workItem from="1722827144605" duration="21686000" />
+      <workItem from="1722827144605" duration="21994000" />
     </task>
     <servers />
   </component>
