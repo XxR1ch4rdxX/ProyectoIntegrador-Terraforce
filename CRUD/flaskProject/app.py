@@ -224,7 +224,7 @@ def update():
         #como aqui.
         cursor.execute(update_query, valores[1:])
         connection.commit()
-        flash('Registro actualizado correctamente',valores)
+        flash('Registro actualizado correctamente',valores,'success')
         return redirect('crud')
     except pyodbc.Error as e:
         flash(f"Error al actualizar registro :c {espanolizar(str(e))}",valores)
@@ -254,7 +254,7 @@ def sRegistro():
         testpassw = request.form.get('confirmar_contrasena')
 
         if passw != testpassw:
-            flash('Las contraseñas no coinciden', 'error')
+            flash('Las contraseñas no coinciden', 'error','danger')
             return render_template('registro.html', name=name, lnamep=lnamep,
                                    lnamem=lnamem, email=email)
 
@@ -264,7 +264,7 @@ def sRegistro():
             count = cursor.fetchone()[0]
 
             if count > 0:
-                flash('El correo electrónico ya está registrado', 'error')
+                flash('El correo electrónico ya está registrado', 'error','danger')
                 return redirect(url_for('registro'))
 
             # Ejecutar el procedimiento almacenado para insertar el nuevo usuario
@@ -273,7 +273,7 @@ def sRegistro():
             connection.commit()
             flash('Registro exitoso', 'success')
         except pyodbc.Error as e:
-            flash(f'Error en el registro: {str(e)}', 'error')
+            flash(f'Error en el registro: {str(e)}', 'error','danger')
         finally:
             cursor.close()
         return redirect(url_for('registro'))
@@ -323,7 +323,7 @@ def ingresar():
                 return redirect(url_for('Home'))
 
     else:
-        flash('Correo o contraseña incorrectos')
+        flash('Correo o contraseña incorrectos','danger')
         cursor.close()
         return render_template('login.html')
 
@@ -344,7 +344,7 @@ def registro_enterprice():
         estados = cursor.fetchall()
         return render_template('registro_enterprice.html', estados=estados)
     except pyodbc.Error as e:
-        flash(f'Error al cargar los datos: {str(e)}', 'error')
+        flash(f'Error al cargar los datos: {str(e)}', 'error','danger')
         return redirect(url_for('index'))
     finally:
         cursor.close()
@@ -410,7 +410,7 @@ def empresaGuardarRegistro():
         calle = request.form.get('calle')
 
         if passw != testpassw:
-            flash('Las contraseñas no coinciden', 'error')
+            flash('Las contraseñas no coinciden', 'error','danger')
             return redirect(url_for('registro_enterprice'))
 
         try:
@@ -427,7 +427,7 @@ def empresaGuardarRegistro():
             rfc_count = cursor.fetchone()[0]
 
             if rfc_count > 0:
-                flash('El RFC ya está registrado', 'error')
+                flash('El RFC ya está registrado', 'error','danger')
                 return redirect(url_for('registro_enterprice'))
 
             # Ejecutar el procedimiento almacenado para insertar el nuevo usuario
@@ -437,7 +437,7 @@ def empresaGuardarRegistro():
             connection.commit()
             flash('Registro exitoso', 'success')
         except pyodbc.Error as e:
-            flash(f'Error en el registro: {str(e)}', 'error')
+            flash(f'Error en el registro: {str(e)}', 'error','danger')
             return redirect(url_for('registro_enterprice'))
         finally:
             cursor.close()
@@ -787,7 +787,7 @@ def registrar_convo():
 
     try:
         if not id_user:
-            flash('Usuario no autenticado')
+            flash('Usuario no autenticado','danger')
             return redirect('registro_convocatoria')
 
         if vacantes:
@@ -819,7 +819,7 @@ def registrar_convo():
             """, id_empresa)
             empresa_row = cursor.fetchone()
             if not empresa_row:
-                flash('No se encontró el nombre de la empresa para el ID dado')
+                flash('No se encontró el nombre de la empresa para el ID dado','danger')
                 return redirect('registro_convocatoria')
 
             empresa = empresa_row[0]
@@ -828,11 +828,11 @@ def registrar_convo():
                                    fechainicio=fechainicio, fechacierre=fechacierre, vacantes=vacantes,
                                    imagen=imagenbin, tematicas=tematicas, empresa=empresa,tipo_user=tipo_user,descripcion=descripcion)
         else:
-            flash('Por favor rellena todos los datos solicitados para el registro')
+            flash('Por favor rellena todos los datos solicitados para el registro','danger')
             return render_template('registro_convocatoria')
 
     except Exception as e:
-        flash(f'Error: {str(e)}')
+        flash(f'Error: {str(e)}','danger')
         return redirect('registro_convocatoria')
     finally:
         cursor.close()
