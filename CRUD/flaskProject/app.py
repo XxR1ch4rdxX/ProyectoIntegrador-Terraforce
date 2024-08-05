@@ -571,29 +571,38 @@ def Home():
         '''
         cursor.execute(query, (id))
         results = cursor.fetchall()
+        ids = [row[0] for row in results]
 
-        cursor.execute("""
-        exec sp_FIND_id_empresa ?
-        """,id)
-        idempresa=cursor.fetchone()[0]
+        # Recuperar las imágenes para cada ID
+        imagenes = {}
+        for convocatoria_id in ids:
+            cursor.execute("""
+                       SELECT imagen, mime_type FROM Convocatorias 
+                       WHERE id = ?
+                   """, (convocatoria_id,))
+            img = cursor.fetchone()
 
-        cursor.execute("""
-                  SELECT imagen, mime_type FROM Convocatorias 
-                  WHERE id_empresa = ?
-              """, (idempresa,))
-        img = cursor.fetchone()
-
-        if img:
-            imagen, mime_type = img
-            img_base64 = base64.b64encode(imagen).decode('utf-8')
-        else:
-            imagen = mime_type = img_base64 = None
+            if img:
+                imagen, mime_type = img
+                if imagen:
+                    img_base64 = base64.b64encode(imagen).decode('utf-8')
+                    imagenes[convocatoria_id] = {
+                        'img_base64': img_base64,
+                        'mime_type': mime_type
+                    }
 
         cursor.close()
 
-        return render_template('HomeEmpresa.html', titulo=titulo, results=results, icon=icon, nombre=nombre,
-                               usuario_logeado=usuario_logeado, tipouser=tipouser, img=imagen,
-                               mime_type=mime_type, img_base64=img_base64)
+        print("Convocatorias:", results)
+        print("IDs de Convocatorias:", ids)
+        print("Imágenes:", imagenes)
+
+
+
+
+
+        return render_template('Home.html', titulo=titulo, results=results, icon=icon, nombre=nombre,
+                               usuario_logeado=usuario_logeado, tipouser=tipouser, imagenes=imagenes)
 
         cursor.close()
 
