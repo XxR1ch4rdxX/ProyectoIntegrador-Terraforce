@@ -101,7 +101,68 @@ def espanolizar(text):
 
 @app.route('/')
 def index():
-    return render_template('index.html', titulo=titulo, icon=icon)
+    cursor = connection.cursor()
+    id = session.get('id_user')
+    tipouser = session.get('tipo_user')
+    usuario_logeado = False
+
+    results = []
+    nombre = ""
+
+    if tipouser == 3:
+        usuario_logeado = True
+        cursor.execute("""
+            SELECT e.nombre FROM usuarios AS u
+            JOIN Empresas AS e ON u.id_empresa = e.id
+            WHERE u.id = ?
+        """, (id,))
+        nombre = cursor.fetchone()[0]
+
+        cursor.execute("SELECT id_empresa FROM Usuarios WHERE id = ?", (id,))
+        idempresa = cursor.fetchone()[0]
+
+        cursor.execute("""
+            SELECT c.id, c.titulo, c.requisitos, c.descripcion,
+                   c.usuarios_registrados, c.limite_usuarios, c.fecha_inicio,
+                   c.fecha_final, e.nombre AS empresa_nombre, es.nombre AS estatus_nombre, t.tematica
+            FROM Convocatorias AS c
+            JOIN Empresas AS e ON e.id = c.id_empresa
+            JOIN Estatus AS es ON es.id = c.id_estatus
+            JOIN Tematicas AS t ON t.id = c.id_tematica
+            WHERE c.id_empresa = ?
+        """, (idempresa,))
+        results = cursor.fetchall()
+
+    elif id and tipouser:
+        usuario_logeado = True
+        cursor.execute("""
+        SELECT id_persona from Usuarios where id = ? 
+        """, (id,))
+        id_persona = cursor.fetchone()
+        id_persona = id_persona[0]
+        cursor.execute("""
+        select nombre from Personas where id = ?
+        """, (id_persona,))
+        nombre = cursor.fetchone()[0]
+
+        query = '''
+        SELECT c.id, c.titulo, c.requisitos, c.imagen, c.usuarios_registrados,
+        c.limite_usuarios, c.fecha_inicio, c.fecha_final, e.nombre AS empresa_nombre
+        FROM Registros as r
+        JOIN Convocatorias as c ON r.id_convocatoria = c.id
+        JOIN Empresas AS e on c.id_empresa = e.id
+        JOIN Estatus AS es on c.id_estatus = es.id
+        WHERE id_voluntario = ?;
+        '''
+        cursor.execute(query, (id,))
+        results = cursor.fetchall()
+
+    cursor.close()
+
+    return render_template('index.html', results=results, titulo=titulo, icon=icon, nombre=nombre,
+                           usuario_logeado=usuario_logeado, tipouser=tipouser)
+
+
 
 @app.route('/crud', methods=['GET'])
 def consultartablas():
