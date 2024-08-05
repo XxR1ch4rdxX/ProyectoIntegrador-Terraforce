@@ -85,54 +85,63 @@
         </nav>
     </header>
 
-  <div class="container form-container">
+
+
+    <div class="container form-container">
      {% with messages = get_flashed_messages() %}
                         {% if messages %}
                             <div class="alert alert-info" role="alert">
                                 {% for message in messages %}
                                     {{ message }}
                                 {% endfor %}
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                            </button>
                             </div>
                         {% endif %}
                     {% endwith %}
 
     <div class="custom-header">Registra la convocatoria</div>
-    <form action="/registrar_convo" method="POST">
+    <form action="/registrar_convo" method="POST" enctype="multipart/form-data">
       <div class="form-group">
         <label for="title">Título de la convocatoria</label>
-        <input type="text" class="form-control custom-input" id="title" name="titulo" placeholder="Título de la convocatoria">
+        <input type="text" class="form-control custom-input" id="title" name="titulo" required placeholder="Título de la convocatoria">
       </div>
       <div class="form-group">
         <label for="requirements">Requisitos</label>
-        <textarea class="form-control custom-textarea" id="requirements" name="requisitos" rows="3"></textarea>
+        <textarea class="form-control custom-textarea" id="requirements" name="requisitos" required rows="3"></textarea>
       </div>
       <div class="form-row">
         <div class="form-group col-md-6">
           <label for="start_date">Fecha de inicio</label>
-          <input type="date" class="form-control custom-input" id="start_date" name="fecha_inicio">
+          <input type="date" class="form-control custom-input" id="start_date" required name="fecha_inicio">
         </div>
         <div class="form-group col-md-6">
           <label for="end_date">Fecha de cierre</label>
-          <input type="date" class="form-control custom-input" id="end_date" name="fecha_cierre">
+          <input type="date" class="form-control custom-input" id="end_date" required name="fecha_cierre">
         </div>
       </div>
       <div class="form-row">
         <div class="form-group col-md-6">
           <label for="vacancies">Cantidad de vacantes</label>
-          <input type="number" class="form-control custom-input" id="vacancies" name="vacantes">
+          <input type="number" class="form-control custom-input" id="vacancies" required name="vacantes">
         </div>
         <div class="form-group col-md-6">
-          <label for="topic">Temática</label>
-          <input type="text" class="form-control custom-input" id="topic" name="tematica" placeholder="Temática de la convocatoria">
+          <label for="tabla">Tematica:</label>
+            <select id="tabla" name="tematicas" class="selecccion" required >
+            {% for tematicas in tematicas %}
+            <option value="{{ tematicas }}" class="selecccion">{{ tematicas }}</option>
+            {% endfor %}
+        </select>
         </div>
       </div>
       <div class="form-group">
         <label for="description">Descripción</label>
-        <textarea class="form-control custom-textarea" id="description" name="descripcion" rows="5"></textarea>
+        <textarea class="form-control custom-textarea" id="description" name="descripcion" required rows="5"></textarea>
       </div>
       <div class="form-group">
         <label for="image">Adjuntar imagen</label>
-        <input type="file" class="form-control-file" id="image" name="imagen">
+        <input type="file" class="form-control-file" id="image" accept=".png, .jpg, .jpeg, .gif" name="imagen">
       </div>
       <button type="submit" class="btn btn-custom">Publicar</button>
       <a href="/Convocatorias" class="btn btn-secondary-custom">Regresar</a>

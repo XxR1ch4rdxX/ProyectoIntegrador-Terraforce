@@ -5,6 +5,19 @@
      <link rel="icon" href="{{ icon }}">
     <title>{{ titulo }}</title>
     <link  href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style >
+        .img-preview {
+    max-width: 300px;
+    max-height: 300px;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    border: 1px solid #000000;
+    border-radius: 5px;
+    padding: 5px;
+  }
+
+    </style>
 </head>
 <body>
 <header>
@@ -42,29 +55,64 @@
             </div>
         </nav>
     </header>
-<h1>Tidulo convocatoria: {{ tituloconv }} </h1>
-<h1>Requisistos: {{ requisitos }} </h1>
-<h1>Inicio: {{ fechainicio }} </h1>
-<h1>Fin: {{ fechacierre }} </h1>
-<h1>Vacantes: {{ vacantes }} </h1>
-<h1>IMG: {{ imagen }} </h1>
-<h1>Tematicas: {{ tematicas }} </h1>
-<h1>usuario: {{ empresa }} </h1>
-<h1>tipo user: {{ tipo_user }} </h1>
+ {% with messages = get_flashed_messages() %}
+                        {% if messages %}
+                            <div class="alert alert-info" role="alert">
+                                {% for message in messages %}
+                                    {{ message }}
+                                {% endfor %}
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                            </button>
+                            </div>
+                        {% endif %}
+                    {% endwith %}
+
+
+{#<h1>Título de la Convocatoria: {{ tituloconv }}</h1>#}
+{#<h1>Vacantes: {{ vacantes }}</h1>#}
+{#<h1>Temáticas: {{ tematicas }}</h1>#}
+{#<h1>Requisitos: {{ requisitos }}</h1>#}
+{#<h1>Fecha de Cierre: {{ fechacierre }}</h1>#}
+{#<h1>Empresa: {{ empresa }}</h1>#}
+{#<h1>Tipo MIME: {{ mime_type }}</h1>#}
+{#<h1>ID de Usuario: {{ id_user }}</h1>#}
+{#<h1>ID de Empresa: {{ id_empresa }}</h1>#}
+
 <div class="container">
+    <form action="/post" method="POST" enctype="multipart/form-data">
         <div class="card card-custom">
-            <div class="card-header card-header-custom">
+            <div class="card-header card-header-custom" name="tituloconv">
                 {{ tituloconv }}
             </div>
             <div class="card-body">
-                <h5 class="card-title">Creado por: {{ empresa }}</h5>
+                <h5 class="card-title"   >Creado por: {{ empresa }}</h5>
                 <p class="card-text">Temática: {{ tematicas }}</p>
                 <p class="card-text">Requisitos: {{ requisitos }}</p>
+                <img src="data:{{ mime_type }};base64,{{ img_base64 }}" alt="Imagen Previa" class="img-preview "  >
                 <p class="card-text"><small class="text-muted">Fecha de cierre: {{ fechacierre }}</small></p>
-                <a href="#" class="btn btn-success">Registrar</a>
+
+                <button class="btn btn-custom" type="submit">Aceptar</button>
+                 <button class="back-button" onclick="history.back()">Atras</button>
+
             </div>
+             <input type="hidden" name="tituloconv" value="{{ tituloconv }}">
+            <input type="hidden" name="tematicas" value="{{ tematicas }}">
+            <input type="hidden" name="requisitos" value="{{ requisitos }}">
+            <input type="hidden" name="fechacierre" value="{{ fechacierre }}">
+            <input type="hidden" name="fechainicio" value="{{ fechainicio }}">
+            <input type="hidden" name="empresa" value="{{ empresa }}">
+            <input type="hidden" name="imagenbin" value="{{ img_base64 }}">
+            <input type="hidden" name="mime_type" value="{{ mime_type }}">
+            <input type="hidden" name="vacantes" value="{{ vacantes }}">
+            <input type="hidden" name="id_empresa" value="{{ id_empresa }}">
+            <input type="hidden" name="descripcion" value="{{ descripcion }}">
+
         </div>
+        </form>
 </div>
+{#<h1>ID de Empresa: {{ imagenbin }}</h1>#}
+{#<h1>ID de Empresa: {{ img_data }}</h1>#}
 </body>
 
 </html>

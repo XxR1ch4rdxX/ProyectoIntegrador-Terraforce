@@ -1,8 +1,8 @@
 #Aqui podremos poner la parte logica de nuestro crud del pi
 #como links a otros html , getters , sertters cookies
 #incluso la conexion con la base de datos
-import traceback
-from datetime import datetime
+import base64
+import os
 
 #ESTE ES EL CORAZON de la applicacion web (por asi decirlo)
 #Los documentos html adjuntos unicamente se utilizara el de crud, index y editar, los otros
@@ -227,7 +227,7 @@ def update():
         #como aqui.
         cursor.execute(update_query, valores[1:])
         connection.commit()
-        flash('Registro actualizado correctamente',valores,'success')
+        flash('Registro actualizado correctamente',valores)
         return redirect('crud')
     except pyodbc.Error as e:
         flash(f"Error al actualizar registro :c {espanolizar(str(e))}",valores)
@@ -257,7 +257,7 @@ def sRegistro():
         testpassw = request.form.get('confirmar_contrasena')
 
         if passw != testpassw:
-            flash('Las contraseñas no coinciden', 'error','danger')
+            flash('Las contraseñas no coinciden', 'danger')
             return render_template('registro.html', name=name, lnamep=lnamep,
                                    lnamem=lnamem, email=email)
 
@@ -713,9 +713,19 @@ def registro_convocatoria():
             id_persona = id_persona[0]
             cursor.execute("SELECT nombre FROM Personas WHERE id = ?", (id_persona,))
             nombre = cursor.fetchone()[0]
+
+            cursor.execute("""
+                        SELECT tematica from Tematicas 
+                        """)
+            tematicas = cursor.fetchall()
+            tematicas = [row[0] for row in tematicas]
+
             cursor.close()
             return render_template('crearConvo.html', titulo=titulo, icon=icon, nombre=nombre,
-                                   usuario_logeado=usuario_logeado, tipouser=tipouser)
+                                   usuario_logeado=usuario_logeado, tipouser=tipouser,tematicas=tematicas)
+
+
+
         else:
             cursor.close()
             return redirect(url_for('errorpage'))
@@ -744,10 +754,17 @@ def registro_convocatoria():
                 WHERE c.id_empresa = ?
             """, (idempresa,))
         results = cursor.fetchall()
+
+        cursor.execute("""
+                               SELECT tematica from Tematicas 
+                               """)
+        tematicas = cursor.fetchall()
+        tematicas = [row[0] for row in tematicas]
+
         cursor.close()
 
         return render_template('crearConvo.html', titulo=titulo, results=results, icon=icon, nombre=nombre,
-                               usuario_logeado=usuario_logeado, tipouser=tipouser)
+                               usuario_logeado=usuario_logeado, tipouser=tipouser,tematicas=tematicas)
     else:
         return render_template('crearConvo.html', titulo=titulo, icon=icon, usuario_logeado=usuario_logeado,
                                tipouser=tipouser)
@@ -769,6 +786,10 @@ def registro_convocatoria():
                                tipouser=tipouser)
 
 
+ # def tipoimagen(nombrearch):
+ #     return '.' in nombrearch and \
+ #            nombrearch.rsplit('.', 1)[1].lower() in app.config['ALLOWED_EXTENSIONS']
+
 @app.route('/registrar_convo', methods=['POST'])
 def registrar_convo():
 
@@ -781,47 +802,75 @@ def registrar_convo():
     fechainicio = request.form.get('fecha_inicio')
     fechacierre = request.form.get('fecha_cierre')
     tematicas = request.form.get('tematicas')
-    vacantes = request.form.get('vacantes')
+    vacantes =  request.form.get('vacantes')
     imagen = request.files.get('imagen')
+
+
 
 
 
     id_user = session.get('id_user')
     tipo_user = session.get('tipo_user')
 
-    imagenbin = None
+
     if imagen:
+        nombreima = imagen.filename
+        nombreseparado,tipoima = os.path.splitext(nombreima)
+        nombresinpunto=tipoima.lstrip('.').upper()
+        if nombresinpunto=='JPG':
+            nombresinpunto='JPEG'
         imagenbin = imagen.read()
+        format_img=nombresinpunto
 
-
-    if fechainicio == fechacierre :
-            flash('La fecha de inicio y de termino no pueden ser iguales')
-            return redirect('registro_convocatoria')
+    else:
+        imagenbin = None
 
     try:
         if not id_user:
             flash('Usuario no autenticado','danger')
             return redirect('registro_convocatoria')
 
-        if vacantes:
-            vacantes = int(vacantes)
-            if vacantes < 10:
-                flash('El número de vacantes mínimo es de 10')
-                return redirect('registro_convocatoria')
+
 
         if tituloconv and requisitos and fechainicio and fechacierre and vacantes and tematicas and descripcion:
 
-            image = Image.open(io.BytesIO(imagenbin))
-            img_io = io.BytesIO()
-            image.save(img_io, 'PNG')
-            img_io.seek(0)
+            if imagenbin and format_img:
+
+                try:
+                    image = Image.open(io.BytesIO(imagenbin))
+                    img_io = io.BytesIO()
+                    image.save(img_io, format=format_img)
+                    img_io.seek(0)
+                    img_base64 = base64.b64encode(img_io.getvalue()).decode('utf-8')
+                    mime_type = f'image/{format_img.lower()}'
+                    # tamanoima=len(img_base64)
+                except Exception as e:
+                    flash(f'Ocurrrio un error al procesar la imagen {str(e)}', 'danger')
+                    return redirect('registro_convocatoria')
+            else:
+                img_base64=None
+                mime_type = None
+
+
+                if fechainicio == fechacierre:
+                    flash('La fecha de inicio y de termino no pueden ser iguales')
+                    return redirect('registro_convocatoria')
+
+                if vacantes:
+                    vacantes = int(vacantes)
+                    if vacantes < 10:
+                        flash('El número de vacantes mínimo es de 10')
+                        return redirect('registro_convocatoria')
+
+
+
 
             cursor.execute("""
                 EXEC sp_FIND_id_empresa ?
             """, id_user)
             id_empresa_row = cursor.fetchone()
             if not id_empresa_row:
-                flash('No se encontró la empresa para el usuario dado')
+                flash(f'No se encontró la empresa para el usuario dado {id_empresa_row,id_user} hola')
                 return redirect('registro_convocatoria')
 
             id_empresa = id_empresa_row[0]
@@ -832,23 +881,108 @@ def registrar_convo():
             """, id_empresa)
             empresa_row = cursor.fetchone()
             if not empresa_row:
-                flash('No se encontró el nombre de la empresa para el ID dado','danger')
+                flash(f'No se encontró el nombre de la empresa para el ID dado {id_user,id_empresa} Hola :c','danger')
                 return redirect('registro_convocatoria')
 
             empresa = empresa_row[0]
 
-            return render_template('preview.html', tituloconv=tituloconv, requisitos=requisitos,
-                                   fechainicio=fechainicio, fechacierre=fechacierre, vacantes=vacantes,
-                                   imagen=imagenbin, tematicas=tematicas, empresa=empresa,tipo_user=tipo_user,descripcion=descripcion)
+            return render_template('preview.html',
+                                   tituloconv=tituloconv,
+                                   requisitos=requisitos,
+                                   fechainicio=fechainicio,
+                                   fechacierre=fechacierre,
+                                   vacantes=vacantes,
+                                   imagen=imagenbin,
+                                   tematicas=tematicas,
+                                   empresa=empresa,
+                                   tipo_user=tipo_user
+                                   ,descripcion=descripcion,
+                                   img_base64=img_base64,
+                                   mime_type=mime_type,
+                                   id_user=id_user,
+                                   id_empresa=id_empresa,
+                                   imagenbin=imagenbin,)
+                                   # tamanoima=tamanoima)
         else:
-            flash('Por favor rellena todos los datos solicitados para el registro','danger')
-            return render_template('registro_convocatoria')
+            flash(f'Por favor rellena todos los datos solicitados para el registro {tituloconv,requisitos,fechainicio,fechacierre,vacantes,tematicas,descripcion}','danger')
+            return redirect('registro_convocatoria')
 
     except Exception as e:
         flash(f'Error: {str(e)}','danger')
         return redirect('registro_convocatoria')
     finally:
         cursor.close()
+
+@app.route('/post', methods=['POST'])
+def upload():
+    cursor = connection.cursor()
+    tituloconv = str(request.form.get('tituloconv'))
+    descripcion = request.form.get('descripcion')
+    requisitos = request.form.get('requisitos')
+    fechainicio = request.form.get('fechainicio')
+    fechacierre = request.form.get('fechacierre')
+    tematicas = request.form.get('tematicas')
+    vacantes = int(request.form.get('vacantes'))
+    imagenbin = request.form.get('imagenbin')
+    id_empresa = int(request.form.get('id_empresa'))
+
+    if imagenbin:
+
+        img_data = base64.b64decode(imagenbin)
+    else:
+        img_data = None
+
+
+    cursor.execute("""
+    exec sp_tematica_id ?
+    """,tematicas)
+    id_tematica=cursor.fetchone()[0]
+
+    if id_tematica and tituloconv and descripcion and requisitos and fechainicio and fechacierre and vacantes and id_empresa and img_data:
+        try:
+            cursor.execute("""
+                exec sp_post_publicacion ?,?,?,?,?,?,?,?,?
+                """,tituloconv,descripcion,requisitos,fechainicio,id_empresa,id_tematica,
+                           img_data,vacantes,fechacierre)
+
+
+            flash('Publicacion creada :D','succes')
+            return redirect('registro_convocatoria')
+        except Exception as e:
+            flash(f'Error: {str(e)}','danger')
+            redirect('preview')
+
+    if id_tematica and tituloconv and descripcion and requisitos and fechainicio and fechacierre and vacantes and id_empresa :
+            try:
+                cursor.execute("""
+                    exec sp_post_publicacion ?,?,?,?,?,?,?,?,?
+                    """, tituloconv, descripcion, requisitos, fechainicio, id_empresa, id_tematica,
+                               'Null', vacantes, fechacierre)
+
+                flash('Publicacion creada :D, pero sin imagen', 'succes')
+                return redirect('registro_convocatoria')
+            except Exception as e:
+                flash(f'Error: {str(e)}', 'danger')
+                redirect('preview')
+
+    else:
+        flash(f'Hay algun error con un campo {tituloconv,descripcion,requisitos,fechainicio,id_empresa,id_tematica,vacantes,fechacierre,imagenbin}','error')
+        return render_template('preview.html',
+                               tituloconv=tituloconv,
+                               requisitos=requisitos,
+                               fechainicio=fechainicio,
+                               fechacierre=fechacierre,
+                               vacantes=vacantes,
+                               tematicas=tematicas,
+                               descripcion=descripcion,
+                               id_empresa=id_empresa,
+                               img_data=img_data
+                               )
+
+    flash('Error ?')
+    return render_template('preview.html')
+
+
 
 @app.route('/HomeEmpresa')
 def HomeEmpresa():
@@ -1100,6 +1234,8 @@ def modify():
 
         return "No user in session", 401
 
-
+@app.route('/preview')
+def previewver():
+    render_template('preview.html',titulo=titulo, icon=icon)
 if __name__ == '__main__':
     app.run(host="0.0.0.0",port=5000,debug=True)
