@@ -46,10 +46,7 @@
                 </ul>
                 <ul class="navbar-nav ml-auto">
                     <li class="nav-item" style="display: {% if usuario_logeado and tipouser==1 %}block{% else %}none{% endif %}">
-                        <a class="nav-link" href='/crud'>CRUD</a>
-                    </li>
-                    <li class="nav-item" style="display: {% if usuario_logeado and tipouser==1 %}block{% else %}none{% endif %}">
-                        <a class="nav-link" href='/HomeEmpresa'>Ir al Home de Empresas</a>
+                        <a class="nav-link" href="{{ url_for('HomeEmpresa') }}">Ir al HomeEmpresa</a>
                     </li>
                     <li class="nav-item" style="display: {% if usuario_logeado %}none{% else %}block{% endif %}">
                         <a class="nav-link" href="{{ url_for('registro') }}">Registro</a>
@@ -100,7 +97,7 @@
                     Más detalles
                 </button>
                 <button type="button" class="btn btn-delete" data-toggle="modal" data-target="#confirmModal{{ convo.id }}">
-                    Salir
+                    Borrar
                 </button>
             </div>
         </div>

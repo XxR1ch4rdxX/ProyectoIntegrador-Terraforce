@@ -711,7 +711,7 @@ def registro_convocatoria():
             cursor.execute("SELECT nombre FROM Personas WHERE id = ?", (id_persona,))
             nombre = cursor.fetchone()[0]
             cursor.close()
-            return render_template('convocatorias.html', titulo=titulo, icon=icon, nombre=nombre,
+            return render_template('crearConvo.html', titulo=titulo, icon=icon, nombre=nombre,
                                    usuario_logeado=usuario_logeado, tipouser=tipouser)
         else:
             cursor.close()
