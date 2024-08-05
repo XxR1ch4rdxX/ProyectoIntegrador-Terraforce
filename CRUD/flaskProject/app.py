@@ -1,6 +1,7 @@
 #Aqui podremos poner la parte logica de nuestro crud del pi
 #como links a otros html , getters , sertters cookies
 #incluso la conexion con la base de datos
+import traceback
 
 #ESTE ES EL CORAZON de la applicacion web (por asi decirlo)
 #Los documentos html adjuntos unicamente se utilizara el de crud, index y editar, los otros
@@ -58,6 +59,32 @@ try:
 
 except pyodbc.Error as e:
     print(Fore.GREEN + 'Error :c' + Style.RESET_ALL)
+
+    try:
+        server = 'sqlserver'
+        database = 'TerraForce'
+        username = 'SA'
+        password = '1@pOrf4vorD10$'
+        print(Fore.CYAN + 'Intentando con conexion a Docker en base de datos local...' + Style.RESET_ALL)
+        #conexion a la base de datos local que esta en la misma carpeta
+        connection = pyodbc.connect(f'DRIVER={{ODBC Driver 17 for SQL Server}}; '
+        f'SERVER={server}; DATABASE={database}; UID={username}; PWD={password}')
+
+        print(Fore.GREEN + 'Tamo en linea ' + Style.RESET_ALL)
+
+        cursor = connection.cursor()
+        cursor.execute("SELECT @@version;")
+        row = cursor.fetchone()
+
+        if row:
+            print(f'Versión de SQL Server: {row[0]}')
+        else:
+            print('Hay un error chamo')
+
+    except pyodbc.Error as e:
+        print(Fore.GREEN + 'Error Gravisimo :c' + Style.RESET_ALL)
+
+
 finally:
     cursor.close()
 
@@ -596,7 +623,7 @@ def borrarConvo(idconvo):
         try:
             cursor.execute('EXEC sp_borrarRegistroUser @iduser = ?, @idconvo = ?;', (session['id_user'], idconvo))
             connection.commit()
-            flash('Borrado exitoso', 'success')
+            flash('Saliste de la convocatoria', 'success')
         except Exception as e:
             error_message = str(e)
             flash('Ocurrió un error al intentar borrar la convocatoria: ' + error_message, 'danger')
@@ -803,6 +830,7 @@ def registrar_convo():
         else:
             flash('Por favor rellena todos los datos solicitados para el registro')
             return render_template('registro_convocatoria')
+
     except Exception as e:
         flash(f'Error: {str(e)}')
         return redirect('registro_convocatoria')
@@ -836,7 +864,7 @@ def HomeEmpresa():
             cursor.execute("SELECT nombre FROM Personas WHERE id = ?", (id_persona,))
             nombre = cursor.fetchone()[0]
             cursor.close()
-            return render_template('convocatorias.html', titulo=titulo, icon=icon, nombre=nombre,
+            return render_template('HomeEmpresa.html', titulo=titulo, icon=icon, nombre=nombre,
                                    usuario_logeado=usuario_logeado, tipouser=tipouser)
         else:
             cursor.close()

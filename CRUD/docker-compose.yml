@@ -1,15 +1,14 @@
-version: '3.8'
-
 services:
   sqlserver:
     image: mcr.microsoft.com/mssql/server:latest
-    environment:
-      SA_PASSWORD: ""
-      ACCEPT_EULA: "Y"
+    container_name: sqlserver
     ports:
       - "1433:1433"
+    environment:
+      SA_PASSWORD: "1@pOrf4vorD10$"
+      ACCEPT_EULA: "Y"
     volumes:
-      - ./db:/docker-entrypoint-initdb.d/db.sql
+      - C:/Users/lolle/OneDrive/Escritorio/ProyectoIntegrador-Terraforce/CRUD/init.sql:/usr/src/app/init.sql
 
   pythonapp:
     build: ./flaskProject
@@ -17,3 +16,17 @@ services:
       - sqlserver
     ports:
       - "4000:5000"
+    environment:
+      - SQL_SERVER=sqlserver
+      - SQL_DATABASE=TerraForce
+      - SQL_USER=SA
+      - SQL_PASSWORD=1@pOrf4vorD10$
+    command: >
+      sh -c "until nc -z sqlserver 1433; do
+              echo 'Waiting for SQL Server to be ready...';
+              sleep 1;
+             done;
+             flask run --host=0.0.0.0"
+
+volumes:
+  sqlserverdata:

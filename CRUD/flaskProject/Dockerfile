@@ -1,14 +1,15 @@
 FROM python:3.12-slim
 
-# Establece el directorio de trabajo en /app
+# Establece el directorio de trabajo en /flaskProject
 WORKDIR /flaskProject
 
-# Instala las dependencias del sistema necesarias
+# Instala las dependencias del sistema necesarias, incluyendo netcat-openbsd
 RUN apt-get update && apt-get install -y \
     unixodbc-dev \
     curl \
     apt-transport-https \
-    gnupg
+    gnupg \
+    netcat-openbsd
 
 # Descarga y agrega el repositorio de Microsoft para el driver ODBC
 RUN curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add - && \
