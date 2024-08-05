@@ -170,17 +170,48 @@ def consultartablas():
     if 'id_user' not in session:
         return redirect(url_for('login'))
 
+    id = session.get('id_user')
     tipouser = session.get('tipo_user')
 
-    if tipouser != 1:
-            return redirect(url_for('errorpage'))
+    if tipouser in [2, 3]:
+        return redirect(url_for('errorpage'))
+
+    usuario_logeado = False
 
     cursor = connection.cursor()
     palabrita = ""
     tablaselect = request.args.get('tablaselect', '')
     flash("Aqui se mostraran las alertas :)")
+
+    results = []
+    nombre = ""
+
     try:
-        #con esta consulta obtenemos el nombre de las tablas de la db
+        if id and tipouser:
+            usuario_logeado = True
+            cursor.execute("""
+            SELECT id_persona from Usuarios where id = ? 
+            """, (id,))
+            id_persona = cursor.fetchone()
+            id_persona = id_persona[0]
+            cursor.execute("""
+            select nombre from Personas where id = ?
+            """, (id_persona,))
+            nombre = cursor.fetchone()[0]
+
+            query = '''
+            SELECT c.id, c.titulo, c.requisitos, c.imagen, c.usuarios_registrados,
+            c.limite_usuarios, c.fecha_inicio, c.fecha_final, e.nombre AS empresa_nombre
+            FROM Registros as r
+            JOIN Convocatorias as c ON r.id_convocatoria = c.id
+            JOIN Empresas AS e on c.id_empresa = e.id
+            JOIN Estatus AS es on c.id_estatus = es.id
+            WHERE id_voluntario = ?;
+            '''
+            cursor.execute(query, (id,))
+            results = cursor.fetchall()
+
+        # Consultar nombres de las tablas de la base de datos
         cursor.execute("""
             SELECT TABLE_NAME
             FROM INFORMATION_SCHEMA.TABLES
@@ -188,20 +219,26 @@ def consultartablas():
             ORDER BY TABLE_NAME ASC;
         """, (database,))
         tablas = [row.TABLE_NAME for row in cursor.fetchall()]
-        #con esta consulta obtenemos valores de las tablas y los guardamos en variables para usarlas qui y en el html con jinja
+
+        # Obtener datos de la tabla seleccionada
         if tablaselect:
-            cursor.execute('SELECT * FROM ' + tablaselect)
+            cursor.execute(f'SELECT * FROM {tablaselect}')
             rows = cursor.fetchall()
             column_names = [column[0] for column in cursor.description]
         else:
             rows = []
             column_names = []
-        return render_template('crud.html', titulo=titulo, tablas=tablas, tablaselect=tablaselect, rows=rows, column_names=column_names, palabrita=palabrita, icon=icon)
+
+        return render_template('crud.html', titulo=titulo, tablas=tablas, tablaselect=tablaselect, rows=rows,
+                               column_names=column_names, palabrita=palabrita, icon=icon, results=results,
+                               nombre=nombre, usuario_logeado=usuario_logeado, tipouser=tipouser)
     except pyodbc.Error as e:
         error_message = f"Error al recuperar las tablas: {espanolizar(str(e))}"
         return render_template('error.html', error_message=error_message)
     finally:
         cursor.close()
+
+
 
 @app.route('/remove', methods=['GET'])
 #con este metodo borramos campos , obteniendo el id con el boton de el campo solicitado
