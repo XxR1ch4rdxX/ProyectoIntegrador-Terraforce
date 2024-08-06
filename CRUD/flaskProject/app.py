@@ -27,17 +27,13 @@ from PIL import Image
 init()
 
 app = Flask(__name__)
-app.secret_key = '123'
-server = socket.gethostname()
-#aqui cambiamos la base de datos , por la que tengamos en nuestro SQL SERVER
-#esto quiere decir que nos servira para mas de una base de datos , en este caso es la de el pi
-#por lo tanto podemos hacer altas bajas y cambios en cualquier tabla
-database = 'TerraForce'  #si queremos cambiar de db , debemos cambiar el 'TU_BASEDEDATOS' y listo.
-titulo = database
-conn = sqlite3.connect(database)
-cursor = conn.cursor()
 
 
+server = 'sqlserver'  # Cambia esto a tu servidor SQL Server
+database = 'TerraForce'
+username = 'sa'  # Cambia esto a tu nombre de usuario de SQL Server
+password = '1@pOrf4vorD10$'  # Cambia esto a tu contraseña de SQL Server
+driver = '{ODBC Driver 17 for SQL Server}'  # Asegúrate de que este driver esté instalado
 
 
 if database == 'TacoLovers':
@@ -47,50 +43,13 @@ elif database == 'TerraForce':
 else:
     icon = "../static/images/demon.ico"
 
-try:
-    print(Fore.CYAN + 'Estableciendo la conexion con sql server ...' + Style.RESET_ALL)
-    connection = pyodbc.connect('DRIVER={ODBC Driver 17 for SQL Server}; SERVER=' + server + '; DATABASE=' + database + '; Trusted_Connection=yes;')
-    print(Fore.GREEN + 'Tamo en linea ' + Style.RESET_ALL)
+connection_string = f'DRIVER={driver};SERVER={server};DATABASE={database};UID={username};PWD={password}'
 
-    cursor = connection.cursor()
-    cursor.execute("SELECT @@version;")
-    row = cursor.fetchone()
+connection = pyodbc.connect(connection_string)
 
-    if row:
-        print(f'Versión de SQL Server: {row[0]}')
-    else:
-        print('Hay un error chamo')
-
-except pyodbc.Error as e:
-    print(Fore.GREEN + 'Error :c' + Style.RESET_ALL)
-
-    try:
-        server = 'sqlserver'
-        database = 'TerraForce'
-        username = 'SA'
-        password = '1@pOrf4vorD10$'
-        print(Fore.CYAN + 'Intentando con conexion a Docker en base de datos local...' + Style.RESET_ALL)
-        #conexion a la base de datos local que esta en la misma carpeta
-        connection = pyodbc.connect(f'DRIVER={{ODBC Driver 17 for SQL Server}}; '
-        f'SERVER={server}; DATABASE={database}; UID={username}; PWD={password}')
-
-        print(Fore.GREEN + 'Tamo en linea ' + Style.RESET_ALL)
-
-        cursor = connection.cursor()
-        cursor.execute("SELECT @@version;")
-        row = cursor.fetchone()
-
-        if row:
-            print(f'Versión de SQL Server: {row[0]}')
-        else:
-            print('Hay un error chamo')
-
-    except pyodbc.Error as e:
-        print(Fore.GREEN + 'Error Gravisimo :c' + Style.RESET_ALL)
-
-
-finally:
-    cursor.close()
+titulo = database
+conn = sqlite3.connect(database)
+cursor=conn.cursor()
 
 
 def espanolizar(text):
