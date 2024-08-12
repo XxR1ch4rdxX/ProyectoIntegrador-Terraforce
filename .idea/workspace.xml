@@ -5,8 +5,20 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="11d711e8-d4c4-4c80-b804-f95e893baf3a" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/CRUD/flaskProject/templates/EMPRESAS_reg.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/CRUD/flaskProject/templates/UsuariosREG.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/ProyectoIntegrador-Terraforce.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/ProyectoIntegrador-Terraforce.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/CRUD/flaskProject/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/CRUD/flaskProject/app.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CRUD/flaskProject/templates/Home.html" beforeDir="false" afterPath="$PROJECT_DIR$/CRUD/flaskProject/templates/Home.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CRUD/flaskProject/templates/HomeEmpresa.html" beforeDir="false" afterPath="$PROJECT_DIR$/CRUD/flaskProject/templates/HomeEmpresa.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CRUD/flaskProject/templates/convocatorias.html" beforeDir="false" afterPath="$PROJECT_DIR$/CRUD/flaskProject/templates/convocatorias.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CRUD/flaskProject/templates/crud.html" beforeDir="false" afterPath="$PROJECT_DIR$/CRUD/flaskProject/templates/crud.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CRUD/flaskProject/templates/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/CRUD/flaskProject/templates/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CRUD/flaskProject/templates/preview.html" beforeDir="false" afterPath="$PROJECT_DIR$/CRUD/flaskProject/templates/preview.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CRUD/flaskProject/templates/registro_convocatorias.html" beforeDir="false" afterPath="$PROJECT_DIR$/CRUD/flaskProject/templates/registro_convocatorias.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CRUD/flaskProject/templates/verUsuarios.html" beforeDir="false" afterPath="$PROJECT_DIR$/CRUD/flaskProject/templates/verUsuarios.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -83,8 +95,8 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-js-predefined-1d06a55b98c1-91d5c284f522-JavaScript-PY-241.15989.155" />
-        <option value="bundled-python-sdk-babbdf50b680-7c6932dee5e4-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-241.15989.155" />
+        <option value="bundled-js-predefined-1d06a55b98c1-0b3e54e931b4-JavaScript-PY-241.17890.14" />
+        <option value="bundled-python-sdk-5b207ade9991-7e9c3bbb6e34-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-241.17890.14" />
       </set>
     </attachedChunks>
   </component>
@@ -113,6 +125,8 @@
       <workItem from="1722870614428" duration="5453000" />
       <workItem from="1722897224915" duration="2234000" />
       <workItem from="1722976973346" duration="833000" />
+      <workItem from="1723429624241" duration="7704000" />
+      <workItem from="1723471373345" duration="5612000" />
     </task>
     <servers />
   </component>
@@ -137,8 +151,8 @@
     </option>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/ProyectoIntegrador_Terraforce$app.coverage" NAME="app Coverage Results" MODIFIED="1722830774314" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/CRUD/flaskProject" />
-    <SUITE FILE_PATH="coverage/ProyectoIntegrador_Terraforc$app.coverage" NAME="app Coverage Results" MODIFIED="1722898055861" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/CRUD/flaskProject" />
     <SUITE FILE_PATH="coverage/ProyectoIntegrador$app.coverage" NAME="app Coverage Results" MODIFIED="1720039147128" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/CRUD/flaskProject" />
+    <SUITE FILE_PATH="coverage/ProyectoIntegrador_Terraforce$app.coverage" NAME="app Coverage Results" MODIFIED="1723476911280" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/CRUD/flaskProject" />
+    <SUITE FILE_PATH="coverage/ProyectoIntegrador_Terraforc$app.coverage" NAME="app Coverage Results" MODIFIED="1722898055861" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/CRUD/flaskProject" />
   </component>
 </project>

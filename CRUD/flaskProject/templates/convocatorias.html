@@ -35,8 +35,7 @@
   }
     </style>
 </head>
-<body>
-    <header>
+<body><header>
         <nav class="navbar navbar-expand-lg navbar-light bg-light sticky-top">
             <a class="navbar-brand d-flex align-items-center" href="/">
                 <img src="{{ url_for('static', filename='images/tlogo.png') }}" style="cursor: pointer" onclick="volver()" alt="Logo" height="40px">
@@ -52,9 +51,13 @@
                 </ul>
                 <ul class="navbar-nav ml-auto">
                     <li class="nav-item" style="display: {% if usuario_logeado and tipouser==1 %}block{% else %}none{% endif %}">
-                        <a class="nav-link" href="/crud">CRUD</a>
+                        <a class="nav-link" href="/verusers">Ver Usuarios Registrados</a>
                     </li>
                     <li class="nav-item" style="display: {% if usuario_logeado and tipouser==1 %}block{% else %}none{% endif %}">
+                        <a class="nav-link" href="/crud">CRUD</a>
+                    </li>
+                    <li class=
+    "nav-item" style="display: {% if usuario_logeado and tipouser==1 %}block{% else %}none{% endif %}">
                         <a class="nav-link" href="/HomeEmpresa">Home/Empresa</a>
                     </li>
                     <li class="nav-item" style="display: {% if usuario_logeado and tipouser==1 %}block{% else %}none{% endif %}">
@@ -95,12 +98,13 @@
         {% endif %}
     {% endwith %}
 
-    <div class="container">
+    <div class="container" >
         {% for convo in results %}
-        <div class="card card-custom">
+        <div class="card card-custom" style="{{ 'display: none;' if convo.id_estatus == 2 else '' }}">
             <div class="card-header card-header-custom">
                 {{ convo.titulo }}
             </div>
+
             <div class="card-body">
                 <h5 class="card-title">Creado por: {{ convo.empresa_nombre }}</h5>
                 <p class="card-text">Temática: {{ convo.tematica }}</p>
@@ -115,9 +119,10 @@
                 <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#detailsModal{{ convo.id }}">
                     Más detalles
                 </button>
-                <button type="button" class="btn btn-success" data-toggle="modal" data-target="#confirmModal{{ convo.id }}">
+                <button type="button" class="btn btn-success" data-toggle="modal" data-target="#confirmModal{{ convo.id }}" >
                     Registrar
                 </button>
+            <h1>{{ hide }}</h1>
             </div>
         </div>
 
@@ -143,6 +148,7 @@
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
                         <button type="button" class="btn btn-success" data-toggle="modal" data-target="#confirmModal{{ convo.id }}">Registrar</button>
+
                     </div>
                 </div>
             </div>
@@ -170,6 +176,9 @@
         </div>
         {% endfor %}
     </div>
+
+
+
 
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>

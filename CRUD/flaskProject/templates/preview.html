@@ -93,10 +93,10 @@
                 <img src="data:{{ mime_type }};base64,{{ img_base64 }}" alt="Imagen Previa" class="img-preview "  >
                 <p class="card-text"><small class="text-muted">Fecha de cierre: {{ fechacierre }}</small></p>
 
-                <button class="btn btn-custom" type="submit">Aceptar</button>
-                 <button class="back-button" onclick="history.back()">Atras</button>
+                <button class="btn btn-succes" type="submit">Aceptar</button>
 
-            </div>
+
+
              <input type="hidden" name="tituloconv" value="{{ tituloconv }}">
             <input type="hidden" name="tematicas" value="{{ tematicas }}">
             <input type="hidden" name="requisitos" value="{{ requisitos }}">
@@ -110,8 +110,12 @@
             <input type="hidden" name="descripcion" value="{{ descripcion }}">
             <input type="hidden" name="format_img" value="{{ format_img }}">
 
-        </div>
+    </div>
         </form>
+
+        <button class="btn-danger" onclick="history.back()">Atras</button>
+
+    </div>
 </div>
 {#<h1>ID de Empresa: {{ imagenbin }}</h1>#}
 {#<h1>ID de Empresa: {{ img_data }}</h1>#}

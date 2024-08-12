@@ -1,24 +1,38 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" href="{{ icon }}">
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="icon" href="{{ url_for('static', filename=icon) }}">
     <title>{{ titulo }}</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        table {
-            width: 100%;
-            border-collapse: collapse;
+        .navbar-custom {
+            background-color: #6FD557;
         }
-        table, th, td {
-            border: 1px solid black;
+        .card-custom {
+            margin-top: 20px;
         }
-        th, td {
-            padding: 10px;
-            text-align: left;
+        .card-header-custom {
+            background-color: #6FD557;
+            color: white;
         }
+        .btn-register {
+            background-color: #6FD557;
+            color: white;
+            margin-top: 20px;
+        }
+
+              .img-preview {
+    max-width: 300px;
+    max-height: 300px;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    border: 1px solid #000000;
+    border-radius: 5px;
+    padding: 5px;
+  }
     </style>
 </head>
 <body>
@@ -38,12 +52,18 @@
                 </ul>
                 <ul class="navbar-nav ml-auto">
                     <li class="nav-item" style="display: {% if usuario_logeado and tipouser==1 %}block{% else %}none{% endif %}">
+                        <a class="nav-link" href="/verusers">Ver Usuarios Registrados</a>
+                    </li>
+                     <li class="nav-item" style="display: {% if usuario_logeado and tipouser==1 %}block{% else %}none{% endif %}">
+                        <a class="nav-link" href="/verempre">Ver Empresas Registradas</a>
+                    </li>
+                    <li class="nav-item" style="display: {% if usuario_logeado and tipouser==1 %}block{% else %}none{% endif %}">
                         <a class="nav-link" href="/crud">CRUD</a>
                     </li>
                     <li class="nav-item" style="display: {% if usuario_logeado and tipouser==1 %}block{% else %}none{% endif %}">
                         <a class="nav-link" href="/HomeEmpresa">Home/Empresa</a>
                     </li>
-                    <li class="nav-item" style="display: {% if usuario_logeado and tipouser==1%}block{% else %}none{% endif %}">
+                    <li class="nav-item" style="display: {% if usuario_logeado and tipouser==1 %}block{% else %}none{% endif %}">
                         <a class="nav-link" href="/Home">Home/Usuario</a>
                     </li>
                     <li class="nav-item" style="display: {% if usuario_logeado %}none{% else %}block{% endif %}">
@@ -52,11 +72,11 @@
                     <li class="nav-item" style="display: {% if usuario_logeado %}none{% else %}block{% endif %}">
                         <a class="nav-link" href="/login">Iniciar sesión</a>
                     </li>
+                    <li class="nav-item" style="display: {% if usuario_logeado and tipouser==2 %}block{% else %}none{% endif %}">
+                        <a class="nav-link" href="/Home">HOME</a>
+                    </li>
                     <li class="nav-item" style="display: {% if usuario_logeado %}block{% else %}none{% endif %}">
                         <a class="nav-link" href="/logout">Cerrar sesión</a>
-                    </li>
-                    <li class="nav-item" style="display: {% if usuario_logeado and (tipouser==1 or tipouser==2)%}block{% else %}none{% endif %}">
-                        <a class="nav-link" href="/Convocatorias">Convocatorias</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="/about">Conócenos</a>
@@ -65,15 +85,14 @@
             </div>
         </nav>
     </header>
-
     <div class="container">
-        <h2 class="heading-text">Usuarios Registrados en la convocatoria</h2>
+     <h2 class="heading-text">Usuarios Registrados</h2>
     <table class="table table-striped">
         <thead class="thead-dark">
             <tr>
                 <th>Nombre</th>
-                <th>Apellidos</th>
                 <th>Correo</th>
+                <th>Tipo Usuario</th>
             </tr>
         </thead>
         <tbody>

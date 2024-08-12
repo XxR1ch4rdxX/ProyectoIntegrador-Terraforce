@@ -16,6 +16,7 @@ import os
 from colorama import init, Fore, Style
 from googletrans import Translator
 import pyodbc
+from datetime import date,datetime
 from flask import Flask, render_template, request, flash, redirect, session, url_for, jsonify, send_file
 import socket
 import sqlite3
@@ -28,12 +29,18 @@ init()
 
 app = Flask(__name__)
 
+app = Flask(__name__)
+app.secret_key = '123'
+server = socket.gethostname()
+#aqui cambiamos la base de datos , por la que tengamos en nuestro SQL SERVER
+#esto quiere decir que nos servira para mas de una base de datos , en este caso es la de el pi
+#por lo tanto podemos hacer altas bajas y cambios en cualquier tabla
+database = 'TerraForce'  #si queremos cambiar de db , debemos cambiar el 'TU_BASEDEDATOS' y listo.
+titulo = database
+conn = sqlite3.connect(database)
+cursor = conn.cursor()
 
-server = 'sqlserver'  # Cambia esto a tu servidor SQL Server
-database = 'TerraForce'
-username = 'sa'  # Cambia esto a tu nombre de usuario de SQL Server
-password = '1@pOrf4vorD10$'  # Cambia esto a tu contraseña de SQL Server
-driver = '{ODBC Driver 17 for SQL Server}'  # Asegúrate de que este driver esté instalado
+
 
 
 if database == 'TacoLovers':
@@ -43,14 +50,50 @@ elif database == 'TerraForce':
 else:
     icon = "../static/images/demon.ico"
 
-connection_string = f'DRIVER={driver};SERVER={server};DATABASE={database};UID={username};PWD={password}'
+try:
+    print(Fore.CYAN + 'Estableciendo la conexion con sql server ...' + Style.RESET_ALL)
+    connection = pyodbc.connect('DRIVER={ODBC Driver 17 for SQL Server}; SERVER=' + server + '; DATABASE=' + database + '; Trusted_Connection=yes;')
+    print(Fore.GREEN + 'Tamo en linea ' + Style.RESET_ALL)
 
-connection = pyodbc.connect(connection_string)
+    cursor = connection.cursor()
+    cursor.execute("SELECT @@version;")
+    row = cursor.fetchone()
 
-titulo = database
-conn = sqlite3.connect(database)
-cursor=conn.cursor()
+    if row:
+        print(f'Versión de SQL Server: {row[0]}')
+    else:
+        print('Hay un error chamo')
 
+except pyodbc.Error as e:
+    print(Fore.GREEN + 'Error :c, intentando con docker' + Style.RESET_ALL)
+
+    try:
+        server = 'sqlserver'  # Cambia esto a tu servidor SQL Server
+        database = 'TerraForce'
+        username = 'sa'  # Cambia esto a tu nombre de usuario de SQL Server
+        password = '1@pOrf4vorD10$'  # Cambia esto a tu contraseña de SQL Server
+        driver = '{ODBC Driver 17 for SQL Server}'  # Asegúrate de que este driver esté instalado
+
+        if database == 'TacoLovers':
+            icon = "../static/images/taco.ico"
+        elif database == 'TerraForce':
+            icon = "../static/images/logoterra1.ico"
+        else:
+            icon = "../static/images/demon.ico"
+
+        connection_string = f'DRIVER={driver};SERVER={server};DATABASE={database};UID={username};PWD={password}'
+
+        connection = pyodbc.connect(connection_string)
+
+        titulo = database
+        conn = sqlite3.connect(database)
+        cursor = conn.cursor()
+
+    except pyodbc.Error as e:
+        print(Fore.GREEN + 'Error , No se conecto con la db local ni la de docker :,c' + Style.RESET_ALL)
+
+finally:
+    cursor.close()
 
 def espanolizar(text):
     translator = Translator()
@@ -766,6 +809,85 @@ def registrarse_convo(idconvo):
 
 
 
+@app.route('/verempre')
+def verempre():
+    cursor = connection.cursor()
+    cursor.execute('SELECT * FROM V_DetallesEmpresa')
+    results = cursor.fetchall()
+
+    # Esto para que, si no estas logueado, te mande al login en vez de al Home
+    if 'id_user' not in session:
+        return redirect(url_for('login'))
+
+    cursor = connection.cursor()
+    id = session.get('id_user')
+    tipouser = session.get('tipo_user')
+    usuario_logeado = False
+
+    if tipouser == 3:
+        cursor.close()
+        return redirect(url_for('HomeEmpresa'))
+
+    if id and tipouser:
+        usuario_logeado = True
+        cursor.execute("""
+           SELECT id_persona from Usuarios where id = ? 
+           """, (id,))
+        id_persona = cursor.fetchone()
+        id_persona = id_persona[0]
+        cursor.execute("""
+           select nombre from Personas where id = ?
+           """, (id_persona,))
+        nombre = cursor.fetchone()[0]
+
+        cursor.close()
+
+    return render_template('UsuariosREG.html',titulo=titulo, results=results, icon=icon, nombre=nombre,
+                               usuario_logeado=usuario_logeado, tipouser=tipouser)
+    cursor.close()
+
+
+
+
+@app.route('/verusers')
+def veruserreg():
+    cursor = connection.cursor()
+    cursor.execute('SELECT * FROM V_DetallesUsuario')
+    results = cursor.fetchall()
+
+    # Esto para que, si no estas logueado, te mande al login en vez de al Home
+    if 'id_user' not in session:
+        return redirect(url_for('login'))
+
+    cursor = connection.cursor()
+    id = session.get('id_user')
+    tipouser = session.get('tipo_user')
+    usuario_logeado = False
+
+    if tipouser == 3:
+        cursor.close()
+        return redirect(url_for('HomeEmpresa'))
+
+    if id and tipouser:
+        usuario_logeado = True
+        cursor.execute("""
+           SELECT id_persona from Usuarios where id = ? 
+           """, (id,))
+        id_persona = cursor.fetchone()
+        id_persona = id_persona[0]
+        cursor.execute("""
+           select nombre from Personas where id = ?
+           """, (id_persona,))
+        nombre = cursor.fetchone()[0]
+
+        cursor.close()
+
+    return render_template('UsuariosREG.html',titulo=titulo, results=results, icon=icon, nombre=nombre,
+                               usuario_logeado=usuario_logeado, tipouser=tipouser)
+    cursor.close()
+
+
+
     #Funcion para salirse de una convocatoria
 @app.route('/borrarConvo/<int:idconvo>', methods=['GET'])
 def borrarConvo(idconvo):
@@ -790,19 +912,20 @@ def borrarConvo(idconvo):
 @app.route('/Convocatorias', methods=["GET"])
 def Convocatorias():
 
+
+
     cursor = connection.cursor()
-    cursor.execute('''
-        SELECT c.id, c.titulo, c.requisitos, c.imagen, c.usuarios_registrados, 
-               c.limite_usuarios, c.fecha_inicio, c.fecha_final, t.tematica, 
-               em.nombre AS empresa_nombre
-        FROM Convocatorias AS c 
-        INNER JOIN Estatus AS e ON c.id_estatus = e.id 
-        INNER JOIN Empresas AS em ON em.id = c.id_empresa 
-        INNER JOIN Tematicas AS t ON t.id = c.id_tematica
-    ''')
+    cursor.execute("""
+    SELECT * FROM V_Convocatorias
+    """)
     results = cursor.fetchall()
 
+
     ids = [row[0] for row in results]
+
+    estatus= [row[5] for row in results]
+
+
 
     # Recuperar las imágenes para cada ID
     imagenes = {}
@@ -859,7 +982,7 @@ def Convocatorias():
         print("Imágenes:", imagenes)
 
         return render_template('convocatorias.html', titulo=titulo, results=results, icon=icon, nombre=nombre,
-                               usuario_logeado=usuario_logeado, tipouser=tipouser, imagenes=imagenes,)
+                               usuario_logeado=usuario_logeado, tipouser=tipouser, imagenes=imagenes,estatus=estatus)
     else:
         cursor.close()
         return render_template('convocatorias.html', results = results, titulo=titulo, icon=icon, usuario_logeado=usuario_logeado)
@@ -1014,6 +1137,27 @@ def registrar_convo():
 
         if tituloconv and requisitos and fechainicio and fechacierre and vacantes and tematicas and descripcion:
 
+            fechainicio_d=datetime.strptime(fechainicio, '%Y-%m-%d')
+            fechafin_d = datetime.strptime(fechacierre, '%Y-%m-%d')
+            fechafinver = fechafin_d.date()
+            fechainiciover = fechainicio_d.date()
+
+            if fechainiciover == fechafinver:
+                flash('La fecha de inicio y de termino no pueden ser iguales')
+                return redirect('registro_convocatoria')
+
+            if fechainiciover > fechafinver:
+                flash('La fecha de de cierre , no puede ser anterior a la de inicio')
+                return redirect('registro_convocatoria')
+
+            if vacantes:
+                vacantes = int(vacantes)
+                if vacantes < 10 or vacantes < 0:
+                    flash('El número de vacantes mínimo es de 10')
+                    return redirect('registro_convocatoria')
+
+
+
             if imagenbin and format_img:
 
                 try:
@@ -1032,15 +1176,7 @@ def registrar_convo():
                 mime_type = None
 
 
-                if fechainicio == fechacierre:
-                    flash('La fecha de inicio y de termino no pueden ser iguales')
-                    return redirect('registro_convocatoria')
 
-                if vacantes:
-                    vacantes = int(vacantes)
-                    if vacantes < 10 or vacantes<0:
-                        flash('El número de vacantes mínimo es de 10')
-                        return redirect('registro_convocatoria')
 
 
 
@@ -1124,14 +1260,16 @@ def upload():
     id_tematica=cursor.fetchone()[0]
 
     if id_tematica and tituloconv and descripcion and requisitos and fechainicio and fechacierre and vacantes and id_empresa and img_data and format_img:
-        try:
+        try :
             cursor.execute("""
                 exec sp_post_publicacion ?,?,?,?,?,?,?,?,?,?
                 """,tituloconv,descripcion,requisitos,fechainicio,id_empresa,id_tematica,
                            img_data,vacantes,fechacierre,format_img)
 
 
-            flash('Publicacion creada :D','succes')
+
+
+            flash(f'Publicacion creada :D ','succes')
             return redirect('registro_convocatoria')
         except Exception as e:
             flash(f'Error: {str(e)}','danger')
@@ -1264,13 +1402,7 @@ def HomeEmpresa():
 @app.route('/verUsuarios/<int:idconvo>', methods=['GET'])
 def verUsuarios(idconvo):
     cursor = connection.cursor()
-    query = '''
-            SELECT p.nombre, concat(p.apellidop,' ', p.apellidom) as apellidos, u.correo 
-            FROM Registros as r
-            JOIN Usuarios as u ON u.id = r.id_voluntario
-            JOIN Personas as p on p.id = u.id_persona
-            WHERE r.id_convocatoria = ?
-            '''
+    query = "SELECT nombre, apellidos, correo FROM V_Usuarios_Convocatoria WHERE id_convocatoria = ?"
     cursor.execute(query, (idconvo,))
     results = cursor.fetchall()
     cursor.close()
@@ -1323,14 +1455,8 @@ def editarConvo(idconvo):
             return redirect(url_for('Convocatorias'))
 
     cursor.execute("""
-        SELECT c.id, c.titulo, c.requisitos, c.descripcion, c.usuarios_registrados, 
-               c.limite_usuarios, c.fecha_inicio, c.fecha_final, e.nombre AS empresa_nombre, 
-               es.nombre AS estatus_nombre, t.tematica
-        FROM Convocatorias AS c
-        JOIN Empresas AS e ON e.id = c.id_empresa
-        JOIN Estatus AS es ON es.id = c.id_estatus
-        JOIN Tematicas AS t ON t.id = c.id_tematica
-        WHERE c.id = ?
+        SELECT * FROM V_Convocatoria_Detalle
+        WHERE id = ?
     """, (idconvo,))
 
     convocatoria = cursor.fetchone()
